@@ -1,0 +1,72 @@
+{extend name="$admin_layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">修改会员账户</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <table class="table table-striped table-bordered dataTable no-footer">
+            <tr>
+                <td>账户：{$info.account}</td>
+                <td>积分：{$info.integral}</td>
+            </tr>
+            <tr>
+                <td>注册IP：{$info.register_ip}</td>
+                <td>上次登录IP：{$info.last_login_ip}</td>
+            </tr><tr>
+                <td>注册时间：{$info.create_time}</td>
+                <td>上次登录时间：{$info.last_login_time}</td>
+            </tr>
+            
+        </table>
+        <fieldset class="form-group">
+            <label>会员组</label>
+            <select class="custom-select form-control" name="groupid">
+                {volist name="glist" id="vo"}
+                <option value="{$key}"  {if $key==$info.groupid}selected{/if}>{$vo}</option>
+                {/volist}
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>新密码*</label>
+            <input type="password" class="form-control" name="password" placeholder="6-20位,不修改则留空" value="">
+        </fieldset>
+        <fieldset class="form-group" >
+            <label>确认新密码*</label>
+            <input type="password" class="form-control" name="password_confirm" placeholder="再次输入密码" value="">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>昵称*</label>
+            <input type="text" class="form-control" name="nickname" placeholder="昵称" value="{$info.nickname}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>手机号码</label>
+            <input type="number" class="form-control" name="telephone" placeholder="手机号码" value="{$info.telephone}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>邮箱</label>
+            <input type="email" class="form-control" name="email" placeholder="邮箱" value="{$info.email}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-primary" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-primary" {if $info.status}checked=""{/if}>
+                       <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">禁用</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="hidden" value="{$info.id}" name="id">
+            <input type="submit" class="btn btn-primary" value="编辑保存">
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="javascript"}
+
+{/block}

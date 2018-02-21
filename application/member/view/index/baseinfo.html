@@ -1,0 +1,43 @@
+{extend name="layout"/}
+{block name="content"}
+
+<div class="top-crumb">
+    <span class="layui-breadcrumb">
+        <a href="#">信息设置</a>
+        <a><cite>基本资料</cite></a>
+    </span>
+</div>
+
+<form class="layui-form layui-form-pane" action="" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$info.account}</label>
+        <div class="layui-input-inline">
+
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="nickname" lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input" value="{$info.nickname}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机</label>
+        <div class="layui-input-inline">
+            <input type="number" name="telephone" lay-verify="required|phone|number" placeholder="请输入手机号码" autocomplete="off" class="layui-input" value="{$info.telephone}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Email</label>
+        <div class="layui-input-inline">
+            <input type="email" name="email" lay-verify="required|email" placeholder="请输入电子邮箱" autocomplete="off" class="layui-input" value="{$info.email}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo2">修改</button>
+        </div>
+    </div>
+</form>
+
+{/block}

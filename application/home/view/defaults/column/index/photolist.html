@@ -1,0 +1,69 @@
+{extend name="defaults/layout"/}
+{block name="seo"}
+<title>{$info.meta_title}-{$title}</title>	
+<meta name="keywords" content="{$info.meta_keywords}-{$keywords}" />
+<meta name="description" content="{$info.meta_description}-{$description}" />
+{/block}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+        //栏目右侧折叠菜单
+        $('.ui.styled.accordion').accordion({
+            selector: {
+                trigger: '.title .icon'
+            }
+        });
+    });
+</script>
+{/block}
+{block name="content"} 
+<div class="ui  padded grid " id="listBanner">
+    <div class="blue column">
+        <div class="ui container ">
+            <h3>{$info.title}</h3>
+            <p>{$info.meta_description}</p>
+        </div>  
+    </div>
+</div>
+
+<div class="ui container" id="box">
+    <div class="ui  grid stackable">
+        <div class="ten wide column">
+            <div class="ui  breadcrumb">
+                <a class="section" href="{:url('home/index/index')}"> 首页</a>
+                {volist name="crumbs" id="vo"}
+                <i class="right chevron icon divider"></i><a class="section" href="{$vo.url}"> {$vo.title}</a>
+                {/volist}
+            </div>
+            <div class="ui divider"></div>
+            <div class="ui special four cards doubling">
+                {volist name="list.data" id="vo"}
+                <div class="card">
+                    <div class="blurring dimmable image">
+                        <div class="ui inverted dimmer">
+                            <div class="content">
+                                <div class="center">
+                                    <a href="{$vo.url}" class="ui primary  button">查看详细</a>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="__UPLOAD__/{$vo.cover.thumb}" alt="{$vo.title}"> 
+                    </div>
+                    <div class="content">
+                        <a href="{$vo.url}" class="header">{$vo.title}</a>
+                    </div>
+                    <div class="extra content">
+                        <i class="time icon"></i>{$vo.description}
+                    </div>
+                </div>
+                {/volist}
+            </div>
+             {$page|raw}
+        </div>
+
+        <div class="six wide column" id="rightComun">
+            {include file="defaults/right" /}
+        </div>
+    </div>
+</div>
+{/block}

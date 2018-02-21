@@ -1,0 +1,100 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">生成SiteMap</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <label for="grid-input-16">首页权重</label>
+                <select class="form-control" name="index[priority]">
+                    <option value="0" selected="">1</option>
+                    <option value="1">0.9</option>
+                    <option value="2">0.8</option>
+                    <option value="3">0.7</option>
+                    <option value="4">0.6</option>
+                    <option value="5">0.5</option>
+                </select>
+            </div>
+            <div class="col-sm-6 form-group">
+                <label for="grid-input-17">首页更新频率</label>
+                <select class="form-control" name="index[changefreq]">
+                    <option value="always" selected="">经常</option>
+                    <option value="hourly">每小时</option>
+                    <option value="daily">每天</option>
+                    <option value="weekly">每周</option>
+                    <option value="monthly">每月</option>
+                    <option value="yearly">每年</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <label for="grid-input-16">栏目权重</label>
+                <select class="form-control" name="colum[priority]">
+                    <option value="0">1</option>
+                    <option value="1" selected="">0.9</option>
+                    <option value="2">0.8</option>
+                    <option value="3">0.7</option>
+                    <option value="4">0.6</option>
+                    <option value="5">0.5</option>
+                </select>
+            </div>
+            <div class="col-sm-6 form-group">
+                <label for="grid-input-17">栏目更新频率</label>
+                <select class="form-control" name="colum[changefreq]">
+                    <option value="always">经常</option>
+                    <option value="hourly" selected="">每小时</option>
+                    <option value="daily">每天</option>
+                    <option value="weekly">每周</option>
+                    <option value="monthly">每月</option>
+                    <option value="yearly">每年</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <label for="grid-input-16">内容权重</label>
+                <select class="form-control" name="content[priority]">
+                    <option value="0">1</option>
+                    <option value="1">0.9</option>
+                    <option value="2" selected="">0.8</option>
+                    <option value="3">0.7</option>
+                    <option value="4">0.6</option>
+                    <option value="5">0.5</option>
+                </select>
+            </div>
+            <div class="col-sm-6 form-group">
+                <label for="grid-input-17">内容更新频率</label>
+                <select class="form-control" name="content[changefreq]">
+                    <option value="always">经常</option>
+                    <option value="hourly">每小时</option>
+                    <option value="daily" selected="">每天</option>
+                    <option value="weekly">每周</option>
+                    <option value="monthly">每月</option>
+                    <option value="yearly">每年</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 form-group">
+                <label for="grid-input-20">内容链接数量</label>
+                <input type="number" class="form-control" name="num" placeholder="Sitemap记录条数" value="500">
+            </div>
+        </div>
+
+        <div class="panel-footer text-right">
+            <input type="submit" name="root" class="btn btn-primary" value="生成到网站根目录">
+            <input type="submit" name="down" class="btn btn-success" value="下载到本地">
+        </div>
+    </form>
+</div>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+
+    });
+</script>
+{/block}

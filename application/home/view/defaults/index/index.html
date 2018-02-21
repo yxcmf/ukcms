@@ -1,0 +1,206 @@
+{extend name="defaults/layout"/}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+        //轮播特效
+        $('#bannerNext').click(function () {
+            $('#banner').shape('flip over');
+        });
+        $('#bannerPre').click(function () {
+            $('#banner').shape('flip back');
+        });
+        //tab切换
+        $('#tabDemo .item').tab();
+        //折叠菜单
+        $('#infoAccordion').accordion();
+    });
+</script>
+{/block}
+{block name="content"}
+<div class="ui shape" id="banner">
+    <div class="sides">
+        {uk:link group="indexbanner" }
+        <div class="{if 0==$key}active{/if} side">
+            <div class="image">
+                <a href="{$vo['url']}"><img src="__UPLOAD__/{$vo['picture']}" class="ui fluid image" alert="{$vo['title']}"></a>
+            </div>
+        </div>
+        {/uk:link}
+    </div>
+
+    <div class="ui left internal rail"  id="bannerPre">
+        <div  class="ui icon button"><i class="left  arrow icon"></i></div>
+    </div>
+    <div class="ui right internal rail"  id="bannerNext">
+        <div class="ui icon button"><i class="right  arrow icon"></i></div>
+    </div>
+</div>
+
+
+<div class="ui container" id="box">
+    <div class="ui  grid stackable">
+        <div class=" seven wide column" id="aboutUs">
+            <div class="ui segment">
+                <a  href="{$columList.aboutus.url}" class="ui top attached large  label blue">{$columList.aboutus.title}</a>
+                <div class="aboutBox">
+                    <img class="ui small left floated image" src="__UPLOAD__/{$columList.aboutus.cover}" alt="{$columList.aboutus.title}">
+                    {uk:find table="column" field="meta_description"  key="1"}
+                    <p>{:msubstr($info.meta_description,0,225)}</p>
+                    {/uk:find}
+                </div>
+            </div>
+        </div>
+        <div class="nine wide column">
+            <div class="ui top attached tabular menu" id="tabDemo">
+                <a class="active item" data-tab="first">{$columList.frontbase.title}</a>
+                <a class="item" data-tab="second">{$columList.frontframe.title}</a>
+                <a class="item" data-tab="third">{$columList.php.title}</a>
+            </div>
+            <div class="ui bottom attached active tab segment" data-tab="first">
+                <div class="ui divided  items">
+                    {uk:select table="article" field="id,cname,title,description,cover,create_time"  limit="2"  cid="6"}
+                    <div class="item">
+                        {if $vo.cover.path}
+                        <div class="ui small image">
+                            <img src="__UPLOAD__/{$vo.cover.path}" alt="{$vo.title}">
+                        </div>
+                        {/if}
+                        <div class="content"> 
+                            <a href="{$vo.url}" class="header">{$vo.title}</a>
+                            <div class="meta">
+                                <span>{:date('Y-m-d H:i:s',$vo.create_time)}</span>
+                            </div>
+                            <div class="description">
+                                <p>{$vo.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/uk:select}
+                </div>
+                <a href="{$columList.frontbase.url}" class="ui  bottom right attached label">更多信息</a>
+            </div>
+            <div class="ui bottom attached tab segment" data-tab="second">
+                <div class="ui divided  items">
+                    {uk:select table="article" field="id,cname,title,description,cover,create_time"  limit="2"  cid="5"}
+                    <div class="item">
+                        <div class="ui small image">
+                            <img src="__UPLOAD__/{$vo.cover.path}" alt="{$vo.title}">
+                        </div>
+                        <div class="content"> 
+                            <a href="{$vo.url}" class="header">{$vo.title}</a>
+                            <div class="meta">
+                                <span>{:date('Y-m-d H:i:s',$vo.create_time)}</span>
+                            </div>
+                            <div class="description">
+                                <p>{$vo.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/uk:select}
+                </div>
+                <a href="{$columList.frontframe.url}" class="ui  bottom right attached label">更多信息</a>
+            </div>
+            <div class="ui bottom attached tab segment" data-tab="third">
+                <div class="ui divided list articleList">
+                    {uk:select table="article" field="id,cname,title,create_time"  limit="6"  cid="4"}
+                    <div class="item">
+                        <span class="right floated">{:date('Y-m-d',$vo.create_time)}</span>
+                        <a href="{$vo.url}"><i class="file outline icon"></i>{$vo.title}</a>
+                    </div>  
+                    {/uk:select}
+                </div>
+                <a href="{$columList.php.url}" class="ui bottom right attached label">更多信息</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui special six cards doubling">
+        {uk:select table="photo" field="id,cname,title,cover,description"  limit="6"  cid="10"}
+        <div class="card">
+            <div class="blurring dimmable image">
+                <div class="ui inverted dimmer">
+                    <div class="content">
+                        <div class="center">
+                            <a href="{$vo.url}" class="ui primary  button">查看详细</a>
+                        </div>
+                    </div>
+                </div>
+                <img src="__UPLOAD__/{$vo.cover.thumb}" alt="{$vo.title}"> 
+            </div>
+            <div class="content">
+                <a href="{$vo.url}" class="header">{:msubstr($vo.title,0,8)}</a>
+            </div>
+            <div class="extra content">
+                <i class="time icon"></i>{$vo.description}
+            </div>
+        </div>
+        {/uk:select}
+        <div class="ui container moreBox">
+            <a href="{$columList.legend.url}" class="fluid ui  button  ">更多{$columList.legend.title}</a>
+        </div>
+    </div>
+
+
+    <div class="ui aligned grid">
+        <div class="row stackable ">
+            <div class="nine wide column">
+                <div class="ui segment">
+                    <a href="{$columList.ukcms.url}" class="ui top attached large  label blue">{$columList.ukcms.title}</a>
+                    <div class="ui styled  fluid accordion"  id="infoAccordion">
+                        {uk:select table="article" field="id,cname,title" extfield="content"  limit="3"  cid="9"}
+                        <div class="{if 0==$key}active{/if} title"><i class="dropdown icon"></i> {$vo.title} </div>
+                        <div class="{if 0==$key}active{/if} content">
+                            {$vo.content|raw} 
+                        </div>
+                        {/uk:select}
+                    </div>
+                </div>
+            </div>
+
+            <div class="seven wide column">
+                <form class="ui form " method="post" action="{$columList.guestbook.url}">
+                    <div class="field">
+                        <input type="text" name="modelField[title]" placeholder="标题*">
+                    </div>
+                    <div class="field">
+                        <textarea rows="3" name="modelField[content]" placeholder="留言内容*"></textarea>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="modelField[name]" placeholder="姓名">
+                    </div>
+                    {if config('captcha_signin_model')}
+                    <div class="inline fields">
+                        <div class="field"><input type="text" placeholder="验证码" name="captcha" size="6" placeholder="验证码"></div>
+                        <div class="field"><img src="{:captcha_src()}" width="129" height="40"  id="captcha" style="cursor: pointer;" onclick="this.src = '{:captcha_src()}?m=' + Math.random();" title="点击刷新" alt="captcha" /></div>
+                    </div>
+                    {/if}
+                    {:token()}
+                    <button class="ui blue button" type="submit">提交留言</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui segment">
+        <a href="{$columList.product.url}" class="ui top attached large  label blue">{$columList.product.title}</a>
+        <div class="ui four column grid doubling">
+            {uk:select table="product" field="id,cname,title,description,cover,price,places"  limit="4"  cid="11"}
+            <div class="column">
+                <div class="ui fluid image">
+                    <a href="{$vo.url}" class="ui medium image">
+                        {notempty name="vo.places"}
+                        <div class="ui teal right corner label">
+                            <i class="heart  icon"></i>
+                        </div>
+                        {/notempty}
+                        <img class="ui medium rounded image"  src="__UPLOAD__/{$vo.cover.thumb}" alt="{$vo.title}">
+                        <div class="ui bottom attached large  label grey titFilter">{:msubstr($vo.title,0,18)}</div>
+                        <div class="ui blue  ribbon label"><i class="yen icon"></i>{$vo.price} </div>
+                    </a>
+                </div>
+            </div>
+            {/uk:select}
+        </div>
+    </div>
+</div>
+{/block}

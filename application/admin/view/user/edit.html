@@ -1,0 +1,62 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">编辑后台账户</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>角色</label>
+            <select class="custom-select form-control" name="groupid">
+                {volist name="glist" id="vo"}
+                <option value="{$vo.id}"  {if $vo.id==$info.groupid}selected{/if}>{:str_repeat('┝┈┈', $vo['deep']-1)}{$vo.names}</option>
+                {/volist}
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>账户*</label>
+            <input type="text" class="form-control" name="username" placeholder="登录账户" value="{$info.username}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>密码*</label>
+            <input type="password" class="form-control" name="password" placeholder="6-20位,不修改则留空" value="">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>姓名*</label>
+            <input type="text" class="form-control" name="realname" placeholder="真实姓名" value="{$info.realname}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>手机号码</label>
+            <input type="number" class="form-control" name="mobile" placeholder="手机号码" value="{$info.mobile}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>邮箱</label>
+            <input type="email" class="form-control" name="email" placeholder="邮箱" value="{$info.email}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="{$info.orders}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-primary" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-primary" {if $info.status}checked=""{/if}>
+                       <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">禁用</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="hidden" value="{$info.id}" name="id">
+            <input type="submit" class="btn btn-primary" value="编辑保存">
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="javascript"}
+
+{/block}

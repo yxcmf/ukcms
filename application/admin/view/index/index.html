@@ -1,0 +1,119 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="row">
+    <div class="col-md-3">
+        <a href="{:url('model/index')}" class="box bg-primary">
+            <div class="box-cell p-a-3 valign-middle">
+                <i class="box-bg-icon middle right ion-ios-filing"></i>
+                <span class="font-size-24"><strong>{$modelNum}</strong></span><br>
+                <span class="font-size-16">模型数量</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{:url('column/index')}" class="box bg-primary">
+            <div class="box-cell p-a-3 valign-middle">
+                <i class="box-bg-icon middle right ion-social-buffer"></i>
+                <span class="font-size-24"><strong>{$columnNum}</strong></span><br>
+                <span class="font-size-16">栏目数量</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{:url('content/'.$firstModleContent)}" class="box bg-primary">
+            <div class="box-cell p-a-3 valign-middle">
+                <i class="box-bg-icon middle right ion-document-text"></i>
+                <span class="font-size-24"><strong>{$documentNum}</strong></span><br>
+                <span class="font-size-16">文档数量</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{:url('filemanage/index')}" class="box bg-primary">
+            <div class="box-cell p-a-3 valign-middle">
+                <i class="box-bg-icon middle right ion-folder"></i>
+                <span class="font-size-24"><strong>{$attachmentNum}</strong></span><br>
+                <span class="font-size-16">附件数量</span>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="table-light ">
+            <div class="table-header">
+                <div class="table-caption">
+                    系统信息
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <td width="100" align="right">系统版本</td>
+                    <td>{$sysinfo}</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">PHP</td>
+                    <td>{$PhpEnv}</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">MYSQL</td>
+                    <td>{$MysqlVersion}</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">POST限制</td>
+                    <td>{$PostMaxSize}</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">上传限制</td>
+                    <td>{$UploadMaxFilesize}</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">内存占用限制</td>
+                    <td>{$MemoryLimit}</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">PHP运行限制</td>
+                    <td>{$MaxExecutionTime}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="table-light">
+            <div class="table-header">
+                <div class="table-caption">
+                    关于我们
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <td width="100" align="right">系统作者</td>
+                    <td>路过</td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">官方网址</td>
+                    <td><a href="http://www.ukcms.com" target="_blank">www.ukcms.com</a></td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">交流群</td>
+                    <td><a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=0d8d90b132728994ed69463bd5d603c4ed3b7273867c95809d623f41efd54f42"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="UKcms官方群1" title="UKcms官方群1"></a></td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">Email</td>
+                    <td><a href="mailto:yxcms@qq.com">yxcms@qq.com</a></td>
+                </tr>
+                <tr>
+                    <td width="100" align="right">创作初衷</td>
+                    <td>YXcms从2013年发布至今4年的累积让我对客户需求和PHP又有了新的认识，近期php7.X快速发展和卓越性能，加上实际项目的需要。作为一个强迫症患者的我此次发布新系统希望能够弥补我心中的缺憾同时带给大家便利。</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+
+{/block}
+

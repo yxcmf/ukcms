@@ -1,0 +1,39 @@
+{__NOLAYOUT__}<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>UKcms对话提示</title>
+        <link href="__STATIC__/admin/assets/static/font-awesome.min.css" rel="stylesheet" >
+        <!-- DEMO ONLY: Function for the proper stylesheet loading according to the demo settings -->
+        <script>function _pxDemo_loadStylesheet(a, b, c) {
+                var c = c || decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-theme") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "clean"), d = "rtl" === document.getElementsByTagName("html")[0].getAttribute("dir");
+                document.write(a.replace(/^(.*?)((?:\.min)?\.css)$/, '<link href="$1' + (c.indexOf("dark") !== -1 && a.indexOf("/css/") !== -1 && a.indexOf("/themes/") === -1 ? "-dark" : "") + (!d || 0 !== a.indexOf("assets/css") && 0 !== a.indexOf("assets/demo") ? "" : ".rtl") + '$2" rel="stylesheet" type="text/css"' + (b ? 'class="' + b + '"' : "") + ">"))
+            }</script>
+
+        <!-- DEMO ONLY: Load PixelAdmin core stylesheets -->
+        <script>
+            _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/bootstrap.min.css', 'px-demo-stylesheet-bs');
+            _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/pixeladmin.min.css', 'px-demo-stylesheet-core');
+        </script>
+        <!-- / Custom styling -->
+    </head>
+    <body>
+        <div class="px-content ">
+            <div class="modal fade modal-alert modal-success in" style="display: block;background-color: #ededec">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"><i class="fa fa-check-circle"></i></div>
+                        <div class="modal-title"><h4>{:strip_tags($msg)}</h4></div>
+                        <div class="modal-footer">
+                            {volist name="urls" id="vo"}
+                               <a type="button right" class="btn btn-{$vo.class} " data-dismiss="modal" href="{$vo.url}" >{$vo.title} </a>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

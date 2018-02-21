@@ -1,0 +1,116 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">添加模型</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>模型用途*</label>
+            <select  id="purpose" name="purpose" class="form-control" >
+                <option value="">=选择模型用途=</option>
+                <option value="column" >栏目内容</option>
+                <option value="independence" >独立内容</option>
+            </select>
+            <small class="text-muted">'栏目内容'用于栏目下的内容,'独立内容'用于管理碎片信息管理等独立于栏目的内容</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>数据表名*</label>
+            <input type="text" class="form-control" name="table" placeholder="英文和数字" value="">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>模型名称*</label>
+            <input type="text" class="form-control" name="title" placeholder="模型中文名称" value="">
+        </fieldset>
+        <fieldset class="form-group">
+            <label style="clear:both; display: block">模型类型*</label>
+            <label class="custom-control custom-radio radio-inline">
+                <input type="radio" name="type" class="custom-control-input" value="1" checked="">
+                <span class="custom-control-indicator"></span>
+                独立表
+            </label>
+            <label class="custom-control custom-radio radio-inline">
+                <input type="radio" name="type" class="custom-control-input" value="2">
+                <span class="custom-control-indicator"></span>
+                主附表
+            </label>
+            <small class="text-muted" style="clear:both; display: block">主附表通过分表提高数据库操作效率</small>
+        </fieldset>
+        <fieldset class="form-group" id="fields" style="display: none">
+            <label>可选字段</label>
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="fields[title]" value="1" checked>
+                <span class="custom-control-indicator"></span>
+                [主表]【标题】title 
+            </label>
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="fields[keywords]" value="1" checked>
+                <span class="custom-control-indicator"></span>
+                [主表]【SEO关键词】keywords 
+            </label>
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="fields[description]" value="1" checked>
+                <span class="custom-control-indicator"></span>
+                [主表]【SEO描述】description 
+            </label>
+            <label class="custom-control custom-checkbox">
+                <input id="content" type="checkbox" class="custom-control-input" name="fields[content]" value="1">
+                <span class="custom-control-indicator"></span>
+                [附表]【内容】content
+            </label>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="100">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>是否允许投稿</label>
+            <label for="switcher-ifsub" class="switcher switcher-primary">
+                <input type="checkbox" name="ifsub" value="1" id="switcher-ifsub">
+                <div class="switcher-indicator">
+                    <div class="switcher-yes">允许</div>
+                    <div class="switcher-no" >禁止</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-status" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-status" checked="">
+                <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">冻结</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认添加">
+        </div>
+    </form>
+</div>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+        $('#purpose').change(function () {
+            if ('column' == $(this).val()) {
+                $('#fields').show();
+            } else {
+                $('#fields').hide();
+            }
+        });
+        $('input:radio[name="type"]').change(function () {
+            if(2==$(this).val()){
+                $('#content').prop("checked",true);
+                $('#content').prop("disabled",false);
+            }else{
+                $('#content').prop("checked",false);
+                $('#content').prop("disabled",true);
+            }
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Standard Meta -->
+        <meta charset="utf-8" />
+        {block name="seo"}
+        <title>{$title}</title>	
+        <meta name="keywords" content="{$keywords}" />
+        <meta name="description" content="{$description}" />
+        {/block}
+        <meta name="author" content="YX">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="Cache-Control" content="no-siteapp" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+        <script type="text/javascript">
+            window.onload = function () {
+                if (navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion.split(";")[1].replace(/[ ]/g, "").replace("MSIE", "")) < 9) {
+                    document.body.innerHTML = "";
+                    alert("你的浏览器太古老,网页不支持IE9以下版本~");
+                }
+            };
+        </script> 
+        <link rel="stylesheet" type="text/css" href="__STATIC__/semantic/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="__STATIC__/home/defaults/css/ukcms.css">
+        <script src="__STATIC__/jquery.min.js" ></script>
+        <script src="__STATIC__/semantic/semantic.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                /**小屏幕下导航菜单**/
+                $('#sideMenuCon').html($('#topMenuCon').html()).find('.menu').addClass('vertical');
+                $('#sideMenuCon').find('.toc.item').remove();
+                $('#sideMenuCon').find('.right.menu').remove();
+                //弹出菜单
+                $('#sideMenuCon').sidebar('attach events', '.toc.item');
+                /**小屏幕下导航菜单**/
+                //下拉菜单
+                $('.ui.dropdown').dropdown();
+                //图片鼠标特效
+                $('.special.cards .image').dimmer({
+                    on: 'hover'
+                });
+                //顶部菜单下拉效果
+                $('.ui.menu .ui.dropdown').dropdown({
+                    on: 'hover'
+                });
+                //顶部搜索触发
+                $('#searchicon').click(function () {
+                    $('#search').submit();
+                });
+                $('#midSelect div').click(function () {
+                    $('#midInput').val($(this).data('id'));
+                });
+            });
+        </script>
+        {block name="toplink"}{/block}
+    </head>
+    <body>
+        {if isset($memberInfo)}
+        <div class="topbar">
+            <div class="topbar-left"><i class="volume up icon"></i>演示通过应用钩子调用会员登录状态</div>
+            <div class="topbar-right">
+              {if $memberInfo}
+                 <a class="ui primary button tiny" href="{:url('member/index/index')}"><i class="icon user"></i>{$memberInfo}</a>  <a class="ui button tiny" href="{:url('member/open/loginout')}"><i class="icon power"></i>退出</a>
+              {else}
+                 <a class="ui primary button tiny" href="{:url('member/open/login')}">登录</a>  <a class="ui  button tiny" href="{:url('member/open/register')}">注册</a>
+              {/if}
+            </div>
+        </div>
+        <div style="clear:both"></div>
+        {/if}
+        <!-- Sidebar Menu -->
+        <div class="ui vertical inverted blue sidebar menu top " id='sideMenuCon'></div>
+        <div class="ui inverted vertical blue center aligned segment">
+            <div class="ui container">
+                <div class="large  ui  inverted blue menu menu-big" id='topMenuCon'>
+                    <a class="toc item">
+                        <i class="sidebar icon"></i>
+                    </a>
+                    <a href="{:url('home/index/index')}" class="{if 0==$rootId}active{/if} header item">
+                        <img class="logo" src="__UPLOAD__/{:config('web_site_logo')['path']}" width="100" alt="UKcmsLogo">
+                    </a>
+                    <!--查询栏目存储在$colums中-->
+                    {uk:column  select="show" id="colums" }
+                    <!--演示四层栏目调用-->
+                    {volist name="colums" id="v1"}
+                    {if !isset($v1.cnode)}<a class="item {if $v1.id==$rootId}active{/if}" href="{$v1.url}">{$v1.title}</a>{else}
+                    <div class="ui dropdown item {if $v1.id==$rootId}downaction{/if}">
+                        <a href="{$v1.url}">{$v1.title}</a><i class="dropdown icon"></i>
+                        <div class="menu">
+                            {volist name="$v1.cnode" id="v2"}
+                            {if !isset($v2.cnode)}<a class="item" href="{$v2.url}">{$v2.title}</a>{else}
+                            <div class="item">
+                                <a href="{$v2.url}">{$v2.title}</a><i class="dropdown icon"></i>
+                                <div class="menu">
+                                    {volist name="$v2.cnode" id="v3"}
+                                    {if !isset($v3.cnode)}<a class="item" href="{$v3.url}">{$v3.title}</a>{else}
+                                    <div class="item">
+                                        <a href="{$v3.url}">{$v3.title}</a><i class="dropdown icon"></i>
+                                        <div class="menu">
+                                            {volist name="$v3.cnode" id="v4"}
+                                            <a class="item" href="{$v4.url}">{$v4.title}</a>
+                                            {/volist}
+                                        </div>
+                                    </div>
+                                    {/if}
+                                    {/volist}
+                                </div>
+                            </div>
+                            {/if}
+                            {/volist}
+                        </div>
+                    </div>
+                    {/if}
+                    {/volist}
+                    <!--演示四层栏目调用-->
+                    <div class="right menu">
+                        <div class="ui dropdown item "><i class="angle double   down icon"></i>
+                            <div class="menu" id="midSelect">
+                                <div class="item active" data-id="0">所有模型</div>
+                                {uk:select table="model" field="id,title"  where="purpose='column' and status='1'" order="orders,id desc"}
+                                <div class="item"  data-id="{$vo.id}">{$vo.title}</div>
+                                {/uk:select}
+                            </div>
+                        </div>
+                        <div class="item">
+                            <form id="search"  method="get" action="{:url('home/index/search')}">
+                                <div class="ui transparent icon input  inverted  blue"> 
+                                    <input type="hidden" name="mid" value="0" id="midInput">
+                                    <input class="prompt" name="keyword"  type="text" placeholder="搜索..." size="10">
+                                    <i class="search link icon" id="searchicon"></i>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {block name="content"}{/block}
+        <div class="ui inverted vertical blue footer segment">
+            <div class="ui container">
+                <div class="ui stackable inverted divided equal height stackable grid">
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">联系我们</h4>
+                        <div class="ui inverted link list">
+                            <a href="http://www.ukcms.com" class="item"><i class="linkify icon"></i> ukcms.com</a>
+                            <a href="mail:yxcms@qq.com" class="item"><i class="mail outline icon"></i> yxcms@qq.com</a>
+                            <a href="#" class="item"><i class="comments icon"></i> YXcms1999</a>
+                        </div>
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui inverted header">环境要求</h4>
+                        <div class="ui inverted link list">
+                            <p>
+                                PHP 5.6+ & Mysql<br>
+                                Apache / Nginx<br>
+                                Versions FF, Chrome, IE (aka 10+)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="seven wide column">
+                        <h4 class="ui inverted header">版权信息</h4>
+                        <p>
+                            {:config('sysinfo')}<br>
+                            php开源内容管理系统<br>
+                            Copyright @ 2017 灵吉网络科技有限公司. All right reserved. {:config('web_site_icp')}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {block name="bottomlink"}{/block}
+        {:config('web_site_statistics')}
+    </body>
+</html> 

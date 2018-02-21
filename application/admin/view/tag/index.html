@@ -1,0 +1,167 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 18px}
+    .pagination{margin: 0; float:right}
+</style>
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">TAG列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增TAG</a>
+            <a class="btn btn-xs btn-primary" href="{:url('importdata')}"><i class="fa fa-plus-circle"></i> 导入TAG</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline m-b-2 text-right" method="get">
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-5">模型</label>
+                <select class="custom-select form-control" name="mid">
+                    <option value="0">=所有栏目模型=</option>
+                    {volist name="mlist" id="vo"}
+                    <option value="{$key}" {if $key==$Request.get.mid}selected{/if}>{$vo}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-6">搜索关键字</label>
+                <input type="text" name="keyword" class="form-control" id="form-inline-input-6" value="{$Request.get.keyword}" placeholder="搜索关键字">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+
+        <form action="{:url('delete')}" method="post" id="tabledeal">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="70">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th width="80">ID</th><th>标签</th><th>所属模型</th><th>链接</th><th width="80">权重</th><th width="100">操作</th>
+                    </tr>
+
+                    {volist name="list" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="ids[]"  class="custom-control-input" value="{$vo.id}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.title}</td>
+                        <td>{if $vo.mid}{$mlist[$vo.mid]}{else}[所有]{/if}</td>
+                        <td>{$vo.url|raw}</td>
+                        <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.weight}</td></tr></table></td>
+                        <td><a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td>
+                            <button class="btn" type="button" id="del">删除 </button>
+                        </td>
+                        <td colspan="6">
+                             {$page|raw}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#del').click(function () {
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#tabledeal').submit();
+                    }
+                }
+            });
+        });
+        //修改权重
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('setvalue')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    value: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                        // alert(ifchange);
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('标签删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

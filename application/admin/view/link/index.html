@@ -1,0 +1,177 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 18px}
+    .pagination{margin: 0; float:right}
+    .imginfo i{ font-size: 22px; color: #666; cursor:pointer}
+</style>
+{/block}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">广告链接列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增链接</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline m-b-2 text-right" method="get" action="">
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-5">分组</label>
+                <select class="form-control" name="gname">
+                    <option value="">=全部分组=</option>
+                    {volist name="glist" id="vo" }
+                       <option value="{$key}" {if $Request.get.gname==$key}selected{/if}>{$vo}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-6">标题搜索</label>
+                <input type="text" name="keyword" class="form-control" id="form-inline-input-6" value="{$Request.get.keyword}" placeholder="标题关键词">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+        <form action="{:url('delete')}" method="post" id="tabledeal">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="70">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th width="50">ID</th><th>分组</th><th>标题</th><th width="160">图片</th><th width="160">起效时间</th><th width="160">失效时间</th><th width="70">排序</th><th width="100">操作</th>
+                    </tr>
+                    {volist name="llist" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="ids[]"  class="custom-control-input" value="{$vo.id}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </td>
+                        <td>{$vo.id}</td>
+                        <td>{$glist[$vo.group_name]}</td>
+                        <td>{$vo.title}</td>
+                        <td class="imginfo">
+                            {if isset($vo.picpath)}
+                            <div target="_blank" data-url="__UPLOAD__/{$vo.picpath}" class="showimg"> <i data-toggle="tooltip" data-placement="top"  data-original-title="查看原图" class="fa fa-image"></i></div>
+                            {/if}
+                        </td>
+                        <td>{if $vo.start_time}{:date('Y-m-d H:i:s',$vo.start_time)}{else}不限{/if}</td>
+                        <td>{if $vo.end_time}{:date('Y-m-d H:i:s',$vo.end_time)}{else}不限{/if}</td>
+                        <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
+                        <td><a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td>
+                            <button class="btn" type="button" id="del">删除 </button>
+                        </td>
+                        <td colspan="8">
+                             {$page|raw}
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        //排序
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('changeorder')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    num: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+           //显示原图
+        $('.showimg').click(function () {
+            var imglink=$(this).attr('data-url');
+            var editdialog = bootbox.dialog({
+                message: '<img src="'+imglink+'" class="img-responsive" style="display:block; margin:0 auto"/>'
+            });
+        });
+        $('#del').click(function () {
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#tabledeal').submit();
+                    }
+                }
+            });
+        });
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('链接删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

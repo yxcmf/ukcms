@@ -1,0 +1,74 @@
+{extend name="defaults/layout"/}
+{block name="seo"}
+<title>{$info.meta_title}-{$title}</title>	
+<meta name="keywords" content="{$info.meta_keywords}-{$keywords}" />
+<meta name="description" content="{$info.meta_description}-{$description}" />
+{/block}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+        //栏目右侧折叠菜单
+        $('.ui.styled.accordion').accordion({
+            selector: {
+                trigger: '.title .icon'
+            }
+        });
+    });
+</script>
+{/block}
+{block name="content"} 
+<div class="ui  padded grid " id="listBanner">
+    <div class="blue column">
+        <div class="ui container ">
+            <h3>{$info.title}</h3>
+            <p>{$info.meta_description}</p>
+        </div>  
+    </div>
+</div>
+
+<div class="ui container" id="box">
+    <div class="ui  grid stackable">
+        <div class="ten wide column">
+            <div class="ui  breadcrumb">
+                <a class="section" href="{:url('home/index/index')}"> 首页</a>
+                {volist name="crumbs" id="vo"}
+                <i class="right chevron icon divider"></i><a class="section" href="{$vo.url}"> {$vo.title}</a>
+                {/volist}
+            </div>
+            <div class="ui divider"></div>
+            <div class="ui divided  items">
+                {volist name="list.data" id="vo"}
+                <div class="item">
+                    {if $vo.cover.path}
+                    <div class="ui small image">
+                        <img src="__UPLOAD__/{$vo.cover.path}" alt="{$vo.title}">
+                    </div>
+                    {/if}
+                    <div class="content">
+                        <a class="header" href="{$vo.url}"><div class="ui blue horizontal label">{$columList[$vo.cname]['title']}</div> {$vo.title}</a>
+                        <div class="meta">
+                            <span>{:date('Y-m-d H:i:s',$vo.create_time)}</span>
+                        </div>
+                        <div class="description">
+                            <p>
+                                {volist name="vo.keywords" id="v"}
+                                <a class="ui tag label" href="{:url('home/index/search')}?keyword={$v}">{$v}</a> 
+                                {/volist}
+                            </p>
+                            <p>{$vo.description}</p>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+           <div class="ui icon buttons blue">
+               <div class="ui button">一共{$list.total}条 {$list.last_page}页 每页{$list.per_page}条</div>
+           </div>
+            {$page|raw}
+        </div>
+        <div class="six wide column" id="rightComun">
+            {include file="defaults/right" /}
+        </div>
+    </div>
+</div>
+{/block}

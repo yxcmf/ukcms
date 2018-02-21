@@ -1,0 +1,422 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .menu-sortable  ul {
+        margin: 0;
+        padding:0 0 0 18px ;
+    }
+    .menu-sortable > ul {
+        margin: 0;
+        padding:0 ;
+    }
+    .menu-sortable  li {
+        list-style: none;
+        padding: 6px 0px 6px 10px;
+        -moz-border-radius: 3px; /* Firefox */
+        -webkit-border-radius: 3px; /* Safari 和 Chrome */
+        border-radius: 3px; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+    }
+    .menu-sortable  li + li {
+        margin-top: 12px;
+    }
+    .menu-sortable  ul li {
+        margin-top: 12px;
+    }
+    .menu-sortable  i.fa-arrows {
+        cursor: move;
+    }
+    .menu-sortable  li.placeholder {
+        height: 35px;
+        background: #eee
+    }
+    .dragged {
+        position: absolute;
+        margin-left: -10px;
+        opacity: 0.6;
+        z-index: 2000;
+    }
+    .icon{margin: 0; padding: 0; }
+    .icon li{margin-bottom: 3px; margin-right: 3px; width:45px;height:45px; line-height: 40px}
+    .icon i{font-size: 18px}
+    .inlinebox i{cursor:pointer}
+</style>
+{/block}
+
+{block name="content"}
+<div class="alert alert-default">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    鼠标左键按住 <i class="fa fa-arrows"></i> 拖动排序
+</div>
+<div class="inlinebox"><button type="button" class="btn btn-primary" id="showm"><i class="fa fa-eye"></i> 展开隐藏节点</button>  <button type="button" class="btn" id="hidem"><i class="fa fa-eye-slash"></i> 收起隐藏节点</button></div>
+<div class="menu-sortable">
+    <ul id="sortable">
+
+    </ul>
+</div>
+
+<!--节点弹出窗口-->
+<div id="noteform" class="hidden">
+    <form action="" method="post">
+        <fieldset class="form-group">
+            <select class="custom-select form-control" name="pid">
+
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <input type="text" class="form-control" name="title" placeholder="中文标题" value="">
+        </fieldset>
+        <fieldset class="form-group">
+            <select class="custom-select form-control" name="url_type">
+                <option value="1"  title="1">内部链接</option>
+                <option value="0"  title="0">http链接</option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <input type="text" class="form-control" name="url_value" placeholder="节点链接地址" value="">
+            <small class="text-muted clearfix">可留空，如果是内部链接，填写：模块/控制器/操作。如果是http链接，则直接填写http开头的url地址</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <select class="custom-select form-control" name="url_target">
+                <option value="_self" title="_self">当前窗口打开</option>
+                <option value="_blank" title="_blank">新窗口打开</option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon chooseicon" data-toggle="tooltip" data-placement="top"  data-original-title="选择图标" ><i class=""></i></span>
+                <input type="text" name="icon" class="form-control" placeholder="图标样式" value="">
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <select class="custom-select form-control" name="ifvisible">
+                <option value="1" title="1">菜单显示</option>
+                <option value="0" title="0">菜单隐藏</option>
+            </select>
+        </fieldset>
+        <div class="hidden"></div>
+    </form>
+</div>
+<!--选择图标-->
+<div id="icon" class="hidden">
+    <ul class="icon"><li class="btn"><i class="fa fa-address-book"></i></li><li class="btn"><i class="fa fa-address-book-o"></i></li><li class="btn"><i class="fa fa-address-card"></i></li><li class="btn"><i class="fa fa-address-card-o"></i></li><li class="btn"><i class="fa fa-adjust"></i></li><li class="btn"><i class="fa fa-american-sign-language-interpreting"></i></li><li class="btn"><i class="fa fa-anchor"></i></li><li class="btn"><i class="fa fa-archive"></i></li><li class="btn"><i class="fa fa-area-chart"></i></li><li class="btn"><i class="fa fa-arrows"></i></li><li class="btn"><i class="fa fa-arrows-h"></i></li><li class="btn"><i class="fa fa-arrows-v"></i></li><li class="btn"><i class="fa fa-asl-interpreting"></i></li><li class="btn"><i class="fa fa-assistive-listening-systems"></i></li><li class="btn"><i class="fa fa-asterisk"></i></li><li class="btn"><i class="fa fa-at"></i></li><li class="btn"><i class="fa fa-audio-description"></i></li><li class="btn"><i class="fa fa-automobile"></i></li><li class="btn"><i class="fa fa-balance-scale"></i></li><li class="btn"><i class="fa fa-ban"></i></li><li class="btn"><i class="fa fa-bank"></i></li><li class="btn"><i class="fa fa-bar-chart"></i></li><li class="btn"><i class="fa fa-bar-chart-o"></i></li><li class="btn"><i class="fa fa-barcode"></i></li><li class="btn"><i class="fa fa-bars"></i></li><li class="btn"><i class="fa fa-bath"></i></li><li class="btn"><i class="fa fa-bathtub"></i></li><li class="btn"><i class="fa fa-battery"></i></li><li class="btn"><i class="fa fa-battery-0"></i></li><li class="btn"><i class="fa fa-battery-1"></i></li><li class="btn"><i class="fa fa-battery-2"></i></li><li class="btn"><i class="fa fa-battery-3"></i></li><li class="btn"><i class="fa fa-battery-4"></i></li><li class="btn"><i class="fa fa-battery-empty"></i></li><li class="btn"><i class="fa fa-battery-full"></i></li><li class="btn"><i class="fa fa-battery-half"></i></li><li class="btn"><i class="fa fa-battery-quarter"></i></li><li class="btn"><i class="fa fa-battery-three-quarters"></i></li><li class="btn"><i class="fa fa-bed"></i></li><li class="btn"><i class="fa fa-beer"></i></li><li class="btn"><i class="fa fa-bell"></i></li><li class="btn"><i class="fa fa-bell-o"></i></li><li class="btn"><i class="fa fa-bell-slash"></i></li><li class="btn"><i class="fa fa-bell-slash-o"></i></li><li class="btn"><i class="fa fa-bicycle"></i></li><li class="btn"><i class="fa fa-binoculars"></i></li><li class="btn"><i class="fa fa-birthday-cake"></i></li><li class="btn"><i class="fa fa-blind"></i></li><li class="btn"><i class="fa fa-bluetooth"></i></li><li class="btn"><i class="fa fa-bluetooth-b"></i></li><li class="btn"><i class="fa fa-bolt"></i></li><li class="btn"><i class="fa fa-bomb"></i></li><li class="btn"><i class="fa fa-book"></i></li><li class="btn"><i class="fa fa-bookmark"></i></li><li class="btn"><i class="fa fa-bookmark-o"></i></li><li class="btn"><i class="fa fa-braille"></i></li><li class="btn"><i class="fa fa-briefcase"></i></li><li class="btn"><i class="fa fa-bug"></i></li><li class="btn"><i class="fa fa-building"></i></li><li class="btn"><i class="fa fa-building-o"></i></li><li class="btn"><i class="fa fa-bullhorn"></i></li><li class="btn"><i class="fa fa-bullseye"></i></li><li class="btn"><i class="fa fa-bus"></i></li><li class="btn"><i class="fa fa-cab"></i></li><li class="btn"><i class="fa fa-calculator"></i></li><li class="btn"><i class="fa fa-calendar"></i></li><li class="btn"><i class="fa fa-calendar-check-o"></i></li><li class="btn"><i class="fa fa-calendar-minus-o"></i></li><li class="btn"><i class="fa fa-calendar-o"></i></li><li class="btn"><i class="fa fa-calendar-plus-o"></i></li><li class="btn"><i class="fa fa-calendar-times-o"></i></li><li class="btn"><i class="fa fa-camera"></i></li><li class="btn"><i class="fa fa-camera-retro"></i></li><li class="btn"><i class="fa fa-car"></i></li><li class="btn"><i class="fa fa-caret-square-o-down"></i></li><li class="btn"><i class="fa fa-caret-square-o-left"></i></li><li class="btn"><i class="fa fa-caret-square-o-right"></i></li><li class="btn"><i class="fa fa-caret-square-o-up"></i></li><li class="btn"><i class="fa fa-cart-arrow-down"></i></li><li class="btn"><i class="fa fa-cart-plus"></i></li><li class="btn"><i class="fa fa-cc"></i></li><li class="btn"><i class="fa fa-certificate"></i></li><li class="btn"><i class="fa fa-check"></i></li><li class="btn"><i class="fa fa-check-circle"></i></li><li class="btn"><i class="fa fa-check-circle-o"></i></li><li class="btn"><i class="fa fa-check-square"></i></li><li class="btn"><i class="fa fa-check-square-o"></i></li><li class="btn"><i class="fa fa-child"></i></li><li class="btn"><i class="fa fa-circle"></i></li><li class="btn"><i class="fa fa-circle-o"></i></li><li class="btn"><i class="fa fa-circle-o-notch"></i></li><li class="btn"><i class="fa fa-circle-thin"></i></li><li class="btn"><i class="fa fa-clock-o"></i></li><li class="btn"><i class="fa fa-clone"></i></li><li class="btn"><i class="fa fa-close"></i></li><li class="btn"><i class="fa fa-cloud"></i></li><li class="btn"><i class="fa fa-cloud-download"></i></li><li class="btn"><i class="fa fa-cloud-upload"></i></li><li class="btn"><i class="fa fa-code"></i></li><li class="btn"><i class="fa fa-code-fork"></i></li><li class="btn"><i class="fa fa-coffee"></i></li><li class="btn"><i class="fa fa-cog"></i></li><li class="btn"><i class="fa fa-cogs"></i></li><li class="btn"><i class="fa fa-comment"></i></li><li class="btn"><i class="fa fa-comment-o"></i></li><li class="btn"><i class="fa fa-commenting"></i></li><li class="btn"><i class="fa fa-commenting-o"></i></li><li class="btn"><i class="fa fa-comments"></i></li><li class="btn"><i class="fa fa-comments-o"></i></li><li class="btn"><i class="fa fa-compass"></i></li><li class="btn"><i class="fa fa-copyright"></i></li><li class="btn"><i class="fa fa-creative-commons"></i></li><li class="btn"><i class="fa fa-credit-card"></i></li><li class="btn"><i class="fa fa-credit-card-alt"></i></li><li class="btn"><i class="fa fa-crop"></i></li><li class="btn"><i class="fa fa-crosshairs"></i></li><li class="btn"><i class="fa fa-cube"></i></li><li class="btn"><i class="fa fa-cubes"></i></li><li class="btn"><i class="fa fa-cutlery"></i></li><li class="btn"><i class="fa fa-dashboard"></i></li><li class="btn"><i class="fa fa-database"></i></li><li class="btn"><i class="fa fa-deaf"></i></li><li class="btn"><i class="fa fa-deafness"></i></li><li class="btn"><i class="fa fa-desktop"></i></li><li class="btn"><i class="fa fa-diamond"></i></li><li class="btn"><i class="fa fa-dot-circle-o"></i></li><li class="btn"><i class="fa fa-download"></i></li><li class="btn"><i class="fa fa-drivers-license"></i></li><li class="btn"><i class="fa fa-drivers-license-o"></i></li><li class="btn"><i class="fa fa-edit"></i></li><li class="btn"><i class="fa fa-ellipsis-h"></i></li><li class="btn"><i class="fa fa-ellipsis-v"></i></li><li class="btn"><i class="fa fa-envelope"></i></li><li class="btn"><i class="fa fa-envelope-o"></i></li><li class="btn"><i class="fa fa-envelope-open"></i></li><li class="btn"><i class="fa fa-envelope-open-o"></i></li><li class="btn"><i class="fa fa-envelope-square"></i></li><li class="btn"><i class="fa fa-eraser"></i></li><li class="btn"><i class="fa fa-exchange"></i></li><li class="btn"><i class="fa fa-exclamation"></i></li><li class="btn"><i class="fa fa-exclamation-circle"></i></li><li class="btn"><i class="fa fa-exclamation-triangle"></i></li><li class="btn"><i class="fa fa-external-link"></i></li><li class="btn"><i class="fa fa-external-link-square"></i></li><li class="btn"><i class="fa fa-eye"></i></li><li class="btn"><i class="fa fa-eye-slash"></i></li><li class="btn"><i class="fa fa-eyedropper"></i></li><li class="btn"><i class="fa fa-fax"></i></li><li class="btn"><i class="fa fa-feed"></i></li><li class="btn"><i class="fa fa-female"></i></li><li class="btn"><i class="fa fa-fighter-jet"></i></li><li class="btn"><i class="fa fa-file-archive-o"></i></li><li class="btn"><i class="fa fa-file-audio-o"></i></li><li class="btn"><i class="fa fa-file-code-o"></i></li><li class="btn"><i class="fa fa-file-excel-o"></i></li><li class="btn"><i class="fa fa-file-image-o"></i></li><li class="btn"><i class="fa fa-file-movie-o"></i></li><li class="btn"><i class="fa fa-file-pdf-o"></i></li><li class="btn"><i class="fa fa-file-photo-o"></i></li><li class="btn"><i class="fa fa-file-picture-o"></i></li><li class="btn"><i class="fa fa-file-powerpoint-o"></i></li><li class="btn"><i class="fa fa-file-sound-o"></i></li><li class="btn"><i class="fa fa-file-video-o"></i></li><li class="btn"><i class="fa fa-file-word-o"></i></li><li class="btn"><i class="fa fa-file-zip-o"></i></li><li class="btn"><i class="fa fa-film"></i></li><li class="btn"><i class="fa fa-filter"></i></li><li class="btn"><i class="fa fa-fire"></i></li><li class="btn"><i class="fa fa-fire-extinguisher"></i></li><li class="btn"><i class="fa fa-flag"></i></li><li class="btn"><i class="fa fa-flag-checkered"></i></li><li class="btn"><i class="fa fa-flag-o"></i></li><li class="btn"><i class="fa fa-flash"></i></li><li class="btn"><i class="fa fa-flask"></i></li><li class="btn"><i class="fa fa-folder"></i></li><li class="btn"><i class="fa fa-folder-o"></i></li><li class="btn"><i class="fa fa-folder-open"></i></li><li class="btn"><i class="fa fa-folder-open-o"></i></li><li class="btn"><i class="fa fa-frown-o"></i></li><li class="btn"><i class="fa fa-futbol-o"></i></li><li class="btn"><i class="fa fa-gamepad"></i></li><li class="btn"><i class="fa fa-gavel"></i></li><li class="btn"><i class="fa fa-gear"></i></li><li class="btn"><i class="fa fa-gears"></i></li><li class="btn"><i class="fa fa-gift"></i></li><li class="btn"><i class="fa fa-glass"></i></li><li class="btn"><i class="fa fa-globe"></i></li><li class="btn"><i class="fa fa-graduation-cap"></i></li><li class="btn"><i class="fa fa-group"></i></li><li class="btn"><i class="fa fa-hand-grab-o"></i></li><li class="btn"><i class="fa fa-hand-lizard-o"></i></li><li class="btn"><i class="fa fa-hand-paper-o"></i></li><li class="btn"><i class="fa fa-hand-peace-o"></i></li><li class="btn"><i class="fa fa-hand-pointer-o"></i></li><li class="btn"><i class="fa fa-hand-rock-o"></i></li><li class="btn"><i class="fa fa-hand-scissors-o"></i></li><li class="btn"><i class="fa fa-hand-spock-o"></i></li><li class="btn"><i class="fa fa-hand-stop-o"></i></li><li class="btn"><i class="fa fa-handshake-o"></i></li><li class="btn"><i class="fa fa-hard-of-hearing"></i></li><li class="btn"><i class="fa fa-hashtag"></i></li><li class="btn"><i class="fa fa-hdd-o"></i></li><li class="btn"><i class="fa fa-headphones"></i></li><li class="btn"><i class="fa fa-heart"></i></li><li class="btn"><i class="fa fa-heart-o"></i></li><li class="btn"><i class="fa fa-heartbeat"></i></li><li class="btn"><i class="fa fa-history"></i></li><li class="btn"><i class="fa fa-home"></i></li><li class="btn"><i class="fa fa-hotel"></i></li><li class="btn"><i class="fa fa-hourglass"></i></li><li class="btn"><i class="fa fa-hourglass-1"></i></li><li class="btn"><i class="fa fa-hourglass-2"></i></li><li class="btn"><i class="fa fa-hourglass-3"></i></li><li class="btn"><i class="fa fa-hourglass-end"></i></li><li class="btn"><i class="fa fa-hourglass-half"></i></li><li class="btn"><i class="fa fa-hourglass-o"></i></li><li class="btn"><i class="fa fa-hourglass-start"></i></li><li class="btn"><i class="fa fa-i-cursor"></i></li><li class="btn"><i class="fa fa-id-badge"></i></li><li class="btn"><i class="fa fa-id-card"></i></li><li class="btn"><i class="fa fa-id-card-o"></i></li><li class="btn"><i class="fa fa-image"></i></li><li class="btn"><i class="fa fa-inbox"></i></li><li class="btn"><i class="fa fa-industry"></i></li><li class="btn"><i class="fa fa-info"></i></li><li class="btn"><i class="fa fa-info-circle"></i></li><li class="btn"><i class="fa fa-institution"></i></li><li class="btn"><i class="fa fa-key"></i></li><li class="btn"><i class="fa fa-keyboard-o"></i></li><li class="btn"><i class="fa fa-language"></i></li><li class="btn"><i class="fa fa-laptop"></i></li><li class="btn"><i class="fa fa-leaf"></i></li><li class="btn"><i class="fa fa-legal"></i></li><li class="btn"><i class="fa fa-lemon-o"></i></li><li class="btn"><i class="fa fa-level-down"></i></li><li class="btn"><i class="fa fa-level-up"></i></li><li class="btn"><i class="fa fa-life-bouy"></i></li><li class="btn"><i class="fa fa-life-buoy"></i></li><li class="btn"><i class="fa fa-life-ring"></i></li><li class="btn"><i class="fa fa-life-saver"></i></li><li class="btn"><i class="fa fa-lightbulb-o"></i></li><li class="btn"><i class="fa fa-line-chart"></i></li><li class="btn"><i class="fa fa-location-arrow"></i></li><li class="btn"><i class="fa fa-lock"></i></li><li class="btn"><i class="fa fa-low-vision"></i></li><li class="btn"><i class="fa fa-magic"></i></li><li class="btn"><i class="fa fa-magnet"></i></li><li class="btn"><i class="fa fa-mail-forward"></i></li><li class="btn"><i class="fa fa-mail-reply"></i></li><li class="btn"><i class="fa fa-mail-reply-all"></i></li><li class="btn"><i class="fa fa-male"></i></li><li class="btn"><i class="fa fa-map"></i></li><li class="btn"><i class="fa fa-map-marker"></i></li><li class="btn"><i class="fa fa-map-o"></i></li><li class="btn"><i class="fa fa-map-pin"></i></li><li class="btn"><i class="fa fa-map-signs"></i></li><li class="btn"><i class="fa fa-meh-o"></i></li><li class="btn"><i class="fa fa-microchip"></i></li><li class="btn"><i class="fa fa-microphone"></i></li><li class="btn"><i class="fa fa-microphone-slash"></i></li><li class="btn"><i class="fa fa-minus"></i></li><li class="btn"><i class="fa fa-minus-circle"></i></li><li class="btn"><i class="fa fa-minus-square"></i></li><li class="btn"><i class="fa fa-minus-square-o"></i></li><li class="btn"><i class="fa fa-mobile"></i></li><li class="btn"><i class="fa fa-mobile-phone"></i></li><li class="btn"><i class="fa fa-money"></i></li><li class="btn"><i class="fa fa-moon-o"></i></li><li class="btn"><i class="fa fa-mortar-board"></i></li><li class="btn"><i class="fa fa-motorcycle"></i></li><li class="btn"><i class="fa fa-mouse-pointer"></i></li><li class="btn"><i class="fa fa-music"></i></li><li class="btn"><i class="fa fa-navicon"></i></li><li class="btn"><i class="fa fa-newspaper-o"></i></li><li class="btn"><i class="fa fa-object-group"></i></li><li class="btn"><i class="fa fa-object-ungroup"></i></li><li class="btn"><i class="fa fa-paint-brush"></i></li><li class="btn"><i class="fa fa-paper-plane"></i></li><li class="btn"><i class="fa fa-paper-plane-o"></i></li><li class="btn"><i class="fa fa-paw"></i></li><li class="btn"><i class="fa fa-pencil"></i></li><li class="btn"><i class="fa fa-pencil-square"></i></li><li class="btn"><i class="fa fa-pencil-square-o"></i></li><li class="btn"><i class="fa fa-percent"></i></li><li class="btn"><i class="fa fa-phone"></i></li><li class="btn"><i class="fa fa-phone-square"></i></li><li class="btn"><i class="fa fa-photo"></i></li><li class="btn"><i class="fa fa-picture-o"></i></li><li class="btn"><i class="fa fa-pie-chart"></i></li><li class="btn"><i class="fa fa-plane"></i></li><li class="btn"><i class="fa fa-plug"></i></li><li class="btn"><i class="fa fa-plus"></i></li><li class="btn"><i class="fa fa-plus-circle"></i></li><li class="btn"><i class="fa fa-plus-square"></i></li><li class="btn"><i class="fa fa-plus-square-o"></i></li><li class="btn"><i class="fa fa-podcast"></i></li><li class="btn"><i class="fa fa-power-off"></i></li><li class="btn"><i class="fa fa-print"></i></li><li class="btn"><i class="fa fa-puzzle-piece"></i></li><li class="btn"><i class="fa fa-qrcode"></i></li><li class="btn"><i class="fa fa-question"></i></li><li class="btn"><i class="fa fa-question-circle"></i></li><li class="btn"><i class="fa fa-question-circle-o"></i></li><li class="btn"><i class="fa fa-quote-left"></i></li><li class="btn"><i class="fa fa-quote-right"></i></li><li class="btn"><i class="fa fa-random"></i></li><li class="btn"><i class="fa fa-recycle"></i></li><li class="btn"><i class="fa fa-refresh"></i></li><li class="btn"><i class="fa fa-registered"></i></li><li class="btn"><i class="fa fa-remove"></i></li><li class="btn"><i class="fa fa-reorder"></i></li><li class="btn"><i class="fa fa-reply"></i></li><li class="btn"><i class="fa fa-reply-all"></i></li><li class="btn"><i class="fa fa-retweet"></i></li><li class="btn"><i class="fa fa-road"></i></li><li class="btn"><i class="fa fa-rocket"></i></li><li class="btn"><i class="fa fa-rss"></i></li><li class="btn"><i class="fa fa-rss-square"></i></li><li class="btn"><i class="fa fa-s15"></i></li><li class="btn"><i class="fa fa-search"></i></li><li class="btn"><i class="fa fa-search-minus"></i></li><li class="btn"><i class="fa fa-search-plus"></i></li><li class="btn"><i class="fa fa-send"></i></li><li class="btn"><i class="fa fa-send-o"></i></li><li class="btn"><i class="fa fa-server"></i></li><li class="btn"><i class="fa fa-share"></i></li><li class="btn"><i class="fa fa-share-alt"></i></li><li class="btn"><i class="fa fa-share-alt-square"></i></li><li class="btn"><i class="fa fa-share-square"></i></li><li class="btn"><i class="fa fa-share-square-o"></i></li><li class="btn"><i class="fa fa-shield"></i></li><li class="btn"><i class="fa fa-ship"></i></li><li class="btn"><i class="fa fa-shopping-bag"></i></li><li class="btn"><i class="fa fa-shopping-basket"></i></li><li class="btn"><i class="fa fa-shopping-cart"></i></li><li class="btn"><i class="fa fa-shower"></i></li><li class="btn"><i class="fa fa-sign-in"></i></li><li class="btn"><i class="fa fa-sign-language"></i></li><li class="btn"><i class="fa fa-sign-out"></i></li><li class="btn"><i class="fa fa-signal"></i></li><li class="btn"><i class="fa fa-signing"></i></li><li class="btn"><i class="fa fa-sitemap"></i></li><li class="btn"><i class="fa fa-sliders"></i></li><li class="btn"><i class="fa fa-smile-o"></i></li><li class="btn"><i class="fa fa-snowflake-o"></i></li><li class="btn"><i class="fa fa-soccer-ball-o"></i></li><li class="btn"><i class="fa fa-sort"></i></li><li class="btn"><i class="fa fa-sort-alpha-asc"></i></li><li class="btn"><i class="fa fa-sort-alpha-desc"></i></li><li class="btn"><i class="fa fa-sort-amount-asc"></i></li><li class="btn"><i class="fa fa-sort-amount-desc"></i></li><li class="btn"><i class="fa fa-sort-asc"></i></li><li class="btn"><i class="fa fa-sort-desc"></i></li><li class="btn"><i class="fa fa-sort-down"></i></li><li class="btn"><i class="fa fa-sort-numeric-asc"></i></li><li class="btn"><i class="fa fa-sort-numeric-desc"></i></li><li class="btn"><i class="fa fa-sort-up"></i></li><li class="btn"><i class="fa fa-space-shuttle"></i></li><li class="btn"><i class="fa fa-spinner"></i></li><li class="btn"><i class="fa fa-spoon"></i></li><li class="btn"><i class="fa fa-square"></i></li><li class="btn"><i class="fa fa-square-o"></i></li><li class="btn"><i class="fa fa-star"></i></li><li class="btn"><i class="fa fa-star-half"></i></li><li class="btn"><i class="fa fa-star-half-empty"></i></li><li class="btn"><i class="fa fa-star-half-full"></i></li><li class="btn"><i class="fa fa-star-half-o"></i></li><li class="btn"><i class="fa fa-star-o"></i></li><li class="btn"><i class="fa fa-sticky-note"></i></li><li class="btn"><i class="fa fa-sticky-note-o"></i></li><li class="btn"><i class="fa fa-street-view"></i></li><li class="btn"><i class="fa fa-suitcase"></i></li><li class="btn"><i class="fa fa-sun-o"></i></li><li class="btn"><i class="fa fa-support"></i></li><li class="btn"><i class="fa fa-tablet"></i></li><li class="btn"><i class="fa fa-tachometer"></i></li><li class="btn"><i class="fa fa-tag"></i></li><li class="btn"><i class="fa fa-tags"></i></li><li class="btn"><i class="fa fa-tasks"></i></li><li class="btn"><i class="fa fa-taxi"></i></li><li class="btn"><i class="fa fa-television"></i></li><li class="btn"><i class="fa fa-terminal"></i></li><li class="btn"><i class="fa fa-thermometer"></i></li><li class="btn"><i class="fa fa-thermometer-0"></i></li><li class="btn"><i class="fa fa-thermometer-1"></i></li><li class="btn"><i class="fa fa-thermometer-2"></i></li><li class="btn"><i class="fa fa-thermometer-3"></i></li><li class="btn"><i class="fa fa-thermometer-4"></i></li><li class="btn"><i class="fa fa-thermometer-empty"></i></li><li class="btn"><i class="fa fa-thermometer-full"></i></li><li class="btn"><i class="fa fa-thermometer-half"></i></li><li class="btn"><i class="fa fa-thermometer-quarter"></i></li><li class="btn"><i class="fa fa-thermometer-three-quarters"></i></li><li class="btn"><i class="fa fa-thumb-tack"></i></li><li class="btn"><i class="fa fa-thumbs-down"></i></li><li class="btn"><i class="fa fa-thumbs-o-down"></i></li><li class="btn"><i class="fa fa-thumbs-o-up"></i></li><li class="btn"><i class="fa fa-thumbs-up"></i></li><li class="btn"><i class="fa fa-ticket"></i></li><li class="btn"><i class="fa fa-times"></i></li><li class="btn"><i class="fa fa-times-circle"></i></li><li class="btn"><i class="fa fa-times-circle-o"></i></li><li class="btn"><i class="fa fa-times-rectangle"></i></li><li class="btn"><i class="fa fa-times-rectangle-o"></i></li><li class="btn"><i class="fa fa-tint"></i></li><li class="btn"><i class="fa fa-toggle-down"></i></li><li class="btn"><i class="fa fa-toggle-left"></i></li><li class="btn"><i class="fa fa-toggle-off"></i></li><li class="btn"><i class="fa fa-toggle-on"></i></li><li class="btn"><i class="fa fa-toggle-right"></i></li><li class="btn"><i class="fa fa-toggle-up"></i></li><li class="btn"><i class="fa fa-trademark"></i></li><li class="btn"><i class="fa fa-trash"></i></li><li class="btn"><i class="fa fa-trash-o"></i></li><li class="btn"><i class="fa fa-tree"></i></li><li class="btn"><i class="fa fa-trophy"></i></li><li class="btn"><i class="fa fa-truck"></i></li><li class="btn"><i class="fa fa-tty"></i></li><li class="btn"><i class="fa fa-tv"></i></li><li class="btn"><i class="fa fa-umbrella"></i></li><li class="btn"><i class="fa fa-universal-access"></i></li><li class="btn"><i class="fa fa-university"></i></li><li class="btn"><i class="fa fa-unlock"></i></li><li class="btn"><i class="fa fa-unlock-alt"></i></li><li class="btn"><i class="fa fa-unsorted"></i></li><li class="btn"><i class="fa fa-upload"></i></li><li class="btn"><i class="fa fa-user"></i></li><li class="btn"><i class="fa fa-user-circle"></i></li><li class="btn"><i class="fa fa-user-circle-o"></i></li><li class="btn"><i class="fa fa-user-o"></i></li><li class="btn"><i class="fa fa-user-plus"></i></li><li class="btn"><i class="fa fa-user-secret"></i></li><li class="btn"><i class="fa fa-user-times"></i></li><li class="btn"><i class="fa fa-users"></i></li><li class="btn"><i class="fa fa-vcard"></i></li><li class="btn"><i class="fa fa-vcard-o"></i></li><li class="btn"><i class="fa fa-video-camera"></i></li><li class="btn"><i class="fa fa-volume-control-phone"></i></li><li class="btn"><i class="fa fa-volume-down"></i></li><li class="btn"><i class="fa fa-volume-off"></i></li><li class="btn"><i class="fa fa-volume-up"></i></li><li class="btn"><i class="fa fa-warning"></i></li><li class="btn"><i class="fa fa-wheelchair"></i></li><li class="btn"><i class="fa fa-wheelchair-alt"></i></li><li class="btn"><i class="fa fa-wifi"></i></li><li class="btn"><i class="fa fa-window-close"></i></li><li class="btn"><i class="fa fa-window-close-o"></i></li><li class="btn"><i class="fa fa-window-maximize"></i></li><li class="btn"><i class="fa fa-window-minimize"></i></li><li class="btn"><i class="fa fa-window-restore"></i></li><li class="btn"><i class="fa fa-wrench"></i></li><li class="btn"><i class="fa fa-file"></i></li><li class="btn"><i class="fa fa-file-archive-o"></i></li><li class="btn"><i class="fa fa-file-audio-o"></i></li><li class="btn"><i class="fa fa-file-code-o"></i></li><li class="btn"><i class="fa fa-file-excel-o"></i></li><li class="btn"><i class="fa fa-file-image-o"></i></li><li class="btn"><i class="fa fa-file-movie-o"></i></li><li class="btn"><i class="fa fa-file-o"></i></li><li class="btn"><i class="fa fa-file-pdf-o"></i></li><li class="btn"><i class="fa fa-file-photo-o"></i></li><li class="btn"><i class="fa fa-file-picture-o"></i></li><li class="btn"><i class="fa fa-file-powerpoint-o"></i></li><li class="btn"><i class="fa fa-file-sound-o"></i></li><li class="btn"><i class="fa fa-file-text"></i></li><li class="btn"><i class="fa fa-file-text-o"></i></li><li class="btn"><i class="fa fa-file-video-o"></i></li><li class="btn"><i class="fa fa-file-word-o"></i></li><li class="btn"><i class="fa fa-file-zip-o"></i></li><li class="btn"><i class="fa fa-circle-o-notch"></i></li><li class="btn"><i class="fa fa-cog"></i></li><li class="btn"><i class="fa fa-gear"></i></li><li class="btn"><i class="fa fa-refresh"></i></li><li class="btn"><i class="fa fa-spinner"></i></li><li class="btn"><i class="fa fa-check-square"></i></li><li class="btn"><i class="fa fa-check-square-o"></i></li><li class="btn"><i class="fa fa-circle"></i></li><li class="btn"><i class="fa fa-circle-o"></i></li><li class="btn"><i class="fa fa-dot-circle-o"></i></li><li class="btn"><i class="fa fa-minus-square"></i></li><li class="btn"><i class="fa fa-minus-square-o"></i></li><li class="btn"><i class="fa fa-plus-square"></i></li><li class="btn"><i class="fa fa-plus-square-o"></i></li><li class="btn"><i class="fa fa-square"></i></li><li class="btn"><i class="fa fa-square-o"></i></li><li class="btn"><i class="fa fa-cc-amex"></i></li><li class="btn"><i class="fa fa-cc-diners-club"></i></li><li class="btn"><i class="fa fa-cc-discover"></i></li><li class="btn"><i class="fa fa-cc-jcb"></i></li><li class="btn"><i class="fa fa-cc-mastercard"></i></li><li class="btn"><i class="fa fa-cc-paypal"></i></li><li class="btn"><i class="fa fa-cc-stripe"></i></li><li class="btn"><i class="fa fa-cc-visa"></i></li><li class="btn"><i class="fa fa-credit-card"></i></li><li class="btn"><i class="fa fa-credit-card-alt"></i></li><li class="btn"><i class="fa fa-google-wallet"></i></li><li class="btn"><i class="fa fa-paypal"></i></li><li class="btn"><i class="fa fa-area-chart"></i></li><li class="btn"><i class="fa fa-bar-chart"></i></li><li class="btn"><i class="fa fa-bar-chart-o"></i></li><li class="btn"><i class="fa fa-line-chart"></i></li><li class="btn"><i class="fa fa-pie-chart"></i></li><li class="btn"><i class="fa fa-arrows-alt"></i></li><li class="btn"><i class="fa fa-backward"></i></li><li class="btn"><i class="fa fa-compress"></i></li><li class="btn"><i class="fa fa-eject"></i></li><li class="btn"><i class="fa fa-expand"></i></li><li class="btn"><i class="fa fa-fast-backward"></i></li><li class="btn"><i class="fa fa-fast-forward"></i></li><li class="btn"><i class="fa fa-forward"></i></li><li class="btn"><i class="fa fa-pause"></i></li><li class="btn"><i class="fa fa-pause-circle"></i></li><li class="btn"><i class="fa fa-pause-circle-o"></i></li><li class="btn"><i class="fa fa-play"></i></li><li class="btn"><i class="fa fa-play-circle"></i></li><li class="btn"><i class="fa fa-play-circle-o"></i></li><li class="btn"><i class="fa fa-random"></i></li><li class="btn"><i class="fa fa-step-backward"></i></li><li class="btn"><i class="fa fa-step-forward"></i></li><li class="btn"><i class="fa fa-stop"></i></li><li class="btn"><i class="fa fa-stop-circle"></i></li><li class="btn"><i class="fa fa-stop-circle-o"></i></li><li class="btn"><i class="fa fa-youtube-play"></i></li><li class="btn"><i class="fa fa-angle-double-down"></i></li><li class="btn"><i class="fa fa-angle-double-left"></i></li><li class="btn"><i class="fa fa-angle-double-right"></i></li><li class="btn"><i class="fa fa-angle-double-up"></i></li><li class="btn"><i class="fa fa-angle-down"></i></li><li class="btn"><i class="fa fa-angle-left"></i></li><li class="btn"><i class="fa fa-angle-right"></i></li><li class="btn"><i class="fa fa-angle-up"></i></li><li class="btn"><i class="fa fa-arrow-circle-down"></i></li><li class="btn"><i class="fa fa-arrow-circle-left"></i></li><li class="btn"><i class="fa fa-arrow-circle-o-down"></i></li><li class="btn"><i class="fa fa-arrow-circle-o-left"></i></li><li class="btn"><i class="fa fa-arrow-circle-o-right"></i></li><li class="btn"><i class="fa fa-arrow-circle-o-up"></i></li><li class="btn"><i class="fa fa-arrow-circle-right"></i></li><li class="btn"><i class="fa fa-arrow-circle-up"></i></li><li class="btn"><i class="fa fa-arrow-down"></i></li><li class="btn"><i class="fa fa-arrow-left"></i></li><li class="btn"><i class="fa fa-arrow-right"></i></li><li class="btn"><i class="fa fa-arrow-up"></i></li><li class="btn"><i class="fa fa-arrows"></i></li><li class="btn"><i class="fa fa-arrows-alt"></i></li><li class="btn"><i class="fa fa-arrows-h"></i></li><li class="btn"><i class="fa fa-arrows-v"></i></li><li class="btn"><i class="fa fa-caret-down"></i></li><li class="btn"><i class="fa fa-caret-left"></i></li><li class="btn"><i class="fa fa-caret-right"></i></li><li class="btn"><i class="fa fa-caret-square-o-down"></i></li><li class="btn"><i class="fa fa-caret-square-o-left"></i></li><li class="btn"><i class="fa fa-caret-square-o-right"></i></li><li class="btn"><i class="fa fa-caret-square-o-up"></i></li><li class="btn"><i class="fa fa-caret-up"></i></li><li class="btn"><i class="fa fa-chevron-circle-down"></i></li><li class="btn"><i class="fa fa-chevron-circle-left"></i></li><li class="btn"><i class="fa fa-chevron-circle-right"></i></li><li class="btn"><i class="fa fa-chevron-circle-up"></i></li><li class="btn"><i class="fa fa-chevron-down"></i></li><li class="btn"><i class="fa fa-chevron-left"></i></li><li class="btn"><i class="fa fa-chevron-right"></i></li><li class="btn"><i class="fa fa-chevron-up"></i></li><li class="btn"><i class="fa fa-exchange"></i></li><li class="btn"><i class="fa fa-hand-o-down"></i></li><li class="btn"><i class="fa fa-hand-o-left"></i></li><li class="btn"><i class="fa fa-hand-o-right"></i></li><li class="btn"><i class="fa fa-hand-o-up"></i></li><li class="btn"><i class="fa fa-long-arrow-down"></i></li><li class="btn"><i class="fa fa-long-arrow-left"></i></li><li class="btn"><i class="fa fa-long-arrow-right"></i></li><li class="btn"><i class="fa fa-long-arrow-up"></i></li><li class="btn"><i class="fa fa-toggle-down"></i></li><li class="btn"><i class="fa fa-toggle-left"></i></li><li class="btn"><i class="fa fa-toggle-right"></i></li><li class="btn"><i class="fa fa-toggle-up"></i></li></ul>
+</div>
+{/block}
+
+
+
+{block name="javascript"}
+<script>
+    var menukey = {};
+    function printMenu(lever) {
+        var linkval = '';
+        var smenu = '';
+        var functionbtn = '';
+        var visible = '';
+        var fold = '';
+        for (var i in lever) {
+            //创建一唯数组
+            menukey[lever[i].id] = lever[i];
+            //链接地址
+            if (lever[i].url_value === '' || lever[i].url_value === undefined) {
+                linkval = '';
+            } else {
+                linkval = 0 == lever[i].pid ? '' : lever[i].url_value;
+            }
+            //隐显按钮
+            visible = lever[i].ifvisible ? '<i data-toggle="tooltip" data-placement="top" data-original-title="设置隐藏"  class="fa fa-eye visible" value="0"></i>' : '<i data-toggle="tooltip" data-placement="top" data-original-title="设置显示"  class="fa fa-eye-slash visible" value="1"></i>';
+            //折叠按钮
+            fold = lever[i].cnode === undefined ? '' : '<i class="fa fa-minus-square-o fold"></i>';
+            //功能按钮
+            functionbtn = fold + '&nbsp;&nbsp;<span class="hidden"><i  data-toggle="tooltip" data-placement="top"  data-original-title="添加子节点" class="fa fa-plus add"></i> <i data-toggle="tooltip" data-placement="top" data-original-title="编辑节点"  class="fa fa-edit edit"></i> ' + visible + ' <i data-toggle="tooltip" data-placement="top" data-original-title="删除节点"  class="fa fa-times del"></i></span>';
+            smenu += '<li class="bg-primary darker b-l-2 b-t-1" id="' + lever[i].id + '"><div class="inlinebox"><i class="fa fa-arrows"></i> ' + lever[i].title + ' <i class="' + lever[i].icon + '"></i> ' + linkval + ' ' + functionbtn + '</div>';
+            if (lever[i].cnode === undefined) {
+                smenu += '<ul></ul></li>';
+            } else {
+                smenu += '<ul>';
+                smenu += printMenu(lever[i].cnode);
+                smenu += '</ul></li>';
+            }
+        }
+        return smenu;
+    }
+//父节点下拉菜单
+    function selectMenu(leverdom, cpid, space) {
+        var smenu = '';
+        space = (space === '') ? '┝ ' : '&nbsp;&nbsp;&nbsp;&nbsp;' + space;
+        var selectvar = '';
+        var id = 0;
+        leverdom.children("li").each(function () {
+            selectvar = '';
+            id = $(this).attr('id');
+            if (cpid == id) {
+                selectvar = 'selected="selected"';
+            }
+            smenu += '<option value="' + id + '"  ' + selectvar + '>' + space + menukey[id].title + '</option>';
+            var nextdom = $(this).children('ul');
+            if (nextdom.children().length > 0) {
+                smenu += selectMenu(nextdom, cpid, space);
+            }
+        });
+        return smenu;
+    }
+    //初始化表单
+    function initform(type, action, nowdom, boxdom) {
+        boxdom.find('form').attr('action', action);
+        //清空
+        boxdom.find('input').attr('value', '');
+        boxdom.find('[name="pid"]').html('');
+        boxdom.find('.chooseicon i').attr('class', 'fa fa-plus-square-o');
+        boxdom.find('option').attr("selected", false);
+        boxdom.find('.hidden').html('');
+
+        if (type === 'add') {
+            var pid = nowdom.attr('id');
+            boxdom.find('select[name="url_type"]>option[title="1"]').attr("selected", true);
+            boxdom.find('option[title="_self"]').attr("selected", true);
+            boxdom.find('select[name="ifvisible"]>option[title="1"]').attr("selected", true);
+        }
+        if (type === 'edit') {
+            var id = nowdom.attr("id");
+            var pid = nowdom.parent().parent().attr('id');
+            boxdom.find('[name="title"]').attr('value', menukey[id].title);
+            boxdom.find('[name="url_value"]').attr('value', typeof (pid) == "undefined" ? '' : menukey[id].url_value);
+            boxdom.find('select[name="url_type"]>option[title="' + menukey[id].url_type + '"]').attr("selected", true);
+            boxdom.find('option[title="' + menukey[id].url_target + '"]').attr("selected", true);
+            boxdom.find('[name="icon"]').attr('value', menukey[id].icon);
+            boxdom.find('select[name="ifvisible"]>option[title="' + menukey[id].ifvisible + '"]').attr("selected", true);
+            if (menukey[id].icon)
+                boxdom.find('.chooseicon i').attr('class', '' + menukey[id].icon + '');
+            boxdom.find('.hidden').html('<input type="hidden" value="' + id + '" name="id">');
+        }
+        boxdom.find('[name="pid"]').html('<option value="0">作为顶级节点</option>' + selectMenu($('#sortable'), pid, ''));
+    }
+    //图标选择窗口
+    function iconchoose(basedialog) {
+        basedialog.find('[data-toggle="tooltip"]').tooltip();
+        basedialog.find('.chooseicon').click(function () {
+            var icondialog = bootbox.dialog({
+                title: "选择节点图标",
+                animate: false,
+                message: $('#icon').html()
+            });
+            //初始化窗口
+            icondialog.init(function () {
+                var dialogh = $(window).height() - 150;
+                icondialog.find('.icon').css({"height": dialogh + 'px', "overflow-y": "scroll"});
+            });
+            //图标选中事件
+            icondialog.find('.bootbox-body li').click(function () {
+                var iconclass = $(this).find('i').attr('class');
+                basedialog.find('.bootbox-body .chooseicon i').attr('class', iconclass);
+                basedialog.find('.bootbox-body [name="icon"]').val(iconclass);
+                icondialog.modal('hide');
+            });
+        });
+    }
+
+    $(function () {
+        //显示菜单
+        var smenus = printMenu(menu);
+        $('#sortable').html(smenus);
+        //功能菜单显隐
+        $("#sortable li div").hover(function () {
+            $(this).find('span').eq(0).removeClass('hidden');
+        }, function () {
+            $(this).find('span').eq(0).addClass('hidden');
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+        //显隐节点
+        $('#showm').click(function () {
+            $(this).addClass('btn-primary');
+            $('#hidem').removeClass('btn-primary');
+            $("#sortable li").each(function () {
+                if ($(this).find('>div.inlinebox i.fa-eye-slash').length > 0) {
+                    $(this).show();
+
+                    $(this).parent().parent().find('>div i.fa-plus-square-o').removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+                }
+            });
+        });
+        $('#hidem').click(function () {
+            $(this).addClass('btn-primary');
+            $('#showm').removeClass('btn-primary');
+            $("#sortable li").each(function () {
+                if ($(this).find('>div.inlinebox i.fa-eye-slash').length > 0) {
+                    $(this).hide();
+                    $(this).parent().parent().find('>div i.fa-minus-square-o').removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+                }
+            });
+        });
+        //折叠节点
+        $('#sortable .fold').on('click', function (e) {
+            var children = $(this).parent().parent().children('ul');
+            if ($(this).hasClass('fa-minus-square-o')) {
+                children.children('li').hide('fast');
+                $(this).addClass('fa-plus-square-o').removeClass('fa-minus-square-o');
+            } else {
+                children.children('li').show('fast');
+                $(this).addClass('fa-minus-square-o').removeClass('fa-plus-square-o');
+            }
+            e.stopPropagation();
+        });
+        //添加节点
+        $('.add').click(function () {
+            var title = "新增节点";
+            var action = "{:url('menu/add')}";
+            var nowdom = $(this).parent().parent().parent();
+            var boxdom = $('#noteform');
+            //初始化内容
+            initform('add', action, nowdom, boxdom);
+            //上级节点选项
+            var adddialog = bootbox.dialog({
+                title: title,
+                message: boxdom.html(),
+                buttons: {
+                    main: {
+                        label: title,
+                        className: 'btn-primary',
+                        callback: function () {
+                            adddialog.find('form').submit();
+                        }
+                    }
+                }
+            });
+            iconchoose(adddialog);
+        });
+        //编辑节点
+        $('.edit').click(function () {
+            var title = "编辑节点";
+            var action = "{:url('menu/edit')}";
+            var nowdom = $(this).parent().parent().parent();
+            var boxdom = $('#noteform');
+            //初始化内容
+            initform('edit', action, nowdom, boxdom);
+            var editdialog = bootbox.dialog({
+                title: title,
+                message: boxdom.html(),
+                buttons: {
+                    main: {
+                        label: title,
+                        className: 'btn-primary',
+                        callback: function () {
+                            editdialog.find('form').submit();
+                        }
+                    }
+                }
+            });
+            iconchoose(editdialog);
+        });
+        //删除节点
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('menu/delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('节点删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        //设置隐显
+        $('.visible').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().parent().attr('id');
+            var val = nowdom.attr('value');
+            $.ajax({
+                url: "{:url('menu/visible')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    val: val
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (val == 1) {
+                            nowdom.removeClass('fa-eye-slash');
+                            nowdom.addClass('fa-eye');
+                            nowdom.attr('value', '0');
+                            nowdom.attr('data-original-title', '设置隐藏');
+                            toastr['success']('菜单显示成功', '', {
+                                closeButton: true
+                            });
+                        }
+                        if (val == 0) {
+                            nowdom.parent().parent().parent().find("i.fa-eye").each(function () {
+                                $(this).removeClass('fa-eye');
+                                $(this).addClass('fa-eye-slash');
+                                $(this).attr('value', '1');
+                                $(this).attr('data-original-title', '设置显示');
+                            });
+                            toastr['success']('菜单隐藏成功', '', {
+                                closeButton: true
+                            });
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        //设置拖动ajax保存数据库
+        $('#sortable').sortable({
+            handle: 'i.fa-arrows',
+            onDrop: function ($item, container, _super) {
+                var datas = '[';
+                //遍历当前同级节点
+                $item.siblings().each(function () {
+                    datas += '{"id":' + $(this).attr("id") + ',"orders":' + $(this).index() + '},';
+                });
+                //当前被移动元素
+                var pid = $item.parent().parent().attr("id");
+                if (pid === undefined)
+                    pid = 0;
+                datas += '{"id":' + $item.attr("id") + ',"pid":' + pid + ',"orders":' + $item.index() + '}]';
+
+                $.ajax({
+                    url: "{:url('menu/changeorder')}",
+                    type: "POST",
+                    data: {
+                        jcode: datas
+                    },
+                    dataType: 'text',
+                    success: function (data) {
+                        if (data === 'true') {
+                            _super($item, container);
+                        } else {
+                            toastr['warning'](data, '', {
+                                closeButton: true
+                            });
+//                           $item.removeClass('dragged');
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+{/block}

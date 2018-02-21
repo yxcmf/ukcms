@@ -1,0 +1,228 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .configImage{min-height:100px; padding-bottom: 20px; }
+    .dz-default.dz-message{
+        right: auto;
+        left: 50%;
+        top: 25px;
+        transform: none;
+        padding-left: 0;
+        font-size: 35px;
+        font-weight: 400;
+        line-height: 35px;
+        position: relative
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">编辑链接</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>分组*</label>
+            <select name="group_name" class="form-control select2-example select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                <option></option>
+                {volist name="glist" id="vo"}
+                <option value="{$key}" {if $key==$info['group_name']}selected{/if}>{$vo}</option>
+                {/volist}
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>链接标题*</label>
+            <input type="text" class="form-control" name="title" placeholder="链接标题" value="{$info['title']}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>链接路径*</label>
+            <input type="text" class="form-control" name="url" placeholder="http://或'模块/控制器/操作'" value="{$info['url']}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>链接图片</label>
+            <input type="hidden" name="picture"  value="{$info['picture']}" >
+            <div id="picture" class="configImage b-a-2 border-default">
+                 <div class="dz-default dz-message text-light ">
+                    <i class="fa fa-plus"></i>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>描述*</label>
+            <textarea class="form-control" rows="5" name="content" placeholder="链接详细描述">{$info['content']}</textarea>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>开始时间</label>
+            <input type="text" class="form-control" name="start_time" id="start_time" placeholder="年-月-日 时-分-秒" value="{$info['start_time']}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>结束时间</label>
+            <input type="text" class="form-control" name="end_time" id="end_time" placeholder="年-月-日 时-分-秒"  value="{$info['end_time']}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="{$info['orders']}">
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="hidden" name="id" value="{$info['id']}">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+        $('.select2-example').select2({
+            placeholder: '选择分组',
+        });
+        $('#start_time,#end_time').focus(function () {
+            $(this).daterangepicker({
+                drops: 'up',
+                singleDatePicker: true,
+                showDropdowns: true,
+                timePicker: true, //是否显示小时和分钟  
+                timePickerIncrement: 1, //时间的增量，单位为分钟  
+                timePicker12Hour: false, //是否使用12小时制来显示时间  
+                locale: {
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                    applyLabel: '确定',
+                    cancelLabel: '取消',
+                    firstDay: 1
+                }
+            }, function (start, end, label) {
+            }).on('cancel.daterangepicker', function () {
+                $(this).val('');
+            });
+        });
+
+        var thisdom = $('#picture');
+        var inputdom = thisdom.prev('input');
+        var nowPicid = inputdom.val();
+        var files = {};
+        if ('' != inputdom.val()) {
+            $.ajax({
+                url: "{:url('filemanage/ajaxgetfileinfo')}",
+                type: 'post',
+                dataType: "json",
+                async: false,
+                data: {ids: nowPicid},
+                success: function (data) {
+                    if ('' != data) {
+                        files = data;
+                    }
+                }
+            });
+        }
+        thisdom.dropzone({
+            url: "{:url('filemanage/upload',['dir'=>'images','module'=>'admin','watermark'=>0])}",
+            dictRemoveFile: "删除图片",
+            init: function () {
+                //回调已上传图片
+                if (!jQuery.isEmptyObject(files)) {
+                    var mockFile = {
+                        name: files.name,
+                        size: files.size,
+                        accepted: true,
+                        status: 'success',
+                        processing: false
+                    };
+                    this.options.addedfile.call(this, mockFile);
+                    this.options.thumbnail.call(this, mockFile, '__UPLOAD__/' + files.path);
+                    this.files[0] = mockFile;
+                    delImgEvent(thisdom);
+                }
+            },
+            resize: function (file) {
+                return {
+                    srcX: 0,
+                    srcY: 0,
+                    srcWidth: file.width,
+                    srcHeight: file.height,
+                    trgWidth: file.width,
+                    trgHeight: file.height
+                };
+            },
+            maxFiles: 1,
+            maxfilesexceeded: function (file) {
+                this.removeAllFiles();
+                this.addFile(file);
+            },
+            success: function (file, response, e) {
+                //移除当前图片  
+//                thisdom.find('div.dz-preview:not(.dz-processing)').remove();
+                if (response.status == 1) {
+                    inputdom.attr('value', response.id);
+                    delImgEvent(thisdom);
+                    toastr['success'](response.info, '', {
+                        closeButton: true
+                    });
+                } else {
+                    var data = response.info;
+                    if (!data) {
+                        data = '未知错误：' + response;
+                    }
+                    toastr['error'](data, '', {
+                        closeButton: true
+                    });
+                     //移除当前图片恢复之前图片
+                        this.removeFile(file);
+                         if (!jQuery.isEmptyObject(files)) {
+                            var mockFile = {
+                                  name: files.name,
+                                  size: files.size,
+                                  accepted: true,
+                                  status: 'success',
+                                  processing: false
+                            };
+                            this.options.addedfile.call(this, mockFile);
+                            this.options.thumbnail.call(this, mockFile, '__UPLOAD__/'+files.path);
+                            this.files[0] = mockFile;
+                            delImgEvent(thisdom);
+                        }
+                }
+            }
+        });
+        function delImgEvent(dom) {
+            dom.find('.dz-remove').click(function () {
+                bootbox.confirm({
+                     message: '只从这里删除,但仍然保留在服务器中？',
+                     className: 'bootbox-sm',
+                     buttons: {
+                           confirm: {
+                                    label: '是的',
+                                    className: 'btn-success'
+                           },
+                           cancel: {
+                                    label: '从服务器删除',
+                                    className: 'btn-default'
+                           }
+                     },
+                    callback: function (result) {
+                        if (!result) {
+                            var id = inputdom.attr('value');
+                            $.get("{:url('filemanage/delete')}", {id: id},
+                                    function (data) {
+                                        if (data === 'true') {
+                                            toastr['success']('图片删除成功~', '', {
+                                                closeButton: true
+                                            });
+                                        } else {
+                                            toastr['error'](data, '', {
+                                                closeButton: true
+                                            });
+                                        }
+                                    },
+                                    "text"
+                                    );
+                            inputdom.attr('value','');
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
+{/block}

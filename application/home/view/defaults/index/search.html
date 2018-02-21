@@ -1,0 +1,94 @@
+{extend name="defaults/layout"/}
+{block name="seo"}
+<title>{$title}站内搜索</title>	
+<meta name="keywords" content="{$keywords},站内搜索" />
+<meta name="description" content="{$description},站内搜索" />
+{/block}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+        $('#mid').change(function () {
+            var changMid = $(this).val();
+            var ids = ',';
+             $('#cid').val('');
+             $('#cid').parent().find('div.text').html('所有栏目').addClass('default');
+            $('#cid option').prop('disabled', false).each(function () {
+                if (changMid != $(this).data('model')&&$(this).prop('value')) {
+                    $(this).prop('disabled', true);
+                    ids += $(this).prop('value') + ',';
+                }
+            });
+            $('#cid').parent().find('.menu>div.item').removeClass('disabled').removeClass('selected').removeClass('active').each(function () {
+                if (ids.indexOf($(this).data('value')) > 0) {
+                    $(this).addClass('disabled');
+                }
+            });
+        });
+    });
+</script>
+{/block}
+{block name="content"}
+<div class="ui  padded grid " id="listBanner">
+    <div class="blue column">
+        <div class="ui container ">
+            <h3>高级搜索</h3>
+            <p>按模型、栏目、字段的高级搜索</p>
+        </div>  
+    </div>
+</div>
+
+<div class="ui container" id="box">
+    <div class="ui raised segment">
+        <div class="ui blue ribbon label large">一共{$list.total}条 {$list.last_page}页 每页{$list.per_page}条</div>
+        <div class="ui divider"></div>
+        <form method="get" action="">
+            <div class="ui four column grid doubling">
+                <div class="column">
+                    <select class="ui fluid  search dropdown" name="mid" id="mid">
+                        <option value="0">=所有模型=</option>
+                        {volist name="modellist" id="vo"}
+                        <option  value="{$key}" {if $key==$mid}selected{/if}>{$vo.title}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="column">
+                    <select class="ui fluid  search dropdown" name="cid"  id="cid">
+                        <option value="0">=所有栏目=</option>
+                        {volist name="columnlist" id="vo"}
+                          <option {if $vo.model_id!=$mid}disabled{/if} data-model="{$vo.model_id}" value="{$vo.id}"  {if $vo.id==$cid}selected{/if}>{:str_repeat('- ', $vo['deep']-1)}{$vo.title}</option>
+                        {/volist}
+                    </select> 
+                </div>
+                <div class="column">
+                    <div class="ui action left icon input small">
+                        <i class="search icon"></i>
+                        <input type="text" name="keyword" placeholder="输入关键词..." value="{$keyword}">
+                        <button class="ui blue button" type="submit">搜索</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="ui divided  items">
+            {volist name="list.data" id="vo"}
+            <div class="item">
+                {if $vo.cover.path}
+                <div class="ui small image">
+                    <img src="__UPLOAD__/{$vo.cover.path}" alt="{$vo.title}" >
+                </div>
+                {/if}
+                <div class="content">
+                    <a class="header" href="{$vo.url}"><div class="ui blue horizontal label">{$columList[$vo.cname]['title']}</div> {:str_ireplace($keyword,"<font style='color:red'>$keyword</font>",$vo.title)}</a>
+                    <div class="meta">
+                        <span>{:date('Y-m-d H:i:s',$vo.create_time)}</span>
+                    </div>
+                    <div class="description">
+                        <p>{:str_ireplace($keyword,"<font style='color:red'>$keyword</font>",$vo.description)}</p>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+        {$page|raw}
+    </div>
+</div>
+{/block}

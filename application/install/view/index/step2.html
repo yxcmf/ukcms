@@ -1,0 +1,88 @@
+{extend name="layout"/}
+
+{block name="header"}
+<li class="am-btn"><i class="am-icon-file-o am-icon-fw"></i> 使用协议</li>
+<li class="am-btn"><i class="am-icon-circle-o-notch am-icon-fw"></i>  环境检测</li>
+<li class="am-btn active"><i class="am-icon-database am-icon-fw"></i> 创建数据库</li>
+<li class="am-btn"><i class="am-icon-check am-icon-fw"></i> 安装完成</li>
+{/block}
+
+{block name="body"}
+<form class="am-form am-form-horizontal"  action="" method="post" target="_self" >
+    <div class="am-form-group">
+        <label class="am-u-sm-3  am-u-lg-2 am-form-label">数据库类型</label>
+        <div class="am-u-sm-9  am-u-lg-10">
+            <select  name="db[]">
+                <option value="mysql">MySql</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">数据库地址</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="text" name="db[]" value="127.0.0.1" placeholder="localhost">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">数据库名</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="text" name="db[]" value="" placeholder="数据库名">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">数据库用户名</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="text" name="db[]" value="" placeholder="数据库用户名">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">数据库密码</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="password" name="db[]" value="" placeholder="数据库密码">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">数据库端口</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="text" name="db[]" value="3306" placeholder="3306">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">数据库表前缀</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="text" name="db[]" value="uk_" placeholder="uk_">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">演示数据</label>
+        <div class="am-u-sm-9 am-u-lg-10" style="line-height: 45px">
+            <input type="checkbox" name="ifdemo" checked value="1" >
+        </div>
+    </div>
+    <hr>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">后台登录账户</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="text" name="acc[]" value="" placeholder="3-15位字母/数字/下划线/破折号">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">后台登录密码</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="password" name="acc[]" value="" placeholder="6-20位,组合尽量复杂">
+        </div>
+    </div>
+    <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-lg-2 am-form-label">确认登录密码</label>
+        <div class="am-u-sm-9 am-u-lg-10">
+            <input type="password" name="acc[]" value="" placeholder="再次确认您的密码">
+        </div>
+    </div>
+    <div class="am-fr">
+        <a class="am-btn am-btn-success " href="{$baseUrl}step1.html">上一步</a>
+        <button type="submit" class="am-btn am-btn-primary" >开始安装</button>
+    </div>
+</form>
+{/block}
+

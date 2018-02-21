@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <title>UKcms跳转提示</title>
+            <style type="text/css">
+                *{padding:0;margin:0}
+                body{width:100%;height:100%;background:#e3e3e3;font-family:"Microsoft Yahei","Helvetica Neue",Helvetica,Arial,sans-serif;color:#333;font-size:14px}
+                .system-message{position:relative;width:280px;margin:0 auto;background:#fff;margin-top:150px}
+                .system-message h2{font-weight: 100;padding:0 80px 0 20px;height:42px;line-height:42px;border-bottom:1px solid #eee;color:#fff;font-size:14px;overflow:hidden;border-radius:2px 2px 0 0}
+                .system-message .success{background-color:#5FB878;border:1px solid #65c480;}
+                .system-message .warning{background-color:#FF5722;border:1px solid #fe6130;}
+                .system-message .jump{padding:20px 0;background:#fff}
+                .system-message .message{line-height:1.8em;font-size:14px;padding:30px 20px 10px 20px}
+                .system-message .jump a{height:28px;line-height:28px;padding:0 15px;color:#fff;font-size:14px;border-radius:2px;font-weight:100;cursor:pointer;display:inline-block;text-decoration:none;position:relative;left:175px;top:0}
+                .system-message .jump2 a{position:absolute;right:20px;top:5px;text-decoration:none;color:#fff;font-size:22px}
+                
+            </style>
+    </head>
+    <body rlt="1">
+        <div class="system-message">
+            <h2 class="{if $code}success{else}warning{/if}">UKcms会员提示</h2>
+            <p class="message">{$msg|raw}</p>
+            <p class="jump"><a class="{if $code}success{else}warning{/if}" id="href" href="{$url}">确定 [ <b id="wait">{$wait}</b> ]</a></p>
+            <p class="jump2"><a id="href" href="{$url}">×</a></p>
+        </div>
+        <script type="text/javascript">
+            (function () {
+                var wait = document.getElementById('wait'),
+                        href = document.getElementById('href').href;
+                var interval = setInterval(function () {
+                    var time = --wait.innerHTML;
+                    if (time <= 0) {
+                        location.href = href;
+                        clearInterval(interval);
+                    }
+                    ;
+                }, 1000);
+            })();
+        </script>
+    </body>
+</html>

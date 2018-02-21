@@ -1,0 +1,69 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">编辑模型</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>模型用途*</label>
+            <select  name="purpose" class="form-control"  disabled="">
+                <option value="column" {if $info.purpose=='column'}selected{/if}>栏目内容</option>
+                <option value="independence" {if $info.purpose=='independence'}selected{/if}>独立内容</option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>数据表名</label>
+            <input type="text" class="form-control" name="table" placeholder="英文和数字" value="{$info.table}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>模型名称*</label>
+            <input type="text" class="form-control" name="title" placeholder="模型中文名称" value="{$info.title}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label style="clear:both; display: block">模型类型:</label>
+             <label class="custom-control custom-radio radio-inline disabled">
+                <input type="radio" name="type" class="custom-control-input" value="1"{if $info.type==1} checked=""{/if} disabled>
+                <span class="custom-control-indicator"></span>
+                独立表
+            </label>
+            <label class="custom-control custom-radio radio-inline disabled">
+                <input type="radio" name="type" class="custom-control-input" value="2" {if $info.type==2}checked=""{/if} disabled>
+                <span class="custom-control-indicator"></span>
+                主附表
+            </label>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="{$info.orders}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>是否允许投稿</label>
+            <label for="switcher-ifsub" class="switcher switcher-primary">
+                <input type="checkbox" name="ifsub" value="1" id="switcher-ifsub" {if $info.ifsub}checked=""{/if}>
+                <div class="switcher-indicator">
+                    <div class="switcher-yes">允许</div>
+                    <div class="switcher-no" >禁止</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+         <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-status" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-status" {if $info.status}checked=""{/if}>
+                <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">冻结</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="hidden" value="{$info.id}" name="id">
+            <input type="submit" class="btn btn-primary" value="确认修改">
+        </div>
+    </form>
+</div>
+{/block}

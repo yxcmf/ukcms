@@ -1,0 +1,314 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 18px}
+    .pagination{margin: 0; float:right}
+</style>
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">【{$modelTitle}】模型表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add',['mid'=>$mid])}"><i class="fa fa-plus"></i> 新增字段</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form action="{:url('delete')}" method="post" id="tabledeal">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>ID</th><th>字段名称</th><th>标题</th><th>类型</th><th width="50">主表</th><th width="160">创建时间</th><th width="60">排序</th><th width="60">显示</th><th width="40">必填</th><th width="40">搜索</th><th width="60">状态</th><th width="90">操作</th>
+                    </tr>
+                    {volist name="flist" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.type}</td>
+                        <td class="text-primary text-center">{if $vo.ifmain}<i class="fa fa-check-square-o"></i></i>{/if}</td>
+                        <td>{$vo.create_time}</td>
+                        <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
+                        {if in_array($vo.name,$banFields)}
+                        <td align="center">
+                            {if $vo.ifeditable} 
+                            显示
+                            {else}
+                            隐藏
+                            {/if}                          
+                        </td>
+                        <td align="center">
+                            {if $vo.ifrequire} 
+                            是
+                            {else}
+                            否
+                            {/if}                       
+                        </td>
+                        {else}
+                        <td>
+                            {if $vo.ifeditable} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded visible">显示</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded visible">隐藏</button>
+                            {/if}
+                        </td>
+                        <td>
+                            {if $vo.ifrequire} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded require">是</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded require">否</button>
+                            {/if}
+                        </td>
+                        {/if}
+                        <td align="center">
+                            {if in_array($vo.type,$stringFieldType)}
+                            {if $vo.ifsearch} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded search">是</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded search">否</button>
+                            {/if}
+                            {else}
+                            {if $vo.ifsearch} 
+                            是
+                            {else}
+                            否
+                            {/if}
+                            {/if}
+                        </td>
+                        <td align="center">
+                            {if $vo.iffixed}
+                            {if $vo.status} 
+                            启用
+                            {else}
+                            禁用
+                            {/if}
+                            {else}
+                            {if $vo.status} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">禁用</button>
+                            {/if}
+                            {/if}
+                        </td>
+                        <td>
+                            {if !$vo.iffixed}
+                            <a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a>
+                            <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/volist}
+                    {if !empty($page)}
+                    <tr>
+                        <td colspan="12">
+                            {$page|raw}
+                        </td>
+                    </tr>
+                    {/if}
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.visible').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var ifvisible = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('field/setvisible')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    ifvisible: ifvisible
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (ifvisible == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('显示');
+                        }
+                        if (ifvisible == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('隐藏');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        $('.require').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var ifrequire = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('field/setrequire')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    ifrequire: ifrequire
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (ifrequire == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('是');
+                        }
+                        if (ifrequire == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('否');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+         $('.search').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var ifsearch = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('field/setsearch')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    ifsearch: ifsearch
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (ifsearch == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('是');
+                        }
+                        if (ifsearch == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('否');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        //排序
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('changeorder')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    num: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                        // alert(ifchange);
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+        $('.status').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+
+            $.ajax({
+                url: "{:url('setstate')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('field/delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('字段删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

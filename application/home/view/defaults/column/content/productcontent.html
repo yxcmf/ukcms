@@ -1,0 +1,131 @@
+{extend name="defaults/layout"/}
+{block name="seo"}
+<title>{$data.title}-{$info.meta_title}-{$title}</title>	
+<meta name="keywords" content="{$info.meta_keywords},{$keywords}" />
+<meta name="description" content="{$info.meta_description}-{$description}" />
+{/block}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+        //栏目右侧折叠菜单
+        $('.ui.styled.accordion').accordion({
+            selector: {
+                trigger: '.title .icon'
+            }
+        });
+        //弹出图片
+        $('#cshap img').click(function () {
+            $('#photoshow  img').attr('src', $(this).attr('data-bind'));
+            $('#photoshow').modal('show');
+        });
+        //tab切换
+        $('#comment  .item').tab();
+        //形状动画
+        $('.direction .button').click(function () {
+            var direction = $(this).data('direction');
+            var animation = $(this).data('animation');
+            if (direction && animation) {
+                $('#cshap').shape(animation + '.' + direction);
+
+            }
+        });
+        $('.direction .button').popup({position: 'bottom left'});
+    });
+</script>
+{/block}
+{block name="content"}
+<div class="ui  padded grid " id="listBanner">
+    <div class="blue column">
+        <div class="ui container ">
+            <h3>{$info.title}</h3>
+            <p>{$info.meta_description}</p>
+        </div>  
+    </div>
+</div>
+
+<div class="ui container" id="box">
+    <div class="ui  grid stackable">
+        <div class="ten wide column">
+            <div class="ui  breadcrumb">
+                <a class="section" href="{:url('home/index/index')}"> 首页</a>
+                {volist name="crumbs" id="vo"}
+                <i class="right chevron icon divider"></i><a class="section" href="{$vo.url}"> {$vo.title}</a>
+                {/volist}
+            </div>
+
+            <div class="ui segment">
+                <h4 class="ui header">{$data.title}</h4>
+                <div class="contentInfo"><i class="time icon"></i>{:date('Y-m-d H:i:s',$data.create_time)}&nbsp;&nbsp;&nbsp;<i class="unhide icon"></i> {$data.hits} &nbsp;&nbsp;&nbsp; </div>
+
+                <div class="ui segment">
+
+                    <div class="ui  grid stackable">
+                        <div class="eight wide column">
+                            <div class="ui shape auto" id="cshap">
+                                <div class="sides">
+                                    {volist name="$data.pictures" id="p"}
+                                    <div class="first side {if $i==1}active{/if}">
+                                        <img src="__UPLOAD__/{$p.thumb}" class="ui centered image rounded cursorPoint" data-bind="__UPLOAD__/{$p.path}" alt="{$data.title}">
+                                    </div>
+                                    {/volist}
+                                </div>
+                            </div>
+                            <div class="ui ignored divider"></div>
+                            <div class="ui ignored icon direction buttons">
+                                <div class="ui button blue" data-animation="flip" title="左滚动" data-direction="left"><i class="left long arrow icon"></i></div>
+                                <div class="ui button blue" data-animation="flip" title="上滚动" data-direction="up"><i class="up long arrow icon"></i></div>
+                                <div class="ui icon button blue" data-animation="flip" title="下滚动" data-direction="down"><i class="down long arrow icon"></i></div>
+                                <div class="ui icon button blue" data-animation="flip" title="右滚动" data-direction="right"><i class="right long arrow icon"></i></div>
+                            </div>
+                            <div class="ui ignored icon direction buttons">
+                                <div class="ui button blue" title="旋转下一张" data-animation="flip" data-direction="over"><i class="retweet icon"></i></div>
+                                <div class="ui button blue" title="旋转上一张" data-animation="flip" data-direction="back"><i class="flipped retweet icon"></i></div>
+                            </div>
+
+                        </div>
+                        <div class="eight wide column">
+                            <span class="ui orange tag label">￥ {$data.price}</span>
+                            <div class="ui ignored divider"></div>
+                            型号：{$data.model}
+                            <div class="ui ignored divider"></div>
+                            品牌：{$data.brand}
+                            <div class="ui ignored divider"></div>
+                            颜色：
+                            {volist name="$data.color" id="vo"}
+                                {$vo} 
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                <div>{$data.content|raw}</div>
+
+                <div class="ui horizontal divider">相关信息 </div>
+
+                <div class="ui relaxed list">
+                    <div class="item">
+                        上一篇： {empty name="prev"}没有了 ...{else}<a href="{$prev.url}">{$prev.title}</a>{/empty}
+                    </div>
+                    <div class="item">
+                        下一篇： {empty name="next"}没有了 ...{else}<a href="{$next.url}">{$next.title}</a>{/empty}
+                    </div>
+                </div>
+                {include file="defaults/comment" /}
+            </div>
+        </div>
+
+        <div class="six wide column" id="rightComun">
+            {include file="defaults/right" /}
+        </div>
+    </div>
+</div>
+
+<div class="ui modal" id="photoshow">
+    <i class="close icon"></i>
+    <div class="header">
+        {$data.title}
+    </div>
+    <div class="content">
+        <img class="ui centered image rounded " src="" alt="{$data.title}">
+    </div>
+</div>
+{/block}

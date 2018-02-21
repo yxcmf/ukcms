@@ -1,0 +1,333 @@
+{extend name="layout"/}
+
+{block name="content"}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">
+            基础设置
+        </a>
+    </li>
+    <li>
+        <a href="#attribute" data-toggle="tab">
+            属性设置
+        </a>
+    </li>
+    <li>
+        <a href="#extend" data-toggle="tab">
+            选项设置
+        </a>
+    </li>
+    <li class="pull-xs-right label label-primary">"{$modelTitle}"模型字段添加</li>
+</ul>
+<form  method="post" action="{:url('add',['mid'=>$mid])}">
+    <div class="tab-content tab-content-bordered">
+        <div class="tab-pane fade in active" id="base">
+            <div class="panel">
+                <div class="panel-body">
+                    <fieldset class="form-group">
+                        <label>字段名称*</label>
+                        <input type="text" class="form-control" name="name" placeholder="字段英文名称" value="">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>字段标题*</label>
+                        <input type="text" class="form-control" name="title" placeholder="字段中文标题" value="">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>字段备注说明</label>
+                        <textarea class="form-control" rows="3" name="remark" placeholder="填写字段说明"></textarea>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>排序</label>
+                        <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="100">
+                    </fieldset>
+                    <div class="panel-footer text-right">
+                        <input type="submit" class="btn btn-primary" value="确认添加">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade in" id="attribute">
+            <div class="panel">
+                <div class="panel-body">
+                    <div id="type_waring" class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <i class="fa fa-warning"></i> 请先选择字段类型
+                    </div>
+                    <fieldset class="form-group">
+                        <label >字段类型*</label>
+                        <select id="type" name="type" class="form-control select2-example select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                            <option></option>
+                            {volist name="fieldType" id="vo"}
+                            <option value="{$vo.name}" data-define="{$vo.default_define}" data-ifoption="{$vo.ifoption}" data-ifstring="{$vo.ifstring}">{$vo.title}</option>
+                            {/volist}
+                        </select>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>字段定义*</label>
+                        <input type="text" class="form-control" id="define" name="define" placeholder="字段长度定义" value="">
+                    </fieldset>
+                    <div id="imgset" style="display:none">
+                        <fieldset class="form-group">
+                            <label>是否生成缩略图</label>
+                            <label for="switcher-thumb" class="switcher switcher-primary">
+                                <input type="checkbox" name="jsonrule[thumb][ifon]" value="1" id="switcher-thumb" >
+                                <div class="switcher-indicator">
+                                    <div class="switcher-yes">是</div>
+                                    <div class="switcher-no">否</div>
+                                </div>
+                                &nbsp;
+                            </label>
+                        </fieldset>
+                        <div id="thumbset" style="display:none">
+                            <fieldset class="form-group">
+                                <label>缩略图大小</label>
+                                <input type="text" class="form-control" name="jsonrule[thumb][size]" placeholder="长,宽" value="{:config('upload_image_thumb')}">
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label style="clear:both; display: block">缩略图裁剪位置</label>
+                                {php}$thumb_type=config('upload_image_thumb_type');{/php}
+                                <select name="jsonrule[thumb][type]" class="form-control">
+                                    <option value="1" {if 1==$thumb_type} selected {/if}>等比例缩放</option>
+                                    <option value="2" {if 2==$thumb_type} selected {/if}>缩放后填充</option>
+                                    <option value="3" {if 3==$thumb_type} selected {/if}>居中裁剪</option>
+                                    <option value="4" {if 4==$thumb_type} selected {/if}>左上角裁剪</option>
+                                    <option value="5" {if 5==$thumb_type} selected {/if}>右下角裁剪</option>
+                                    <option value="6" {if 6==$thumb_type} selected {/if}>固定尺寸缩放</option>
+                                </select>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div id="fileset" style="display:none">
+                        <fieldset class="form-group">
+                            <label>文件类型*</label>
+                            <input id="filetype" type="text" class="form-control" name="jsonrule[file][type]" placeholder="" value="{:config('upload_file_ext')}">
+                            <small class="text-muted">不得超出系统配置：{:config('upload_file_ext')}范围</small>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label>文件大小限制</label>
+                            <input type="number" class="form-control" name="jsonrule[file][size]" placeholder="" value="{:config('upload_file_size')}">
+                            <small class="text-muted">不得超过系统配置：{:config('upload_file_size')}，0为不限制，单位：kb</small>
+                        </fieldset>
+                    </div>
+                    <ul class="nav nav-tabs nav-tabs-simple">
+                        <li class="active">
+                            <a href="#manual" data-toggle="tab">
+                                手动指定
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#fields" data-toggle="tab">
+                                字段关联
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content ">
+                        <div class="tab-pane fade in active" id="manual">
+                            <fieldset class="form-group" id="options" style="display:none">
+                                <label>选项</label>
+                                <textarea class="form-control" rows="4" name="options" placeholder="值:描述
+值:描述
+值:描述
+....."></textarea>
+                                <small class="text-muted" >用于单选、多选、下拉等类型</small>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label>字段默认值</label>
+                                <textarea class="form-control" rows="2" name="value" placeholder="未指定值时默认插入字段的值"></textarea>
+                            </fieldset>
+                        </div>
+                        <div class="tab-pane fade in" id="fields">
+                            <div id="autoOptions" style="display:none">
+                                <fieldset class="form-group">
+                                    <label >表名</label>
+                                    <input name="jsonrule[choose][table]"  class="form-control typeahead-table" type="text" data-provide="typeahead" autocomplete="on">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label >值字段</label>
+                                    <input name="jsonrule[choose][key]" class="form-control typeahead-key" type="text" data-provide="typeahead" autocomplete="on">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>描述字段</label>
+                                    <input name="jsonrule[choose][value]" class="form-control typeahead-value" type="text" data-provide="typeahead" autocomplete="on">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>筛选条件</label>
+                                    <input name="jsonrule[choose][where]" class="form-control" type="text" placeholder="where条件">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>数量</label>
+                                    <input name="jsonrule[choose][limit]" class="form-control" type="text" placeholder="limit条件">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>排序</label>
+                                    <input name="jsonrule[choose][order]" class="form-control" type="text" placeholder="order条件">
+                                </fieldset>
+                            </div>
+                            <div id="autoString" style="display:none">
+                                <fieldset class="form-group">
+                                    <label >表名</label>
+                                    <input name="jsonrule[string][table]"  class="form-control typeahead-table" type="text" data-provide="typeahead" autocomplete="on">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>字段</label>
+                                    <input name="jsonrule[string][key]" id="typeahead-key" class="form-control" type="text" data-provide="typeahead" autocomplete="on">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>分隔符</label>
+                                    <input name="jsonrule[string][delimiter]" class="form-control" type="text" placeholder="字段值组合成字符的分隔符">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>筛选条件</label>
+                                    <input name="jsonrule[string][where]" class="form-control" type="text" placeholder="where条件">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>数量</label>
+                                    <input name="jsonrule[string][limit]" class="form-control" type="text" placeholder="limit条件">
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <label>排序</label>
+                                    <input name="jsonrule[string][order]" class="form-control" type="text" placeholder="order条件">
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer text-right">
+                        <input type="submit" class="btn btn-primary" value="确认添加">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade in" id="extend">
+            <div class="panel">
+                <div class="panel-body">
+                    {if $modelType==2}
+                    <fieldset class="form-group">
+                        <label>是否是主表字段</label>
+                        <label for="switcher-ifmain" class="switcher switcher-primary">
+                            <input type="checkbox" name="ifmain" value="1" id="switcher-ifmain" checked="">
+                            <div class="switcher-indicator">
+                                <div class="switcher-yes">是</div>
+                                <div class="switcher-no">否</div>
+                            </div>
+                            &nbsp;
+                        </label>
+                    </fieldset>
+                    {else}
+                    <input type="hidden" name="ifmain" value="1"/>
+                    {/if}
+                    <fieldset class="form-group" id="ifrequire">
+                        <label>是否必填</label>
+                        <label for="switcher-ifrequire" class="switcher switcher-primary">
+                            <input type="checkbox" name="ifrequire" value="1" id="switcher-ifrequire">
+                            <div class="switcher-indicator">
+                                <div class="switcher-yes">是</div>
+                                <div class="switcher-no">否</div>
+                            </div>
+                            &nbsp;
+                        </label>
+                    </fieldset>
+                    <fieldset class="form-group" id="ifsearch" style="display:none">
+                        <label>是否可搜索</label>
+                        <label for="switcher-ifsearch" class="switcher switcher-primary">
+                            <input type="checkbox" name="ifsearch" value="1" id="switcher-ifsearch">
+                            <div class="switcher-indicator">
+                                <div class="switcher-yes">是</div>
+                                <div class="switcher-no">否</div>
+                            </div>
+                            &nbsp;
+                        </label>
+                        <small class="text-muted" style="clear:both; display: block">只有主表字段支持搜索</small>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>是否显示</label>
+                        <label for="switcher-ifeditable" class="switcher switcher-primary">
+                            <input type="checkbox" name="ifeditable" value="1" id="switcher-ifeditable" checked="">
+                            <div class="switcher-indicator">
+                                <div class="switcher-yes">是</div>
+                                <div class="switcher-no">否</div>
+                            </div>
+                            &nbsp;
+                        </label>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>状态</label>
+                        <label for="switcher-status" class="switcher switcher-primary">
+                            <input type="checkbox" name="status" value="1" id="switcher-status" checked="">
+                            <div class="switcher-indicator">
+                                <div class="switcher-yes">启用</div>
+                                <div class="switcher-no">停用</div>
+                            </div>
+                            &nbsp;
+                        </label>
+                    </fieldset>
+
+                    <div class="panel-footer text-right">
+                        <input type="submit" class="btn btn-primary" value="确认添加">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+        $('.select2-example').select2({
+            placeholder: '选择字段类型',
+        });
+        $('#filetype').tagsinput({tagClass: 'label label-primary'});
+        $('#switcher-thumb').change(function () {
+            if ($(this).prop('checked')) {
+                $('#thumbset').show();
+            } else {
+                $('#thumbset').hide();
+            }
+        });
+        $('#type').change(function () {
+            $('#define').val($(this).find("option:selected").attr("data-define"));
+            var ifoption = $(this).find("option:selected").attr("data-ifoption");
+            var ifstring = $(this).find("option:selected").attr("data-ifstring");
+            //图片字段设置显隐
+            if ('image' == $(this).val() || 'images' == $(this).val()) {
+                $('#imgset').show();
+            } else {
+                $('#imgset').hide();
+            }
+            //文件字段设置显隐
+            if ('files' == $(this).val()) {
+                $('#fileset').show();
+            } else {
+                $('#fileset').hide();
+            }
+            //选项字段手动和关联隐显
+            if (ifoption == '1') {
+                $('#options').show();
+                $('#autoOptions').show();
+            } else {
+                $('#options').hide();
+                $('#autoOptions').hide();
+            }
+            //字符串字段关联显隐
+            if (ifstring == '1') {
+                $('#autoString').show();
+            } else {
+                $('#autoString').hide();
+            }
+            //搜索隐显
+            if (ifstring == '1') {
+                $('#ifsearch').show();
+            } else {
+                $('#ifsearch').hide();
+            }
+            //清除提示窗口
+            if ($(this).val()) {
+                $('#type_waring').hide();
+            } else {
+                $('#type_waring').show();
+            }
+        });
+        $('.typeahead-table').typeahead({source: {$tables|raw}, minLength: 0});
+    });
+</script>
+{/block}

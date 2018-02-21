@@ -1,0 +1,75 @@
+{extend name="defaults/layout"/}
+{block name="seo"}
+<title>{$info.meta_title}-{$title}</title>	
+<meta name="keywords" content="{$info.meta_keywords}-{$keywords}" />
+<meta name="description" content="{$info.meta_description}-{$description}" />
+{/block}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+        //栏目右侧折叠菜单
+        $('.ui.styled.accordion').accordion({
+            selector: {
+                trigger: '.title .icon'
+            }
+        });
+    });
+</script>
+{/block}
+{block name="content"} 
+<div class="ui  padded grid " id="listBanner">
+    <div class="blue column">
+        <div class="ui container ">
+            <h3>{$info.title}</h3>
+            <p>{$info.meta_description}</p>
+        </div>  
+    </div>
+</div>
+
+<div class="ui container" id="box">
+    <div class="ui  grid stackable">
+        <div class="ten wide column">
+            <div class="ui  breadcrumb">
+                <a class="section" href="{:url('home/index/index')}"> 首页</a>
+                {volist name="crumbs" id="vo"}
+                <i class="right chevron icon divider"></i><a class="section" href="{$vo.url}"> {$vo.title}</a>
+                {/volist}
+            </div>
+            <div class="ui divider"></div>
+            {if isset($condParam)}
+            <div class="ui relaxed list">
+                {volist name="condParam" id="vo"}
+                <div class="item">{$vo.title}：
+                    {volist name="vo.options" id="v"}
+                    <a class="ui button tiny {if $v.active}blue{/if}" href="{$v.url}">{$v.title}</a>
+                    {/volist}
+                </div>
+                {/volist}
+            </div>
+            <div class="ui divider"></div>
+            {/if}
+            <div class="ui two column grid">
+                {volist name="list.data" id="vo"}
+                <div class="column">
+                    <div class="ui fluid image">
+                        <a href="{$vo.url}" class="ui medium image">
+                            <div class="ui teal right corner label">
+                                <i class="heart  icon"></i>
+                            </div>
+                            <img class="ui medium rounded image"  src="__UPLOAD__/{$vo.cover.thumb}" alt="{$vo.title}">
+                            <div class="ui bottom attached large  label grey titFilter">{$vo.title}</div>
+                            <div class="ui blue  ribbon label"><i class="yen icon"></i>{$vo.price} </div>
+                        </a>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+            {$page|raw}
+        </div>
+
+        <div class="six wide column" id="rightComun">
+            {include file="defaults/right" /}
+        </div>
+    </div>
+</div>
+{/block}

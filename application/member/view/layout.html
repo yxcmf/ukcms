@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>layout 后台大布局 - Layui</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+
+        <link rel="stylesheet" href="__STATIC__/layui/css/layui.css"  media="all">
+        <link rel="stylesheet" href="__STATIC__/member/g.css" media="all">
+    </head>
+    <body>
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header header-demo">
+                <div class="layui-logo">
+                    <img src="__STATIC__/member/images/logo.png">
+                </div>
+
+                <ul class="layui-nav layui-layout-right">
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            
+                            {$nickname}
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="{:url('index/baseinfo')}">基本资料</a></dd>
+                            <dd><a href="{:url('index/setting')}">安全设置</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item"><a href="{:url('open/loginout')}">退出</a></li>
+                </ul>
+            </div>
+
+            <div class="layui-side layui-bg-black">
+                <div class="layui-side-scroll">
+                    <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a class="" href="javascript:;">一级菜单</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="javascript:;">二级菜单</a></dd>
+                                <dd><a href="javascript:;">二级菜单</a></dd>
+                                <dd><a href="javascript:;">二级菜单</a></dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a class="" href="javascript:;">一级菜单</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="javascript:;">二级菜单</a></dd>
+                                <dd><a href="javascript:;">二级菜单</a></dd>
+                                <dd><a href="javascript:;">二级菜单</a></dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item"><a href="http://www.ukcms.com">UKCMS</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-body">
+                <!-- 内容主体区域 -->
+                <div style="padding: 15px;">
+                    {block name="content"}{/block}
+                </div>
+            </div>
+
+            <div class="layui-footer">
+                UKcmsMC
+            </div>
+        </div>
+        <div class="site-tree-mobile layui-hide">
+            <i class="layui-icon">&#xe602;</i>
+        </div>
+        <div class="site-mobile-shade"></div>
+        <script src="__STATIC__/layui/layui.js" charset="utf-8"></script>
+        <script>
+            //JavaScript代码区域
+            layui.use(['jquery', 'element'], function () {
+                var $ = layui.$
+                        , element = layui.element;
+                $('.site-tree-mobile').click(function () {
+                    $('body').addClass('site-mobile');
+                });
+                $('.site-mobile-shade').click(function () {
+                    $('body').removeClass('site-mobile');
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,339 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 25px}
+    .pagination{margin: 0; float:right}
+    #moveColumn,#num{display:none}
+</style>
+{/block}
+
+{block name="content"}
+{if !$modelStatus}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <i class="fa fa-warning"></i> 此模型已经被冻结不可操作内容
+</div>
+{/if}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">栏目模型【{$modelTitle}】的内容</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add',['mid'=>$modelId])}"><i class="fa fa-plus"></i> 新增内容</a><a class="btn btn-xs btn-primary" href="{:url('importdata',['mid'=>$modelId])}"><i class="fa fa-plus-square"></i> 导入内容</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline m-b-2 text-right" method="get">
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-5">栏目</label>
+                <select class="form-control" name="cid">
+                    <option value="">=全部栏目=</option>
+                    {volist name="columnList" id="vo" }
+                    <option value="{$vo.id}" {if $vo.type!=2 || $vo.model_id!=$modelId}disabled{/if} {if $vo.id==$Request.get.cid}selected{/if}>{:str_repeat('┝┈┈', $vo['deep']-1)}{$vo.title}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-6">搜索关键字</label>
+                <input type="text" name="keyword" class="form-control" id="form-inline-input-6" value="{$Request.get.keyword}" placeholder="搜索关键字">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+
+        <form action="{:url('delete',['mid'=>$modelId])}" method="post" id="doform">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="85">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th>ID</th>
+                        {volist name="$fieldArr" id="vo"}
+                        <th>{$vo.title}</th>
+                        {/volist}
+                        <th>所属栏目</th>{if !empty($places)}<th width="70"><div id="locat" class="btn btn-sm btn-default" data-state="0">推荐位</div></th>{/if}<th>发布人</th><th width="60">点击量</th><th width="160">更新时间</th><th width="50">排序</th><th width="60">状态</th><th width="100">操作</th>
+                    </tr>
+                    {volist name="list" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>
+                            {if !$vo['ifextend']}
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="ids[]"  class="custom-control-input" value="{$vo.id}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                            {/if}
+                        </td>
+                        <td>{$vo.id}</td>
+                        {volist name="fieldArr" id="v"}
+                        {if $i==1}
+                        <td><a href="{if $columnList[$vo['cname']]['type']==2}{$entryFile}index.php/{$vo.cname}/{$vo.id}.html{else}{$entryFile}index.php/{$vo.cname}.html{/if}" 
+                               target="_blank" >{$vo[$v.name]}</a></td>
+                        {else}
+                        <td>{$vo[$v.name]}</td>
+                        {/if}
+                        {/volist}
+                        <td>{$columnList[$vo['cname']]['title']}</td>
+                        {if !empty($places)}
+                        <td align="center" class="font-size-16">
+                            {php}$vo['places']=substr($vo['places'],1);{/php}
+                            {if ''!=$vo['places']}
+                            {php}$nowPlaceArr=explode(',',$vo['places']);$vo['places']='';{/php}
+                            {foreach $nowPlaceArr as $p } 
+                            {if $p}{php}$vo['places'].=' '.$places[$p];{/php}{/if}
+                            {/foreach}
+                            <i  class="fa fa-bookmark-o" data-toggle="tooltip" data-placement="right" data-state="primary"  data-original-title="{$vo['places']}"></i>
+                            {/if}
+                        </td>
+                        {/if}
+                        <td>{$vo.realname}</td>
+                        <td>{$vo.hits}</td>
+                        <td>{:date('Y-m-d H:i:s',$vo.update_time)}</td>
+                        <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
+                        <td>
+                            {if $vo.status} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">禁用</button>
+                            {/if}
+                        </td>
+                        <td><a href="{:url('edit',['mid'=>$modelId,'id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> {if $columnList[$vo['cname']]['type']==2}<i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i>{/if}</td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td colspan="11">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <select  class="form-control" id="dotype">
+                                        <option value="delete">删除</option>
+                                        <option value="move">移动</option>
+                                        <option value="copy">复制</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control"  name="cname"  id="moveColumn">
+                                        {volist name="columnList" id="vo" }
+                                        <option value="{$vo.name}" {if $vo.type!=2 || $vo.model_id!=$modelId}disabled{/if} {if isset($cname) && $vo.name==$cname}selected{/if}>{:str_repeat('┝┈┈', $vo['deep']-1)}{$vo.title}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <div class="form-group"><input class="form-control" type="number" name="num" id="num" value="" size="2" placeholder="复制次数(默认1次)"></div>
+                                <button type="button" class="btn btn-primary" id="subform">执行</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {if $page}
+                    <tr>
+                        <td colspan="12">
+                            {$page|raw}
+                        </td>
+                    </tr>
+                    {/if}
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    var modelId = '{$modelId}';
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    function delEvevt() {
+        $('#doform').attr('action', "{:url('delete',['mid'=>$modelId])}");
+        $('#subform').unbind();
+        $('#subform').click(function () {
+            bootbox.confirm({
+                message: '删除后不可恢复~确定要执行吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#doform').submit();
+                    }
+                }
+            });
+        });
+        $('#num').hide();
+        $('#moveColumn').hide();
+    }
+    function moveEvevt() {
+        $('#doform').attr('action', "{:url('move',['mid'=>$modelId])}");
+        $('#subform').unbind();
+        $('#subform').click(function () {
+            bootbox.confirm({
+                message: '移动栏目后不可恢复~确定要执行吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#doform').submit();
+                    }
+                }
+            });
+        });
+        $('#num').hide();
+        $('#moveColumn').show();
+    }
+    function copyEvevt() {
+        $('#doform').attr('action', "{:url('copy',['mid'=>$modelId])}");
+        $('#subform').unbind();
+        $('#subform').click(function () {
+            bootbox.confirm({
+                message: '复制会在数据库中重复生成信息~确定要执行吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#doform').submit();
+                    }
+                }
+            });
+        });
+        $('#moveColumn').show();
+        $('#num').show();
+    }
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        delEvevt();
+        $('#dotype').change(function () {
+            if ('delete' === $(this).val()) {
+                delEvevt();
+            } else if ('move' === $(this).val()) {
+                moveEvevt();
+            } else if ('copy' === $(this).val()) {
+                copyEvevt();
+            }
+        });
+        //排序
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        //定位标签隐显
+        $('#locat').click(function () {
+            if (0 == $(this).attr('data-state')) {
+                $(".fa-bookmark-o").tooltip('show');
+                $(this).attr('data-state','1');
+                $(this).addClass('btn-primary');
+                $(this).removeClass('btn-default');
+            }else{
+                $(".fa-bookmark-o").tooltip('hide');
+                $(this).attr('data-state','0');
+                $(this).addClass('btn-default');
+                $(this).removeClass('btn-primary');
+            }
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('changeorder')}",
+                type: "GET",
+                data: {
+                    mid: modelId,
+                    id: id,
+                    num: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                        // alert(ifchange);
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+        $('#del').click(function () {
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#tabledeal').submit();
+                    }
+                }
+            });
+        });
+        $('.status').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('setstate')}",
+                type: "GET",
+                data: {
+                    mid: modelId,
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                mid: modelId,
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('信息删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

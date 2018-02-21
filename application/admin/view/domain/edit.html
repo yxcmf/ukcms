@@ -1,0 +1,47 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">编辑域名</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>域名*</label>
+            <input type="text" class="form-control" name="name" placeholder="" value="{$info.name}">
+            <small class="text-muted">不带http</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>模板目录*</label>
+            <input type="text" class="form-control" name="view_directory" placeholder="英文或数字" value="{$info.view_directory}">
+            <small class="text-muted">application\应用\view\[模板目录],目前只前台home应用支持多模板</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>备注</label>
+            <input type="text" class="form-control" name="title" placeholder="中文字母数字" value="{$info.title}">
+            <small class="text-muted"></small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-primary" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-primary" {if $info.status}checked=""{/if}>
+                       <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">禁用</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="hidden" value="{$info.id}" name="id">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+
+    });
+</script>
+{/block}

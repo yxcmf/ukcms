@@ -1,0 +1,263 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 28px}
+    #moveColumn{display: none}
+</style>
+{/block}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">栏目列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 添加栏目</a>
+            <a class="btn btn-xs btn-primary" href="{:url('addall')}"><i class="fa fa-plus-square"></i> 批量添加栏目</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form action="" method="post" id="doform">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <td colspan="10">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <select  class="form-control" id="dotype">
+                                        <option value="delete">删除</option>
+                                        <option value="move">移动</option>
+                                        <option value="edit">编辑</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control"  name="cid"  id="moveColumn">
+                                        <option value="0">作为顶级栏目</option>
+                                        {volist name="clist" id="vo"}
+                                        <option value="{$vo.id}">{:str_repeat('┝┈ ', $vo['deep']-1)}{$vo.title} </option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="subform">执行</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="90" align="center">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th width="50">ID</th><th>栏目名称</th><th>英文标识</th><th>栏目类型</th><th>内容模型/地址</th><th width="118">内容管理</th><th width="80">排序</th><th width="60">状态</th><th width="90">操作</th>
+                    </tr>
+                    {volist name="clist" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="ids[]"  class="custom-control-input" value="{$vo.id}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </td>
+                        <td>{$vo.id}</td>
+                        <td>{:str_repeat('┝┈ ', $vo['deep']-1)}{$vo.title} </td>
+                        <td>{$vo.name}</td>
+                        <td>{if $vo.type==1}频道{elseif $vo.type==2}列表{else}链接{/if}</td>
+                        <td>{if isset($vo.mtitle)}{$vo.mtitle}{else}{$vo.url}{/if}</td>
+                        <td>{if $vo.type==2}
+                            <a href="{:url('admin/content/'.$vo['table']).'?cid='.$vo.id}"><i  class="fa fa-eye visible btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="内容列表"></i></a> 
+                            <a href="{:url('admin/content/add',['mid'=>$vo.model_id,'cname'=>$vo.name])}"><i  class="fa fa-plus btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="添加内容"></i></a> 
+                            <a href="{:url('admin/content/importdata',['mid'=>$vo.model_id,'cname'=>$vo.name])}"><i  class="fa fa-plus-square btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="导入内容"></i></a>{/if}
+                        </td>
+                        <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
+                        <td>
+                            {if $vo.status} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">显示</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">隐藏</button>
+                            {/if}
+                        </td>
+                        <td><a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                    </tr>
+                    {/volist}
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    function delEvevt() {
+        $('#doform').attr('action', "{:url('delete')}");
+        $('#subform').unbind();
+        $('#subform').click(function () {
+            bootbox.confirm({
+                message: '删除后不可恢复~确定要执行吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#doform').submit();
+                    }
+                }
+            });
+        });
+        $('#moveColumn').hide();
+    }
+    function moveEvevt() {
+        $('#doform').attr('action', "{:url('move')}");
+        $('#subform').unbind();
+        $('#subform').click(function () {
+            bootbox.confirm({
+                message: '移动后不可恢复~确定要执行吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#doform').submit();
+                    }
+                }
+            });
+        });
+        $('#moveColumn').show();
+    }
+    function editEvevt() {
+        $('#doform').attr('action', "{:url('editall')}");
+        $('#moveColumn').hide();
+        $('#subform').unbind();
+        $('#subform').click(function () {
+            $('#doform').submit();
+        });
+    }
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        //批处理
+        delEvevt();
+        $('#dotype').change(function () {
+            if ('delete' === $(this).val()) {
+                delEvevt();
+            } else if ('move' === $(this).val()) {
+                moveEvevt();
+            } else if ('edit' === $(this).val()) {
+                editEvevt();
+            }
+        });
+
+        //排序
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('changeorder')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    num: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                        // alert(ifchange);
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+
+        //折叠节点
+        $('#sortable .fold').on('click', function (e) {
+            var children = $(this).parent().parent().children('ul');
+            if ($(this).hasClass('fa-minus-circle')) {
+                children.children('li').hide('fast');
+                $(this).addClass('fa-plus-circle').removeClass('fa-minus-circle');
+            } else {
+                children.children('li').show('fast');
+                $(this).addClass('fa-minus-circle').removeClass('fa-plus-circle');
+            }
+            e.stopPropagation();
+        });
+        //修改状态
+        $('.status').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('column/setstate')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('显示');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('隐藏');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        //删除节点
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？若绑定内容模型，删除后模型下信息将被同时删除',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('column/delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('栏目删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

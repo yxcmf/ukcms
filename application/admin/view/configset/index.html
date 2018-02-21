@@ -1,0 +1,159 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .pagination{margin: 0; float:right}
+</style>
+{/block}
+
+{block name="content"}
+
+<ul class="nav nav-tabs">
+    {volist name="$groupArray" id="vo"}
+    <li class="{if $key==$group}active{/if}">
+        <a href="{:url('index',['group'=>$key])}" >
+            {$vo}
+        </a>
+    </li>
+    {/volist}
+</ul>
+<div class="tab-content tab-content-bordered bg-white">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <tr><td colspan="7" align="right">  <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增配置项</a></td></tr>
+            <tr>
+                <th>名称</th><th>标题</th><th>类型</th><th width="160">更新时间</th><th>排序</th><th width="60">状态</th><th width="100">操作</th>
+            </tr>
+            {volist name="list" id="vo"}
+            <tr id="{$vo.id}">
+                <td>{$vo.name}</td>
+                <td>{$vo.title}</td>
+                <td>{$vo.ftitle}</td>
+                <td>{:date('Y-m-d H:i:s',$vo.update_time)}</td>
+                <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
+                <td>
+                    {if $vo.status} 
+                    <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
+                    {else}
+                    <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">禁用</button>
+                    {/if}
+                </td>
+                <td><a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+            </tr>
+            {/volist}
+            {notempty name="page"}
+            <tr>
+                <td colspan="7">
+                    {$page|raw}
+                </td>
+            </tr>
+            {/notempty}
+        </table>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        //排序
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('changeorder')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    num: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                        // alert(ifchange);
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+
+        $('.status').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('setstate')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复,部分系统配置删除后可能导致系统无法运行',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('信息删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

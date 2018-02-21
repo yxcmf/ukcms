@@ -1,0 +1,48 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">添加TAG</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>所属模型</label>
+            <select class="custom-select form-control" name="mid">
+                <option value="0">=所有栏目模型=</option>
+                {volist name="mlist" id="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/volist}
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>标签*</label>
+            <input type="text" class="form-control" name="title" placeholder="标签" value="">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>链接地址</label>
+            <textarea class="form-control" rows="4" name="url" placeholder="链接1
+链接2
+链接3
+..."></textarea>
+            <small class="text-muted clearfix">可留空，如果是http链接，则直接填写http开头的url地址</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>权重</label>
+            <input type="number" class="form-control" name="weight" placeholder="标签" value="0">
+            <small class="text-muted clearfix">权重数字越大,标签越重要,在一些随机获取的地方出现频率越高</small>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认添加">
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+
+    });
+</script>
+{/block}

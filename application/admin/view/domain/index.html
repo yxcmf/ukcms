@@ -1,0 +1,165 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 18px}
+    .pagination{margin: 0; float:right}
+</style>
+{/block}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">域名列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增域名</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline m-b-2 text-right" method="get">
+            <div class="form-group">
+                <label class="sr-only" for="form-inline-input-6">域名搜索</label>
+                <input type="text" name="keyword" class="form-control" id="form-inline-input-6" value="{$Request.get.keyword}" placeholder="域名搜索">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+        <form action="{:url('delete')}" method="post" id="tabledeal">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="70">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th>域名</th><th>模板目录</th><th>备注</th><th width="160">创建时间</th><th width="160">更新时间</th><th width="50">状态</th><th width="110">操作</th>
+                    </tr>
+                    {volist name="list" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="ids[]"  class="custom-control-input" value="{$vo.id}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.view_directory}</td>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>{$vo.update_time}</td>
+                        <td>
+                            {if $vo.status}
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded ifwork">启用</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded ifwork">禁用</button>
+                            {/if}
+                        </td>
+                        <td><a class="btn btn-sm btn-primary" href="{:url('edit',['id'=>$vo.id])}">编辑</a> <div class="btn  btn-sm btn-warning del">删除</div></td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td>
+                            <button class="btn" type="button" id="del">删除 </button>
+                        </td>
+                        <td colspan="7">
+                            {$list->render()|raw}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="alert alert-default">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <i class="fa fa-volume-up"></i> 未指定模板目录的域名默认使用defaults目录下模板
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    $(function () {
+        $('.ifwork').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('setstate')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        $('#del').click(function () {
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#tabledeal').submit();
+                    }
+                }
+            });
+        });
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('域名删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

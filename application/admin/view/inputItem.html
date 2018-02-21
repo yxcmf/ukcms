@@ -1,0 +1,662 @@
+<style>
+    .configImage,.configFile{min-height:100px; padding-bottom: 20px; }
+    .configFile .dz-thumbnail{display:none}
+    .dz-default.dz-message{
+        right: auto;
+        left: 50%;
+        top: 25px;
+        transform: none;
+        padding-left: 0;
+        font-size: 35px;
+        font-weight: 400;
+        line-height: 35px;
+        position: relative
+    }
+    .edui-default * {color:#333}
+</style>
+
+{volist name="fieldList" id="vo"}
+{if !isset($vo.ifeditable)||$vo.ifeditable}
+{switch name="vo.type"}
+
+{case value="hidden"}
+{if $vo.value}<input type="hidden" class="form-control" name="{$vo.fieldArr}[{$vo.name}]"  value="{$vo.value}">{/if}
+{/case}
+
+{case value="text"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="text" class="form-control" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}" value="{$vo.value}">
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="textarea"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <textarea class="form-control" rows="5" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}">{$vo.value}</textarea>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="checkbox"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    {volist name="vo.options" id="v"}
+    <label class="custom-control custom-checkbox checkbox-inline">
+        <input type="checkbox" name="{$vo.fieldArr}[{$vo.name}][]" class="custom-control-input" value="{$key}" {if in_array($key,$vo['value'])}checked=''{/if}>
+               <span class="custom-control-indicator"></span>{$v}
+    </label>
+    {/volist}
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="radio"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    {volist name="vo.options" id="v"}
+    <label class="custom-control custom-radio radio-inline">
+        <input type="radio" name="{$vo.fieldArr}[{$vo.name}]" class="custom-control-input" value="{$key}" {if $key==$vo ['value']}checked=''{/if}>
+               <span class="custom-control-indicator"></span>{$v}
+    </label>
+    {/volist}
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="switch"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <label for="{$vo.fieldArr}{$vo.name}" class="switcher switcher-primary">
+        <input type="checkbox" name="{$vo.fieldArr}[{$vo.name}]" value="1" id="{$vo.fieldArr}{$vo.name}" {if 1==$vo['value']}checked=''{/if}>
+        <div class="switcher-indicator">
+            <div class="switcher-yes">开</div>
+            <div class="switcher-no">关</div>
+        </div>
+        &nbsp;
+    </label>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="array"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <textarea class="form-control" rows="5" name="{$vo.fieldArr}[{$vo.name}]" placeholder="{$vo.title}">{$vo.value}</textarea>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="select"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <select name="{$vo.fieldArr}[{$vo.name}]" class="form-control">
+        {volist name="vo.options" id="v"}
+        <option value="{$key}"  {if $key==$vo['value']}selected{/if}>{$v}</option>
+        {/volist}
+    </select>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="image"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="hidden" name="{$vo.fieldArr}[{$vo.name}]"  value="{$vo.value}" >
+    <div id="{$vo.fieldArr}{$vo.name}" class="configImage b-a-2 border-default" >
+         <div class="dz-default dz-message text-light">
+            <i class="fa fa-plus"></i>
+        </div>
+    </div>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+    <script>
+        $(function () {
+            var thisdom = $('#{$vo.fieldArr}{$vo.name}');
+            var inputdom = thisdom.prev('input');
+            var nowPicid=inputdom.val();
+            var files={};
+            if(''!=inputdom.val()){
+                     $.ajax({
+                            url : "{:url('filemanage/ajaxgetfileinfo')}",
+                            type : 'post',
+                            dataType: "json",
+                            async: false,
+                            data : {ids: nowPicid},
+                            success : function(data){
+                               if (''!=data) {
+                                  files=data;
+                               }
+                            }
+                     });
+            }
+            thisdom.dropzone({
+                url: "{:url('filemanage/upload',$vo['param'])}",
+                dictRemoveFile: "删除图片",
+                init: function () {
+                    //回调已上传图片
+                     if (!jQuery.isEmptyObject(files)) {
+                        var mockFile = {
+                            name: files.name,
+                            size: files.size,
+                            accepted: true,
+                            status: 'success',
+                            processing: false
+                        };
+                        this.options.addedfile.call(this, mockFile);
+                        this.options.thumbnail.call(this, mockFile, '__UPLOAD__/'+files.path);
+                        this.files[0] = mockFile;
+                        delImgEvent(thisdom);
+                    }
+                },
+                resize: function (file) {
+                    return {
+                        srcX: 0,
+                        srcY: 0,
+                        srcWidth: file.width,
+                        srcHeight: file.height,
+                        trgWidth: file.width,
+                        trgHeight: file.height
+                    };
+                },
+                maxFiles: 1,
+                maxfilesexceeded: function (file) {
+                    this.removeAllFiles();
+                    this.addFile(file);
+                },
+                success: function (file, response, e) {
+                    //移除当前图片  
+//                thisdom.find('div.dz-preview:not(.dz-processing)').remove();
+                    if (response.status == 1) {
+                        inputdom.attr('value', response.id);
+                        delImgEvent(thisdom);
+                        toastr['success'](response.info, '', {
+                            closeButton: true
+                        });
+                    } else {
+                        var data = response.info;
+                        if (!data) {
+                            data = '未知错误：' + response;
+                        }
+                        toastr['error'](data, '', {
+                            closeButton: true
+                        });
+                        //移除当前图片恢复之前图片
+                        this.removeFile(file);
+                         if (!jQuery.isEmptyObject(files)) {
+                            var mockFile = {
+                                  name: files.name,
+                                  size: files.size,
+                                  accepted: true,
+                                  status: 'success',
+                                  processing: false
+                            };
+                            this.options.addedfile.call(this, mockFile);
+                            this.options.thumbnail.call(this, mockFile, '__UPLOAD__/'+files.path);
+                            this.files[0] = mockFile;
+                            delImgEvent(thisdom);
+                        }
+                    }
+                }
+            });
+            function delImgEvent(dom) {
+                dom.find('.dz-remove').click(function () {
+                    bootbox.confirm({
+                        message: '只从这里删除,但仍然保留在服务器中？',
+                        className: 'bootbox-sm',
+                        buttons: {
+                               confirm: {
+                                    label: '是的',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '从服务器删除',
+                                    className: 'btn-default'
+                                }
+                        },
+                        callback: function (result) {
+                            if (!result) {
+                                var id = inputdom.attr('value');
+                                $.get("{:url('filemanage/delete')}", {id: id},
+                                        function (data) {
+                                            if (data === 'true') {
+                                                toastr['success']('图片删除成功~', '', {
+                                                    closeButton: true
+                                                });
+                                            } else {
+                                                toastr['error'](data, '', {
+                                                    closeButton: true
+                                                });
+                                            }
+                                        },
+                                        "text"
+                                        );
+                            }
+                            inputdom.attr('value','');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</fieldset>
+{/case}
+
+{case value="images"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="hidden" name="{$vo.fieldArr}[{$vo.name}]"  value="{$vo.value}" >
+    <div id="{$vo.fieldArr}{$vo.name}" class="configImage b-a-2 border-default" >
+        <div class="dz-default dz-message text-light ">
+            <i class="fa fa-plus-circle"></i>
+        </div>
+    </div>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+    <script>
+        $(function () {
+            var thisdom = $('#{$vo.fieldArr}{$vo.name}');
+            var inputdom = thisdom.prev('input');
+            var nowPicid=inputdom.val();
+            var files={};
+            if(''!=nowPicid){
+                     $.ajax({
+                            url : "{:url('filemanage/ajaxgetfileinfo')}",
+                            type : 'post',
+                            dataType: "json",
+                            async: false,
+                            data : {ids: nowPicid},
+                            success : function(data){
+                               if (''!=data) {
+                                  files=data;
+                               }
+                            }
+                     });
+            }
+            thisdom.dropzone({
+                url: "{:url('filemanage/upload',$vo['param'])}",
+                dictRemoveFile: "删除图片",
+                init: function () {
+                    var mockFile = {};
+                    //回调已上传图片
+                    if (!jQuery.isEmptyObject(files)) {
+                        var n = 0;
+                        for (var i in files) {
+                            mockFile = {
+                                name: files[i].name,
+                                size: files[i].size,
+                                status: 'success',
+                                processing: false,
+                                accepted: true,
+                            };
+                            this.options.addedfile.call(this, mockFile);
+                            this.options.thumbnail.call(this, mockFile, '__UPLOAD__/' + files[i].path);
+                            this.files[n] = mockFile;
+                            //增加图片id属性用于删除
+                            mockFile.previewElement.id = files[i].id;
+                            n++;
+                        }
+                    }
+                    //移除文件时清空图片id
+                    this.on("removedfile", function (file) {
+                        if(file.previewElement.id){
+                        var nowids = inputdom.attr('value');
+                        var nowidArr = nowids.split(",");
+                        nowids = '';
+                        for (var i = 0; i < nowidArr.length; i++) {
+                            if (nowidArr[i] != file.previewElement.id && nowidArr[i] != '') {
+                                nowids += nowidArr[i] + ',';
+                            }
+                        }
+                        inputdom.attr('value', nowids);
+                        bootbox.confirm({
+                             message: '只从这里删除,但仍然保留在服务器中？',
+                             className: 'bootbox-sm',
+                             buttons: {
+                               confirm: {
+                                    label: '是的',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '从服务器删除',
+                                    className: 'btn-default'
+                                }
+                             },
+                            callback: function (result) {
+                                if (!result) {
+                                    $.get("{:url('filemanage/delete')}", {id: file.previewElement.id},
+                                            function (data) {
+                                                if (data === 'true') {
+                                                    toastr['success']('图片删除成功~', '', {
+                                                        closeButton: true
+                                                    });
+                                                } else {
+                                                    toastr['error'](data, '', {
+                                                        closeButton: true
+                                                    });
+                                                }
+                                            },
+                                            "text"
+                                            );
+                                }
+                            }
+                        });
+                    }
+                    });
+                },
+                resize: function (file) {
+                    return {
+                        srcX: 0,
+                        srcY: 0,
+                        srcWidth: file.width,
+                        srcHeight: file.height,
+                        trgWidth: file.width,
+                        trgHeight: file.height
+                    };
+                },
+                success: function (file, response, e) {
+                    if (response.status == 1) {
+                        var nowids = inputdom.attr('value');
+                        inputdom.attr('value', nowids + response.id + ',');
+                        //增加图片id属性
+                        file.previewElement.id = response.id;
+                        toastr['success'](response.info, '', {
+                            closeButton: true
+                        });
+                    } else {
+                        var data = response.info;
+                        if (!data) {
+                            data = '未知错误：' + response;
+                        }
+                        toastr['error'](data, '', {
+                            closeButton: true
+                        });
+                        this.removeFile(file);
+                    }
+                }
+            });
+        });
+    </script>
+</fieldset>
+{/case}
+
+{case value="files"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="hidden" name="{$vo.fieldArr}[{$vo.name}]"  value="{$vo.value}" >
+    <div id="{$vo.fieldArr}{$vo.name}" class="configFile b-a-2 border-default" >
+        <div class="dz-default dz-message text-light ">
+            <i class="fa fa-plus-circle"></i>
+        </div>
+    </div>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+    <script>
+        $(function () {
+            var thisdom = $('#{$vo.fieldArr}{$vo.name}');
+            var inputdom = thisdom.prev('input');
+            var nowPicid=inputdom.val();
+            var files={};
+            if(''!=nowPicid){
+                     $.ajax({
+                            url : "{:url('filemanage/ajaxgetfileinfo')}",
+                            type : 'post',
+                            dataType: "json",
+                            async: false,
+                            data : {ids: nowPicid},
+                            success : function(data){
+                               if (''!=data) {
+                                  files=data;
+                               }
+                            }
+                     });
+            }
+            thisdom.dropzone({
+                url: "{:url('filemanage/upload',$vo['param'])}",
+                dictRemoveFile: "删除文件",
+                init: function () {
+                    var mockFile = {};
+                    //回调已上传文件
+                    if (!jQuery.isEmptyObject(files)) {
+                        var n = 0;
+                        for (var i in files) {
+                            mockFile = {
+                                name: files[i].name,
+                                size: files[i].size,
+                                status: 'success',
+                                processing: false,
+                                accepted: true,
+                            };
+                            this.options.addedfile.call(this, mockFile);
+                            this.files[n] = mockFile;
+                            //增加图片id属性用于删除
+                            mockFile.previewElement.id = files[i].id;
+                            n++;
+                        }
+                    }
+                    //移除文件时清空图片id
+                    this.on("removedfile", function (file) {
+                        if(file.previewElement.id){
+                        var nowids = inputdom.attr('value');
+                        var nowidArr = nowids.split(",");
+                        nowids = '';
+                        for (var i = 0; i < nowidArr.length; i++) {
+                            if (nowidArr[i] != file.previewElement.id && nowidArr[i] != '') {
+                                nowids += nowidArr[i] + ',';
+                            }
+                        }
+                        inputdom.attr('value', nowids);
+                        bootbox.confirm({
+                            message: '只从这里删除,但仍然保留在服务器中？',
+                             className: 'bootbox-sm',
+                             buttons: {
+                               confirm: {
+                                    label: '是的',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '从服务器删除',
+                                    className: 'btn-default'
+                                }
+                             },
+                            callback: function (result) {
+                                if (!result) {
+                                    $.get("{:url('filemanage/delete')}", {id: file.previewElement.id},
+                                            function (data) {
+                                                if (data === 'true') {
+                                                    toastr['success']('文件删除成功~', '', {
+                                                        closeButton: true
+                                                    });
+                                                } else {
+                                                    toastr['error'](data, '', {
+                                                        closeButton: true
+                                                    });
+                                                }
+                                            },
+                                            "text"
+                                            );
+                                }
+                            }
+                        });
+                        }
+                    });
+                },
+                success: function (file, response, e) {
+                    if (response.status == 1) {
+                        var nowids = inputdom.attr('value');
+                        inputdom.attr('value', nowids + response.id + ',');
+                        //增加图片id属性
+                        file.previewElement.id = response.id;
+                        toastr['success'](response.info, '', {
+                            closeButton: true
+                        });
+                    } else {
+                        var data = response.info;
+                        if (!data) {
+                            data = '未知错误：' + response;
+                        }
+                        toastr['error'](data, '', {
+                            closeButton: true
+                        });
+                        this.removeFile(file);
+                    }
+                }
+            });
+        });
+    </script>
+</fieldset>
+{/case}
+
+{case value="tags"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input id="{$vo.fieldArr}{$vo.name}" name="{$vo.fieldArr}[{$vo.name}]" type="text" value="{$vo.value}"  class="form-control select2-primary">
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+    <script>
+        $(function () {
+            $('#{$vo.fieldArr}{$vo.name}').tagsinput({tagClass: 'label label-primary'});
+        });
+    </script>
+</fieldset>
+{/case}
+
+{case value="number"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="number" class="form-control" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}" value="{$vo.value}">
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+{/case}
+
+{case value="datetime"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="text" class="form-control" id="{$vo.fieldArr}{$vo.name}" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}" value="{$vo.value}">
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+    <script>
+        $(function () {
+            $('#{$vo.fieldArr}{$vo.name}').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                timePicker: true, //是否显示小时和分钟  
+                timePickerIncrement: 1, //时间的增量，单位为分钟  
+                timePicker12Hour: false, //是否使用12小时制来显示时间  
+                locale: {
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                    applyLabel: '确定',
+                    cancelLabel: '取消',
+                    firstDay: 1
+                }
+            }, function (start, end, label) {
+            }).on('cancel.daterangepicker', function () {
+                $(this).val('');
+            });
+        });
+    </script>
+</fieldset>
+{/case}
+
+{case value="color"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <input type="text" id="{$vo.fieldArr}{$vo.name}" class="form-control" name="{$vo.fieldArr}[{$vo.name}]" value="{$vo.value}"  placeholder="请选择{$vo.title}">
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark|raw}</small>{/if}
+</fieldset>
+<script>
+    $(function () {
+        $('#{$vo.fieldArr}{$vo.name}').minicolors({
+            control: 'hue',
+            position: 'bottom left',
+        });
+    })
+</script>
+{/case}
+
+{case value="Ueditor"}
+<script>
+    $(function () {
+// 百度编辑器ajax注销
+       if("undefined" != typeof ueditid){
+           ueditid+='{$vo.fieldArr}{$vo.name},';
+        }
+        var {$vo.fieldArr}{$vo.name} = UE.getEditor('{$vo.fieldArr}{$vo.name}', {
+            initialFrameWidth: null,
+            initialFrameHeight: 250,
+            serverUrl: "{:url('filemanage/upload',['module'=>'admin','from'=>'ueditor'])}"
+        });
+
+        //图片本地化
+        $('#{$vo.fieldArr}{$vo.name}getimg').click(function(){
+	var now=$(this);
+	now.addClass('btn-loading');
+	var con={$vo.fieldArr}{$vo.name}.getContent();
+	$.post("{:url('filemanage/geturlfile')}", {'content':con,'type':'images'},
+   	function(data){
+	    {$vo.fieldArr}{$vo.name}.setContent(data);
+	    now.removeClass('btn-loading');
+	    toastr['success']('图片本地化完成', '', {
+                            closeButton: true
+                      });
+   	},'html');
+        })
+        //标签增加链接
+        var num=0;
+        $('#{$vo.fieldArr}{$vo.name}getlink').click(function(){
+	var now=$(this);
+	now.addClass('btn-loading');
+	var con={$vo.fieldArr}{$vo.name}.getContent();
+	$.post("{:url('tag/gettaglink')}", {'content':con,'mid':{if isset($mid)}{$mid}{else}0{/if},'num':num},
+   	function(data){
+	    {$vo.fieldArr}{$vo.name}.setContent(data);
+	    now.removeClass('btn-loading');
+	    num++;
+	    toastr['success']('链接添加完成'+num+'次', '', {
+                           closeButton: true
+                      });
+   	},'html');
+        })
+    })
+</script>
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <script type="text/plain" id="{$vo.fieldArr}{$vo.name}" name="{$vo.fieldArr}[{$vo.name}]" >
+        {$vo.value|raw}
+    </script>
+    <div class="m-t-1">
+        <div id="{$vo.fieldArr}{$vo.name}getimg" class="btn btn-default"><i class="fa fa-image"></i> 图片本地化</div>
+        <div id="{$vo.fieldArr}{$vo.name}getlink" class="btn btn-default"><i class="fa fa-link"></i> 内容TAG链接</div>
+    </div>
+</fieldset>
+{/case}
+
+{case value="summernote"}
+<fieldset class="form-group">
+    <label style="clear:both; display: block">{$vo.title} {if condition="isset($vo.ifrequire) AND $vo.ifrequire"}*{/if}</label>
+    <textarea class="form-control"  id="{$vo.fieldArr}{$vo.name}" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}">{$vo.value}</textarea>
+    {if $vo.remark} <small class="text-muted" style="clear:both; display: block">{$vo.remark}</small>{/if}
+</fieldset>
+<script>
+  $(function() {
+      $('#{$vo.fieldArr}{$vo.name}').summernote({
+        height: 200,
+        toolbar: [
+          ['parastyle', ['style']],
+          ['fontstyle', ['fontname', 'fontsize']],
+          ['style', ['bold', 'italic', 'underline', 'clear']],
+          ['font', ['strikethrough', 'superscript', 'subscript']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['height', ['height']],
+          ['insert', ['picture', 'link', 'video', 'table', 'hr']],
+          ['history', ['undo', 'redo']],
+          ['misc', ['codeview', 'fullscreen']],
+          ['help', ['help']]
+        ],
+        lang: 'zh-CN'
+      });
+    });
+</script>
+{/case}
+{/switch}
+{/if}
+{/volist}

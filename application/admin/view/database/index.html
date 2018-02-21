@@ -1,0 +1,239 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 8px}
+</style>
+{/block}
+{block name="content"}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#tabs-tablelist" data-toggle="tab">
+            数据库备份
+        </a>
+    </li>
+    <li>
+        <a href="#tabs-backlist" data-toggle="tab">
+            数据库还原
+        </a>
+    </li>
+</ul>
+<div class="tab-content tab-content-bordered bg-white">
+    <div class="tab-pane fade in active" id="tabs-tablelist">
+        <form action="" method="post" id="tabledeal">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="40">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th>表名</th>
+                        <th>行数</th>
+                        <th>大小</th>
+                        <th>备注</th>
+                        <th width="90">操作</th>
+                    </tr>
+                    {volist name="tblist" id="vo"}
+                    <tr>
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="tables[]"  class="custom-control-input" value="{$vo.name}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.rows}</td>
+                        <td>{:format_bytes($vo.data_length)}</td>
+                        <td>{$vo.comment}</td>
+                        <td id="{$vo.name}"><i  class="fa fa-cog btn btn-sm btn-primary optimize" data-toggle="tooltip" data-placement="top"  data-original-title="优化表"></i> <i  class="fa fa-wrench btn  btn-sm btn-primary repair" data-toggle="tooltip" data-placement="top"  data-original-title="修复表"></i></td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td colspan="6">
+                            <button id="export" class="btn btn-primary" type="button"><i class="fa fa-book"></i> 备份数据</button> 
+                            <button id="optimize" class="btn btn-success" type="button"><i class="fa fa-cog"></i> 优化表</button>
+                            <button id="repair" class="btn btn-warning" type="button"><i class="fa fa-wrench"></i> 修复表</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <div class="tab-pane fade in" id="tabs-backlist">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>备份文件</th>
+                    <th>卷数</th>
+                    <th>压缩方式</th>
+                    <th>数据大小</th>
+                    <th>备份时间</th>
+                    <th width="90">操作</th>
+                </tr>
+                {volist name="dflist" id="vo"}
+                <tr>
+                    <td>{:date('Ymd-His',$vo.name)}-{$vo.part}</td>
+                    <td>{$vo.part}</td>
+                    <td>{$vo.compress}</td>
+                    <td>{:format_bytes($vo.size)}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo.time)}</td>
+                    <td id="{$vo.time}"><i  class="fa fa-exchange btn btn-outline btn-sm import" data-toggle="tooltip" data-placement="top"  data-original-title="还原"></i> <i  class="fa fa-remove btn btn-outline btn-sm delete" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                </tr>
+                {/volist}
+            </table>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script >
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        // 批量POST操作
+        var forms = $('#tabledeal');
+        $('#export').click(function () {
+            bootbox.confirm({
+                message: '确认要备份数据库吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        forms.attr("action", "{:url('export')}");
+                        forms.submit();
+                    }
+                }
+            });
+
+        });
+        $('#optimize').click(function () {
+            forms.attr("action", "{:url('optimize')}");
+            forms.submit();
+        });
+        $('#repair').click(function () {
+            forms.attr("action", "{:url('repair')}");
+            forms.submit();
+        });
+        //ajax操作
+        $('.optimize').click(function () {
+            var tablename = $(this).parent().attr('id');
+            $.ajax({
+                url: "{:url('optimize')}",
+                type: "GET",
+                data: {
+                    tablename: tablename
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        toastr['success'](tablename + '优化成功~', '', {
+                            closeButton: true
+                        });
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        $('.repair').click(function () {
+            var tablename = $(this).parent().attr('id');
+            $.ajax({
+                url: "{:url('repair')}",
+                type: "GET",
+                data: {
+                    tablename: tablename
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        toastr['success'](tablename + '修复成功~', '', {
+                            closeButton: true
+                        });
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+        $('.import').click(function () {
+            var time = $(this).parent().attr('id');
+            bootbox.confirm({
+                message: '确认恢复此备份吗？恢复后数据库将被覆盖',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "{:url('import')}",
+                            type: "GET",
+                            data: {
+                                time: time
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    toastr['success']('备份恢复成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+        });
+
+        $('.delete').click(function () {
+            var obj = $(this);
+            var time = obj.parent().attr('id');
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                time: time
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    obj.parent().parent().remove();
+                                    toastr['success']('备份删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+        });
+    });
+</script>
+{/block}
+

@@ -1,0 +1,113 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">行为列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增行为</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>类名</th><th>行为名称</th><th>作者</th><th>数据表</th><th width="80">类型</th><th width="70">排序</th><th width="110">操作</th>
+                </tr>
+                {volist name="list" id="vo"}
+                <tr id="{$vo.id}">
+                    <td>{$vo.name}</td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.author}</td>
+                    <td>
+                        {foreach :$vo.dbTables as $k=>$v } 
+                        <span class="label label-primary" data-toggle="tooltip" data-placement="top"  data-original-title="{$v}">{$k}</span>
+                        {/foreach}
+                    </td>
+                    <td>{if $vo.ifalone}独立{else}应用{/if}</td>
+                    <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
+                    <td>{if $vo.ifalone} {if $vo.status}<a href="{:url('uninstall',['id'=>$vo.id])}" class="btn  btn-sm btn-warning">卸载</a>{else} <a href="{:url('install',['id'=>$vo.id])}"  class="btn  btn-sm btn-success">安装</a>{/if} {if !$vo.status} <button  class="btn  btn-sm btn-warning del">删除</button>{/if}{/if}</td>
+                </tr>
+                {/volist}
+                {if $page}
+                <tr>
+                    <td colspan="7">
+                        {$page|raw}
+                    </td>
+                </tr>
+                {/if}
+            </table>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        //排序
+        $('.editable-table').each(function () {
+            $(this).editableTableWidget({
+                editor: $('<input class="form-control">')
+            });
+        });
+        $('.editable-table td').on('change', function (evt, newValue) {
+            var id = $(this).parent().parent().parent().parent().parent().attr('id');
+            var ifchange = false;
+            $.ajax({
+                async: false,
+                url: "{:url('changeorder')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    num: newValue
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        ifchange = true;
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+            return ifchange;
+        });
+
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确定要从行为列表从删除此行为吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('行为删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

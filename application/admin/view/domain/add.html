@@ -1,0 +1,78 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">添加域名</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <input type="hidden" name="addtype" id="addtype" value="1">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#single" id="singlec" data-toggle="tab">
+                    单个
+                </a>
+            </li>
+            <li>
+                <a href="#batch" id="batchc" data-toggle="tab">
+                    批量
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content ">
+            <div class="tab-pane fade in active" id="single">
+                <fieldset class="form-group">
+                    <label>域名*</label>
+                    <input type="text" class="form-control" name="name" placeholder="" value="">
+                    <small class="text-muted">不带http</small>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>模板目录*</label>
+                    <input type="text" class="form-control" name="view_directory" placeholder="英文或数字" value="">
+                    <small class="text-muted">application\应用\view\[模板目录],目前只前台home应用支持多模板</small>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>备注</label>
+                    <input type="text" class="form-control" name="title" placeholder="中文字母数字" value="">
+                    <small class="text-muted"></small>
+                </fieldset>
+            </div>
+            <div class="tab-pane fade in" id="batch">
+                <fieldset class="form-group">
+                    <label>域名和目录</label>
+                    <textarea class="form-control" rows="4" name="colinfo" placeholder="域名|目录
+域名|目录
+域名|目录
+....."></textarea>
+                </fieldset>
+            </div>
+        </div>
+        <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-primary" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-primary" checked="">
+                <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">禁用</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认添加">
+        </div>
+    </form>
+</div>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+//单个、批量添加切换
+        $('#singlec').click(function () {
+            $('#addtype').val(1);
+        });
+        $('#batchc').click(function () {
+            $('#addtype').val(2);
+        });
+    });
+</script>
+{/block}

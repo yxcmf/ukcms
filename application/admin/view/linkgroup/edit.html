@@ -1,0 +1,23 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">编辑链接分组</div>
+    </div>
+    <form class="panel-body" method="post" action="{:url('linkgroup/edit',['id'=>$info['id']])}">
+        <fieldset class="form-group">
+            <label>分组标识*</label>
+           <input type="text" class="form-control" name="name" placeholder="分组英文标识" value="{$info['name']}">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>分组名称*</label>
+            <input type="text" class="form-control" name="title" placeholder="分组名称" value="{$info['title']}">
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="hidden" value="{$info['id']}" name="id">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}

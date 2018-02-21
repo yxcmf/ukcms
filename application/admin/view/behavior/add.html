@@ -1,0 +1,23 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">添加行为</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>行为类名*</label>
+            <input type="text" class="form-control" name="name" placeholder="行为类名" value="">
+             <small class="text-muted">带命名空间完整行为路径</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="100">
+            <small class="text-muted">数字越大越靠前</small>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认添加">
+        </div>
+    </form>
+</div>
+{/block}

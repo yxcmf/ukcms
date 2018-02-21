@@ -1,0 +1,84 @@
+{extend name="layout"/}
+{block name="css"}
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">推荐位列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增推荐位</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form action="{:url('delete')}" method="post" id="tabledeal">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="70">ID</th><th>名称</th><th>栏目模型</th><th width="160">创建时间</th><th width="100">操作</th>
+                    </tr>
+
+                    {volist name="plist" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>{$vo.title}</td>
+                        <td>{if $vo.mid}{$modelList[$vo.mid]}{else}【全部】{/if}</td>
+                        <td>{$vo.create_time}</td>
+                        <td><a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                    </tr>
+                    {/volist}
+                    
+                    {if !empty($page)}
+                    <tr>
+                        <td colspan="5">
+                            {$page|raw}
+                        </td>
+                    </tr>
+                    {/if}
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('推荐位删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

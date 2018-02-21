@@ -1,0 +1,220 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 18px}
+    .pagination{margin: 0; float:right}
+    .fileinfo{width: 60px; text-align: center}
+    .fileinfo i{ font-size: 22px; color: #666; cursor:pointer}
+    .fileinfo img{cursor:pointer}
+</style>
+{/block}
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">附件列表</span>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline m-b-2 text-right" method="get">
+            <div class="form-group">
+                <select  name="fileexit" id="fileexit"  class="form-control  select2-hidden-accessible"  data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                    <option value=""></option>
+                    {volist name="fileExt" id="f"}
+                    <option value="{$f}"  {if $f==$Request.get.fileexit}selected{/if}>{$f}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text"   class="form-control " id="timestart" name="timestart" placeholder="起始时间" value="{$Request.get.timestart}"> -
+            </div>   
+            <div class="form-group">
+                <input type="text"   class="form-control " id="timeend" name="timeend" placeholder="结束时间" value="{$Request.get.timeend}">
+            </div>    
+            <button type="submit" class="btn btn-primary">查找</button>
+        </form>
+
+        <form action="{:url('delete')}" method="post" id="delform">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th width="70">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="chkAll"  class="custom-control-input" onClick="CheckAll(this.form)">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </th>
+                        <th width="50">ID</th><th>信息</th><th>名称</th><th>大小</th><th width="155">上传时间</th><th width="70">状态</th><th width="50">操作</th>
+                    </tr>
+                    {volist name="list" id="vo"}
+                    <tr id="{$vo.id}">
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" name="ids[]"  class="custom-control-input" value="{$vo.id}">
+                                <span class="custom-control-indicator"></span>&nbsp;
+                            </label>
+                        </td>
+                        <td>{$vo.id}</td>
+                        <td class="fileinfo">
+                            {switch name="vo.type"}
+                            {case value="image"}
+                            {if $vo.thumb==''}
+                            <div target="_blank" data-url="__UPLOAD__/{$vo.path}" class="showimg"> <i data-toggle="tooltip" data-placement="top"  data-original-title="查看原图" class="fa fa-image"></i></div>
+                            {else}
+                            <div target="_blank" data-url="__UPLOAD__/{$vo.path}" class="showimg"> <img data-toggle="tooltip" data-placement="top"  data-original-title="查看原图" src="__UPLOAD__/{$vo.thumb}" class="img-responsive img-rounded" style="width:100%"></div>
+                            {/if}
+                            {/case}
+                            {case value="file"}
+                            <a href="__UPLOAD__/{$vo.path}" target="_blank" class="text-default"><i class="fa fa-file-o"></i></a>
+                            {/case}
+                            {/switch}
+                        </td>
+                        <td>{$vo.name}</td>
+                        <td>{:format_bytes($vo.size)}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                            {if $vo.status} 
+                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
+                            {else}
+                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">禁用</button>
+                            {/if}
+                        </td>
+                        <td> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td>
+                            <button class="btn" type="button" id="del">删除 </button>
+                        </td>
+                        <td colspan="7">
+                            {$page|raw}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    function CheckAll(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            var e = form.elements[i];
+            if (e.Name !== "chkAll" && e.disabled !== true)
+                e.checked = form.chkAll.checked;
+        }
+    }
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#fileexit').select2({
+            placeholder: "全部文件类型 -"
+        });
+        $('#timestart,#timeend').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                timePicker: true, //是否显示小时和分钟  
+                timePickerIncrement: 1, //时间的增量，单位为分钟  
+                timePicker12Hour: false, //是否使用12小时制来显示时间  
+                locale: {
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                    applyLabel: '确定',
+                    cancelLabel: '取消',
+                    firstDay: 1
+                }
+            }, function (start, end, label) {
+               $('#timestart').data('daterangepicker').autoUpdateInput=true;
+               $('#timeend').data('daterangepicker').autoUpdateInput=true;
+            }).on('cancel.daterangepicker', function () {
+                $(this).val('');
+            });
+        //显示原图
+        $('.showimg').click(function () {
+            var imglink = $(this).attr('data-url');
+            var editdialog = bootbox.dialog({
+                message: '<img src="' + imglink + '" class="img-responsive" style="display:block; margin:0 auto"/>'
+            });
+        });
+        $('#del').click(function () {
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        $('#delform').submit();
+                    }
+                }
+            });
+        });
+        $('.status').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('filemanage/setstate')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('filemanage/delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

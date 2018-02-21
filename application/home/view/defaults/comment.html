@@ -1,0 +1,39 @@
+<div class="ui top attached tabular menu" id="comment">
+    <a class="active item" data-tab="first">评论</a>
+    <a class="item" data-tab="second">评论内容</a>
+</div>
+<div class="ui bottom attached active tab segment" data-tab="first">
+    <form class="ui reply form" action="{:url('home/single/index',['id'=>6])}" method="post">
+        <input name="modelField[mid]" type="hidden" value="{$info.model_id}">
+        <input name="modelField[did]" type="hidden" value="{$data.id}">
+        <div class="field">
+            <input name="modelField[commenter]" placeholder="留言者">
+        </div>
+        <div class="field">
+            <textarea name="modelField[message]" placeholder="留言内容"></textarea>
+        </div>
+        {if config('captcha_signin_model')}
+        <div class="inline fields">
+            <div class="field"><input type="text" placeholder="验证码" name="captcha" size="6"></div>
+            <div class="field"><img src="{:captcha_src()}" width="129" height="40"  id="captcha" style="cursor: pointer;" onclick="this.src = '{:captcha_src()}?m=' + Math.random();" title="点击刷新" alt="captcha" /></div>
+        </div>
+        {/if}
+        {:token()}
+        <button class="ui blue labeled submit icon button" type="submit"><i class="icon edit"></i>提交我的评论 </button>
+    </form>
+</div>
+<div class="ui bottom attached tab segment" data-tab="second">
+    <div class="ui comments">
+        {uk:select table="comment" field="id,commenter,message,create_time" where="mid='[$info.model_id]' and did='[$data.id]' and status='1'"}
+        <div class="comment">
+            <div class="content">
+                <a class="author">{$vo.commenter}</a>
+                <div class="metadata">
+                    <span class="date">{$vo.create_time}</span>
+                </div>
+                <div class="text">{$vo.message}</div>
+            </div>
+        </div>
+        {/uk:select}
+    </div>
+</div>

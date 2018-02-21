@@ -1,0 +1,84 @@
+<!--查询当前栏目子栏目存储在$columChild中-->
+{uk:column  key="[$info.id]"  select="show"  id="columChild" }
+{notempty name="columChild"}
+<div class="ui styled accordion">
+    <!--此处演示调用当前栏目下级 ,如果需要调用固定栏目标签,key改为栏目ID即可-->
+    {volist name="columChild" id="v1"}
+    <div class="title"> {if isset($v1.cnode)}<i class="dropdown icon"></i>{/if}<a href="{$v1.url}">{$v1.title}</a></div>
+    {if isset($v1.cnode)}
+    <div class="content">
+        <div class="accordion  hidden">
+            {volist name="$v1.cnode" id="v2"}
+            <div class="title"> {if isset($v2.cnode)}<i class="dropdown icon"></i>{/if}<a href="{$v2.url}">{$v2.title}</a></div>
+            {if isset($v2.cnode)}
+            <div class="content">
+                <div class="accordion  hidden">
+                    {volist name="$v2.cnode" id="v3"}
+                    <div class="title"><a href="{$v3.url}">{$v3.title}</a></div>
+                    {/volist}
+                </div>
+            </div>
+            {/if}
+            {/volist}
+        </div>
+    </div>
+    {/if}
+    {/volist}
+</div>
+{/notempty}
+
+<div class="ui segment">
+    <div class="ui top attached large  label blue">图集推荐</div>
+    <div class="ui two column grid ">
+        {uk:select table="photo" field="id,cname,title,cover"  limit="2"  place="1"}
+        <div class="column">
+            <div class="ui fluid image">
+                <a href="{$vo.url}" class="ui medium rounded  image">
+                    <img  src="__UPLOAD__/{$vo.cover.thumb}" alt="{$vo.title}">
+                    <div class="ui bottom attached large  label grey titFilter">{$vo.title}</div>
+                </a>
+            </div>
+        </div>
+        {/uk:select}
+    </div>
+</div>
+
+<div class="ui segment">
+    <div class="ui top attached large  label blue">热门&推荐文章</div>
+    <div class="ui divided list articleList">
+        {uk:select table="article" field="id,cname,title,description,create_time"  limit="4"  place="1" order="hits desc"}
+        <div class="item">
+            <span class="right floated">{:date('Y-m-d',$vo.create_time)}</span>
+            <a href="{$vo.url}"><i class="file outline icon"></i>{$vo.title}</a>
+        </div>
+        {/uk:select}
+    </div>
+</div>
+
+<div class="ui segment">
+    <div class="ui top attached large  label blue">随机文章</div>
+    <div class="ui divided list articleList">
+        {uk:select table="article" field="id,cname,title,description,create_time"  limit="4"  order="rand()"}
+        <div class="item">
+            <span class="right floated">{:date('Y-m-d',$vo.create_time)}</span>
+            <a href="{$vo.url}"><i class="file outline icon"></i>{$vo.title}</a>
+        </div>
+        {/uk:select}
+    </div>
+</div>
+<div class="ui segment">
+    <div class="ui top attached large  label blue">最新产品</div>
+    <div class="ui two column grid ">
+        {uk:select table="product" field="id,cname,title,cover"  limit="2"  order="create_time desc"}
+        <div class="column">
+            <div class="ui fluid image">
+                <a href="{$vo.url}" class="ui medium rounded  image" >
+                    <img  src="__UPLOAD__/{$vo.cover.thumb}" alt="{$vo.title}">
+                    <div class="ui bottom attached large  label grey titFilter">{$vo.title}</div>
+                </a>
+            </div>
+        </div>
+        {/uk:select}
+    </div>
+</div>
+

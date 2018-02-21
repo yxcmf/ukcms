@@ -1,0 +1,106 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">应用列表</span>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>应用</th><th>应用名称</th><th>版本</th><th>数据表</th><th>作者</th><th width="60">状态</th><th width="60">操作</th>
+                </tr>
+                {volist name="list" id="vo"}
+                <tr id="{$key}">
+                    <td>{$key}</td>
+                    <td><a href="{:url($key.'/index/index')}" target="_blank" data-toggle="tooltip" data-placement="top"  data-original-title="点击预览">{$vo.title}</a></td>
+                    <td>{$vo.version}</td>
+                    <td>
+                        {foreach :$vo.dbTables as $k=>$v } 
+                          <span class="label label-primary" data-toggle="tooltip" data-placement="top"  data-original-title="{$v}">{$k}</span>
+                        {/foreach}
+                    </td>
+                    <td>{$vo.author}</td>
+                    <td>
+                        {if $vo.installstate}
+                        {if $vo.status} 
+                        <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded ifwork">启用</button>
+                        {else}
+                        <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded ifwork">禁用</button>
+                        {/if}
+                        {/if}
+                    </td>
+                    <td>{if $vo.installstate} <button data-url="{:url('uninstall',['app'=>$key])}"  class=" btn  btn-sm btn-warning uninstall" >卸载</button>{else}<button data-url="{:url('install',['app'=>$key])}" class="btn btn-sm btn-success install" >安装</button> {/if}</td>
+                </tr>
+                {/volist}
+            </table>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.ifwork').click(function () {
+            var nowdom = $(this);
+            var app = nowdom.parent().parent().attr('id');
+            var ifwork = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('setstate')}",
+                type: "GET",
+                data: {
+                    app: app,
+                    ifwork: ifwork
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (ifwork == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (ifwork == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+
+        $('.uninstall').click(function () {
+            var url = $(this).attr('data-url');
+            bootbox.confirm({
+                message: '确认卸载吗？卸载后应用数据库数据不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        location.href = url;
+                    }
+                }
+            });
+        });
+        $('.install').click(function () {
+            var url = $(this).attr('data-url');
+            bootbox.confirm({
+                message: '确认安装应用吗？',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        location.href = url;
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

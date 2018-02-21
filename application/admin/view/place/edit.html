@@ -1,0 +1,36 @@
+{extend name="layout"/}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title"> 编辑推荐位</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>栏目模型</label>
+            <select  name="mid" class="form-control">
+                <option value="0">=所有栏目内容模型=</option>
+                {volist name="modelList" id="vo"}
+                <option value="{$key}" {if $info.mid==$key}selected{/if}>{$vo}</option>
+                {/volist}
+            </select>
+            <small class="text-muted">非必选，若不指定则所有栏目内容模型都可使用</small>
+        </fieldset>
+        
+        <fieldset class="form-group">
+            <label>推荐位名称*</label>
+            <input type="text" class="form-control" name="title" placeholder="推荐位名称" value="{$info.title}">
+        </fieldset>
+        
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="{$info.orders}">
+        </fieldset>
+        
+        <div class="panel-footer text-right">
+            <input type="hidden" name="id"  value="{$info.id}">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}

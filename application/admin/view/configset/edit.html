@@ -1,0 +1,92 @@
+{extend name="layout"/}
+
+{block name="content"}
+<form  method="post" action="{:url('edit',['id'=>$info.id])}">
+    <div class="panel">
+        <div class="panel-body">
+            <fieldset class="form-group">
+                <label >分组*</label>
+                <select id="group" name="group" class="form-control select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                    <option></option>
+                    {volist name="groupArray" id="vo"}
+                    <option value="{$key}" {if $info.group==$key}selected=""{/if}>{$vo}</option>
+                    {/volist}
+                </select>
+            </fieldset>
+            <fieldset class="form-group">
+                <label >配置类型*</label>
+                <select id="type" name="type" class="form-control select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                    <option></option>
+                    {volist name="fieldType" id="vo"}
+                    <option value="{$vo.name}" {if $info.type==$vo.name}selected=""{/if}  data-ifoption="{$vo.ifoption}">{$vo.title}</option>
+                    {/volist}
+                </select>
+            </fieldset>
+            <fieldset class="form-group">
+                <label>配置名称*</label>
+                <input type="text" class="form-control" name="name" placeholder="字段英文名称" value="{$info.name}">
+            </fieldset>
+            <fieldset class="form-group">
+                <label>配置标题*</label>
+                <input type="text" class="form-control" name="title" placeholder="字段中文标题" value="{$info.title}">
+            </fieldset>
+            <fieldset class="form-group">
+                <label>配置默认值</label>
+                <textarea class="form-control" rows="2" name="value" placeholder="未指定值时默认插入字段的值">{$info.value}</textarea>
+            </fieldset>
+            <fieldset class="form-group" id="options" {if !$fieldType[$info['type']]['ifoption']}style="display:none"{/if}>
+                <label>选项</label>
+                <textarea class="form-control" rows="4" name="options" placeholder="值:描述
+值:描述
+值:描述
+.....">{$info.options}</textarea>
+                <small class="text-muted" >用于单选、多选、下拉等类型</small>
+            </fieldset>
+            <fieldset class="form-group">
+                <label>配置备注说明</label>
+                <textarea class="form-control" rows="3" name="remark" placeholder="填写字段说明">{$info.remark}</textarea>
+            </fieldset>
+            <fieldset class="form-group">
+                <label>排序</label>
+                <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="{$info.orders}">
+            </fieldset>
+            <fieldset class="form-group">
+                <label>状态</label>
+                <label for="switcher-status" class="switcher switcher-primary">
+                    <input type="checkbox" name="status" value="1" id="switcher-status" {if $info.status}checked=""{/if}>
+                    <div class="switcher-indicator">
+                        <div class="switcher-yes">启用</div>
+                        <div class="switcher-no">停用</div>
+                    </div>
+                    &nbsp;
+                </label>
+            </fieldset>
+            <div class="panel-footer text-right">
+                <input type="submit" class="btn btn-primary" value="确认修改">
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="javascript"}
+<script >
+    $(function () {
+        $('#type').select2({
+            placeholder: '选择配置类型',
+        });
+        $('#group').select2({
+            placeholder: '选择配置分组',
+        });
+        $('#type').change(function () {
+            var ifoption = $(this).find("option:selected").attr("data-ifoption");
+            //选项字段手动和关联隐显
+            if (ifoption == '1') {
+                $('#options').show();
+            } else {
+                $('#options').hide();
+            }
+
+        });
+    });
+</script>
+{/block}

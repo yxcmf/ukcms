@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>会员注册</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="__STATIC__/layui/css/layui.css"  media="all">
+        <link rel="stylesheet" href="__STATIC__/member/login.css"  media="all">
+    </head>
+    <body>
+
+        <div class="layui-container" style="margin-top:10%">  
+            <div class="layui-row layui-col-space30">
+                <div class="layui-col-md4 layui-col-md-offset4 layui-col-sm6 layui-col-sm-offset3 layui-col-xs12 box">
+                    <div class="box-title"> UKCMS会员注册</div>
+                    <form class="layui-form layui-form-pane" action="" method="post">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label layui-hide-xs">账户</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="account" required  lay-verify="required" placeholder="请输入账户" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label layui-hide-xs">密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label layui-hide-xs">确认密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="password_confirm" required lay-verify="required" placeholder="请输入确认密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label layui-hide-xs">昵称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="nickname" required  lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label layui-hide-xs">验证码</label>
+                            <div class="layui-input-inline layui-row">
+                                    <div class="layui-col-xs5">
+                                        <input type="text" name="captcha" required lay-verify="required" placeholder="验证码" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-col-xs7">
+                                        <img src=""   id="captcha" width="110" height="37" style="cursor: pointer;" onclick="this.src = '{:captcha_src()}?m=' + Math.random();" title="点击刷新" alt="captcha" />
+                                    </div>
+                            </div>
+                        </div>
+                        {:token()}
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="formDemo">注册</button>
+                                <a href="{:url('login')}" type="reset" class="layui-btn layui-btn-primary">登录</a>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                    <p class="binfo">UKcmsMC v {$version}</p>
+                </div>
+            </div>
+        </div>
+
+        <script src="__STATIC__/layui/layui.js" charset="utf-8"></script>
+        <script>
+                                            //JavaScript代码区域
+                                            layui.use(['jquery', 'element'], function () {
+                                                var $ = layui.$
+                                                        , element = layui.element;
+                                                $('#captcha').attr('src', '{:captcha_src()}?m=' + Math.random());
+                                            });
+        </script>
+    </body>
+</html>

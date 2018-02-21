@@ -1,0 +1,39 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">添加钩子</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group">
+            <label>钩子名称*</label>
+            <input type="text" class="form-control" name="name" placeholder="钩子名称" value="">
+             <small class="text-muted">英文数字下划线组合</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>钩子描述*</label>
+            <input type="text" class="form-control" name="title" placeholder="钩子描述" value="">
+            <small class="text-muted">中文说明</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>排序</label>
+            <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="100">
+            <small class="text-muted">数字越大越靠前</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>状态</label>
+            <label for="switcher-primary" class="switcher switcher-primary">
+                <input type="checkbox" name="status" value="1" id="switcher-primary" checked="">
+                <div class="switcher-indicator">
+                    <div class="switcher-yes">启用</div>
+                    <div class="switcher-no">禁用</div>
+                </div>
+                &nbsp;
+            </label>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认添加">
+        </div>
+    </form>
+</div>
+{/block}

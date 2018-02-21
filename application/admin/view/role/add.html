@@ -1,0 +1,163 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .tree li {
+        list-style-type:none;
+        margin:0;
+        padding:10px 5px 0 5px;
+        position:relative
+    }
+    .tree i{ font-size: 16px ; color:#999; }
+    .tree li::before, .tree li::after {
+        content:'';
+        left:-20px;
+        position:absolute;
+        right:auto
+    }
+    .tree li::before {
+        border-left:1px solid #ccc;
+        bottom:50px;
+        height:100%;
+        top:0;
+        width:1px
+    }
+    .tree li::after {
+        border-top:1px solid #ccc;
+        height:20px;
+        top:25px;
+        width:25px
+    }
+</style>
+{/block}
+{block name="content"}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#tabs-info" data-toggle="tab">
+            角色信息
+        </a>
+    </li>
+    <li>
+        <a href="#tabs-menu" data-toggle="tab">
+            菜单权限
+        </a>
+    </li>
+</ul>
+<form method="post" action="">
+    <div class="tab-content tab-content-bordered">
+        <div class="tab-pane fade in active" id="tabs-info">
+            <div class="panel">
+                <div class="panel-body">
+                    <fieldset class="form-group">
+                        <label>上级角色</label>
+                        <select id="path" name="path" class="form-control  select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                            <option></option>
+                            <option value="{$nowRole.path}{$nowRole.id}," selected>{$nowRole.names}</option>
+                            {volist name="roles" id="vo" }
+                            <option value="{$vo.path}{$vo.id},">{:str_repeat('┝┈┈', $vo['deep']-1)}{$vo.names}</option>
+                            {/volist}
+                        </select>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>角色名称</label>
+                        <input type="text" class="form-control" name="names" placeholder="角色中文名称" value="">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>角色描述</label>
+                        <textarea class="form-control" rows="3" name="description"></textarea>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label>排序</label>
+                        <input type="number" class="form-control" name="orders" placeholder="只能是正整数" value="100">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label>状态</label>
+                        <label for="switcher-primary" class="switcher switcher-primary">
+                            <input type="checkbox" name="status" value="1" id="switcher-primary" checked="">
+                            <div class="switcher-indicator">
+                                <div class="switcher-yes">启用</div>
+                                <div class="switcher-no">禁用</div>
+                            </div>
+                            &nbsp;
+                        </label>
+                    </fieldset>
+                    <div class="panel-footer text-right">
+                        <input type="submit" class="btn btn-primary" value="添加角色">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade in" id="tabs-menu">
+            <div class="tree">
+                <ul id="menu">
+                </ul>
+            </div>
+            <div class="panel-footer text-right">
+                <input type="submit" class="btn btn-primary" value="添加角色">
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+
+{block name="javascript"}
+<script>
+    var menukey = {};
+    function printMenu(lever) {
+        var smenu = '';
+        var cicon = '';
+        for (var i in lever) {
+            cicon = lever[i].cnode === undefined ? '' : '<i class="fa fa-minus-square-o"></i>&nbsp;';
+            //创建一唯数组
+            menukey[lever[i].id] = lever[i];
+            smenu += '<li><div class="btn btn-outline">' + cicon + ' <label class="custom-control custom-checkbox checkbox-inline"><input type="checkbox" class="custom-control-input" name="ids[]" value="' + lever[i].id + '"><span class="custom-control-indicator"></span><span class="' + lever[i].icon + '"></span> ' + lever[i].title + '</lable></div>';
+            if (lever[i].cnode === undefined) {
+                smenu += '</li>';
+            } else {
+                smenu += '<ul>';
+                smenu += printMenu(lever[i].cnode);
+                smenu += '</ul></li>';
+            }
+        }
+        return smenu;
+    }
+    function pcheck(dom) {
+        dom.find(">div>label>input[type='checkbox']").prop("checked", true);
+        var pdom = dom.parent('ul').parent('li');
+        if (pdom.length > 0) {
+            pcheck(pdom);
+        } else
+            return;
+    }
+    $(function () {
+        var smenus = printMenu(menu);
+        $('#menu').html(smenus);
+        $('#path').select2({
+            placeholder: '选择角色'
+        });
+        $('.tree li:has(ul)').addClass('parent_li').find(' > div').attr('title', 'Collapse this branch');
+        $('.tree li.parent_li > div >i').on('click', function (e) {
+            var dom = $(this).parent();
+            var children = dom.parent('li.parent_li').find(' > ul > li');
+            if (children.is(":visible")) {
+                children.hide('fast');
+                dom.attr('title', 'Expand this branch').find(' > i').addClass('fa-plus-square-o').removeClass('fa-minus-square-o');
+            } else {
+                children.show('fast');
+                dom.attr('title', 'Collapse this branch').find(' > i').addClass('fa-minus-square-o').removeClass('fa-plus-square-o');
+            }
+            e.stopPropagation();
+        });
+        $(".tree input[type='checkbox']").click(function () {
+            var ifchoose = $(this).prop("checked");
+            var pdom = $(this).parent().parent().parent();
+            if (ifchoose) {
+                pcheck(pdom.parent().parent());
+                pdom.find("ul input[type='checkbox']").prop("checked", true);
+            } else {
+                pdom.find("ul input[type='checkbox']").prop("checked", false);
+            }
+        });
+    });
+</script>
+{/block}

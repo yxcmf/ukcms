@@ -1,0 +1,69 @@
+{extend name="defaults/layout"/}
+{block name="seo"}
+<title>{$info.meta_title}-{$title}</title>	
+<meta name="keywords" content="{$info.meta_keywords}-{$keywords}" />
+<meta name="description" content="{$info.meta_description}-{$description}">
+{/block}
+{block name="toplink"}
+<script>
+    $(document).ready(function () {
+
+    });
+</script>
+{/block}
+{block name="content"} 
+<div class="ui  padded grid " id="listBanner">
+    <div class="blue column">
+        <div class="ui container ">
+            <h3>{$info.title}</h3>
+            <p>{$info.meta_description}</p>
+        </div>  
+    </div>
+</div>
+
+<div class="ui container" id="box">
+    <div class="ui  grid stackable">
+        <div class="eight wide column">
+            <div class="ui  breadcrumb">
+                <a class="section" href="{:url('home/index/index')}"> 首页</a>
+                {volist name="crumbs" id="vo"}
+                <i class="right chevron icon divider"></i><a class="section" href="{$vo.url}"> {$vo.title}</a>
+                {/volist}
+            </div>
+            <form class="ui form segment" method="post" action="">
+                {include file="defaults/form"  /}
+                {if config('captcha_signin_model')}
+                <div class="inline fields">
+                    <div class="field"><input type="text" placeholder="验证码" name="captcha" size="6"></div>
+                    <div class="field"><img src="{:captcha_src()}" width="129" height="40"  id="captcha" style="cursor: pointer;" onclick="this.src = '{:captcha_src()}?m=' + Math.random();" title="点击刷新" alt="captcha" /></div>
+                </div>
+                {/if}
+                {:token()}
+                <button class="ui submit button blue" type="submit">提交</button>
+            </form>
+        </div>
+        <div class="eight wide column" id="rightComun">
+            <div class="ui comments segment" >
+                {empty name="list.data"}
+                <div class="ui message">
+                    <p>没有审核过的留言...</p>
+                </div>
+                {/empty}
+                {volist name="list.data" id="vo"}
+                <div class="comment">
+                    <div class="content">
+                        <a class="author">{$vo.name}</a>
+                        <div class="metadata">
+                            <div class="date">{:date('Y-m-d H:i:s',$vo.create_time)}</div>
+                        </div>
+                        <div class="text">{$vo.content}</div>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                {/volist}
+            </div>
+             {$page|raw}
+        </div>
+    </div>
+</div>
+{/block}

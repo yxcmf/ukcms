@@ -1,0 +1,102 @@
+<script type="text/javascript" src="__STATIC__/jedate/jquery.jedate.min.js"></script>
+<link type="text/css" rel="stylesheet" href="__STATIC__/jedate/skin/jedate.css">
+{volist name="fieldList" id="vo"}
+{if $vo.ifeditable && !in_array($vo.name,['orders','status'])}
+{switch name="vo.type"}
+
+{case value="hidden"}
+{if $vo.value}<input type="hidden" class="form-control" name="{$vo.fieldArr}[{$vo.name}]"  value="{$vo.value}">{/if}
+{/case}
+
+{case value="text"}
+<div class="field">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    <input type="text" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}" value="{$vo.value}">
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="textarea"}
+<div class="field">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    <textarea class="form-control" rows="5" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}">{$vo.value}</textarea>
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="checkbox"}
+<div class="inline fields">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    {volist name="vo.options" id="v"}
+    <div class="field">
+        <div class="ui checkbox">
+            <input type="checkbox" name="{$vo.fieldArr}[{$vo.name}][]" value="{$key}" {if in_array($key,$vo['value'])}checked=''{/if}>
+                   <label>{$v}</label>
+        </div>
+    </div>
+    {/volist}
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="radio"}
+<div class="inline fields">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    {volist name="vo.options" id="v"}
+       <div class="field">
+        <div class="ui radio checkbox">
+            <input type="radio" name="{$vo.fieldArr}[{$vo.name}]" value="{$key}" {if $key==$vo ['value']}checked=''{/if}>
+                   <label>{$v}</label>
+        </div>
+    </div>
+    {/volist}
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="switch"}
+<div class="field">
+   <div class="ui toggle checkbox">
+      <input type="checkbox" name="{$vo.fieldArr}[{$vo.name}]" value="1" id="{$vo.fieldArr}{$vo.name}" {if 1==$vo['value']}checked=''{/if}>
+      <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    </div>
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="select"}
+<div class="field">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    <select name="{$vo.fieldArr}[{$vo.name}]">
+        {volist name="vo.options" id="v"}
+        <option value="{$key}"  {if $key==$vo['value']}selected{/if}>{$v}</option>
+        {/volist}
+    </select>
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="number"}
+<div class="field">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    <input type="number" class="form-control" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}" value="{$vo.value}">
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+</div>
+{/case}
+
+{case value="datetime"}
+<div class="field">
+    <label>{$vo.title} {if $vo.ifrequire}*{/if}</label>
+    <input type="text"  id="{$vo.fieldArr}{$vo.name}" name="{$vo.fieldArr}[{$vo.name}]" placeholder="请输入{$vo.title}" value="{$vo.value}">
+    {if $vo.remark} <small class="text-muted">{$vo.remark}</small>{/if}
+ </div>
+<script>
+$("#{$vo.fieldArr}{$vo.name}").jeDate({
+    format:"YYYY-MM-DD hh:mm:ss",
+    zIndex:3000
+})
+</script>
+{/case}
+{/switch}
+{/if}
+{/volist}

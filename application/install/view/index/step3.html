@@ -1,0 +1,28 @@
+{extend name="layout"/}
+
+{block name="header"}
+<li class="am-btn"><i class="am-icon-file-o am-icon-fw"></i> 使用协议</li>
+<li class="am-btn"><i class="am-icon-circle-o-notch am-icon-fw"></i>  环境检测</li>
+<li class="am-btn"><i class="am-icon-database am-icon-fw"></i> 创建数据库</li>
+<li class="am-btn active"><i class="am-icon-check am-icon-fw"></i> 安装完成</li>
+{/block}
+
+{block name="body"}
+
+<ul id="show-list" class="am-list am-list-static am-list-border am-list-striped">
+</ul>
+<script type="text/javascript">
+    var list = document.getElementById('show-list');
+    function showmsg(msg, classname) {
+        var li = document.createElement('li');
+        li.innerHTML = msg;
+        classname && li.setAttribute('class', classname);
+        list.appendChild(li);
+        document.body.scrollTop += 50;
+    }
+</script>
+<button class="am-btn am-btn-success" id="working">
+    <i class="am-icon-spinner am-icon-spin"></i>
+    安装中
+</button>
+{/block}
