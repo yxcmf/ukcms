@@ -1,0 +1,11 @@
+User-agent: *
+
+Disallow: /application/
+
+Disallow: /config/
+Disallow: /data/
+Disallow: /extend/
+Disallow: /route/
+Disallow: /runtime/
+Disallow: /thinkphp/
+Disallow: /vendor/
