@@ -156,11 +156,11 @@ abstract class Builder
     /**
      * 数据绑定处理
      * @access protected
-     * @param  Query     $query        查询对象
-     * @param  string    $key
-     * @param  mixed     $data 数据
-     * @param  array     $bind 绑定数据
-     * @param  string    $suffix
+     * @param  Query     $query     查询对象
+     * @param  string    $key       字段名
+     * @param  mixed     $data      数据
+     * @param  array     $bind      绑定数据
+     * @param  string    $suffix    绑定后缀
      * @return string
      */
     protected function parseDataBind(Query $query, $key, $data, $bind = [], $suffix = '')
@@ -168,22 +168,21 @@ abstract class Builder
         // 过滤非标量数据
         if (0 === strpos($data, ':') && $query->isBind(substr($data, 1))) {
             return $data;
-        } else {
-            $key  = str_replace(['.', '->'], '_', $key);
-            $name = 'data__' . $key . $suffix;
-            $query->bind($name, $data, isset($bind[$key]) ? $bind[$key] : PDO::PARAM_STR);
-            return ':' . $name;
         }
+        $key  = str_replace(['.', '->'], '_', $key);
+        $name = 'data__' . $key . $suffix;
+        $query->bind($name, $data, isset($bind[$key]) ? $bind[$key] : PDO::PARAM_STR);
+        return ':' . $name;
     }
 
     /**
      * 字段名分析
-     * @access protected
-     * @param  Query  $query        查询对象
-     * @param  string $key
+     * @access public
+     * @param  Query  $query    查询对象
+     * @param  string $key      字段名
      * @return string
      */
-    protected function parseKey(Query $query, $key)
+    public function parseKey(Query $query, $key)
     {
         return $key;
     }
@@ -191,8 +190,8 @@ abstract class Builder
     /**
      * field分析
      * @access protected
-     * @param  Query     $query        查询对象
-     * @param  mixed     $fields
+     * @param  Query     $query     查询对象
+     * @param  mixed     $fields    字段名
      * @return string
      */
     protected function parseField(Query $query, $fields)
@@ -220,14 +219,15 @@ abstract class Builder
     /**
      * table分析
      * @access protected
-     * @param  Query     $query        查询对象
-     * @param  mixed     $tables
+     * @param  Query     $query     查询对象
+     * @param  mixed     $tables    表名
      * @return string
      */
     protected function parseTable(Query $query, $tables)
     {
         $item    = [];
         $options = $query->getOptions();
+
         foreach ((array) $tables as $key => $table) {
             if (!is_numeric($key)) {
                 $key    = $this->connection->parseSqlTable($key);
@@ -249,7 +249,7 @@ abstract class Builder
     /**
      * where分析
      * @access protected
-     * @param  Query     $query        查询对象
+     * @param  Query     $query   查询对象
      * @param  mixed     $where   查询条件
      * @return string
      */
@@ -273,9 +273,8 @@ abstract class Builder
     /**
      * 生成查询条件SQL
      * @access public
-     * @param  Query     $query        查询对象
-     * @param  mixed     $where
-     * @param  array     $options
+     * @param  Query     $query     查询对象
+     * @param  mixed     $where     查询条件
      * @return string
      */
     public function buildWhere(Query $query, $where)

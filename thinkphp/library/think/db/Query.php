@@ -292,7 +292,8 @@ class Query
     public function connect($config = [], $name = false)
     {
         $this->connection = Connection::instance($config, $name);
-        $query            = $this->connection->getConfig('query');
+
+        $query = $this->connection->getConfig('query');
 
         if (__CLASS__ != trim($query, '\\')) {
             return new $query($this->connection);
@@ -507,18 +508,17 @@ class Query
                     }
             }
             return $this->getTable() . '_' . $seq;
-        } else {
-            // 当设置的分表字段不在查询条件或者数据中
-            // 进行联合查询，必须设定 partition['num']
-            $tableName = [];
-            for ($i = 0; $i < $rule['num']; $i++) {
-                $tableName[] = 'SELECT * FROM ' . $this->getTable() . '_' . ($i + 1);
-            }
-
-            $tableName = '( ' . implode(" UNION ", $tableName) . ') AS ' . $this->name;
-
-            return $tableName;
         }
+        // 当设置的分表字段不在查询条件或者数据中
+        // 进行联合查询，必须设定 partition['num']
+        $tableName = [];
+        for ($i = 0; $i < $rule['num']; $i++) {
+            $tableName[] = 'SELECT * FROM ' . $this->getTable() . '_' . ($i + 1);
+        }
+
+        $tableName = '( ' . implode(" UNION ", $tableName) . ') AS ' . $this->name;
+
+        return $tableName;
     }
 
     /**
@@ -526,10 +526,9 @@ class Query
      * @access public
      * @param  string $field   字段名
      * @param  mixed  $default 默认值
-     * @param  bool   $force   强制转为数字类型
      * @return mixed
      */
-    public function value($field, $default = null, $force = false)
+    public function value($field, $default = null)
     {
         $this->parseOptions();
 
@@ -537,10 +536,6 @@ class Query
 
         if (!empty($this->options['fetch_sql'])) {
             return $result;
-        }
-
-        if ($force) {
-            $result += 0;
         }
 
         return $result;
@@ -558,6 +553,29 @@ class Query
         $this->parseOptions();
 
         return $this->connection->column($this, $field, $key);
+    }
+
+    /**
+     * 聚合查询
+     * @access public
+     * @param  string $aggregate    聚合方法
+     * @param  string $field        字段名
+     * @param  bool   $force        强制转为数字类型
+     * @return mixed
+     */
+    public function aggregate($aggregate, $field, $force = false)
+    {
+        $this->parseOptions();
+
+        $result = $this->connection->aggregate($this, $aggregate, $field);
+
+        if (!empty($this->options['fetch_sql'])) {
+            return $result;
+        } elseif ($force) {
+            $result += 0;
+        }
+
+        return $result;
     }
 
     /**
@@ -579,10 +597,10 @@ class Query
                 $query->fetchSql(true);
             }
 
-            return $query->value('COUNT(*) AS tp_count', 0, true);
+            return $query->aggregate('COUNT', '*', true);
         }
 
-        return $this->value('COUNT(' . $field . ') AS tp_count', 0, true);
+        return $this->aggregate('COUNT', $field, true);
     }
 
     /**
@@ -593,31 +611,31 @@ class Query
      */
     public function sum($field)
     {
-        return $this->value('SUM(' . $field . ') AS tp_sum', 0, true);
+        return $this->aggregate('SUM', $field, true);
     }
 
     /**
      * MIN查询
      * @access public
-     * @param  string $field 字段名
-     * @param  bool   $force   强制转为数字类型
+     * @param  string $field    字段名
+     * @param  bool   $force    强制转为数字类型
      * @return mixed
      */
     public function min($field, $force = true)
     {
-        return $this->value('MIN(' . $field . ') AS tp_min', 0, $force);
+        return $this->aggregate('MIN', $field, $force);
     }
 
     /**
      * MAX查询
      * @access public
-     * @param  string $field 字段名
-     * @param  bool   $force   强制转为数字类型
+     * @param  string $field    字段名
+     * @param  bool   $force    强制转为数字类型
      * @return mixed
      */
     public function max($field, $force = true)
     {
-        return $this->value('MAX(' . $field . ') AS tp_max', 0, $force);
+        return $this->aggregate('MAX', $field, $force);
     }
 
     /**
@@ -628,7 +646,7 @@ class Query
      */
     public function avg($field)
     {
-        return $this->value('AVG(' . $field . ') AS tp_avg', 0, true);
+        return $this->aggregate('AVG', $field, true);
     }
 
     /**
@@ -1043,9 +1061,11 @@ class Query
                 if (is_string($field)) {
                     $field = explode(',', $field);
                 }
+
                 foreach ($field as $key => $val) {
                     if (is_numeric($key)) {
-                        $fields[]                   = $alias . '.' . $val;
+                        $fields[] = $alias . '.' . $val;
+
                         $this->options['map'][$val] = $alias . '.' . $val;
                     } else {
                         if (preg_match('/[,=\.\'\"\(\s]/', $key)) {
@@ -1053,7 +1073,9 @@ class Query
                         } else {
                             $name = $alias . '.' . $key;
                         }
-                        $fields[]                   = $name . ' AS ' . $val;
+
+                        $fields[] = $name . ' AS ' . $val;
+
                         $this->options['map'][$val] = $name;
                     }
                 }
@@ -1600,6 +1622,7 @@ class Query
                 }
             }
         }
+
         $this->options['table'] = $table;
 
         return $this;
@@ -1626,33 +1649,35 @@ class Query
      */
     public function order($field, $order = null)
     {
-        if (!empty($field)) {
-            if (is_string($field)) {
-                if (!empty($this->options['via'])) {
-                    $field = $this->options['via'] . '.' . $field;
+        if (empty($field)) {
+            return $this;
+        }
+
+        if (is_string($field)) {
+            if (!empty($this->options['via'])) {
+                $field = $this->options['via'] . '.' . $field;
+            }
+
+            $field = empty($order) ? $field : [$field => $order];
+        } elseif (!empty($this->options['via'])) {
+            foreach ($field as $key => $val) {
+                if (is_numeric($key)) {
+                    $field[$key] = $this->options['via'] . '.' . $val;
+                } else {
+                    $field[$this->options['via'] . '.' . $key] = $val;
+                    unset($field[$key]);
                 }
-
-                $field = empty($order) ? $field : [$field => $order];
-            } elseif (!empty($this->options['via'])) {
-                foreach ($field as $key => $val) {
-                    if (is_numeric($key)) {
-                        $field[$key] = $this->options['via'] . '.' . $val;
-                    } else {
-                        $field[$this->options['via'] . '.' . $key] = $val;
-                        unset($field[$key]);
-                    }
-                }
             }
+        }
 
-            if (!isset($this->options['order'])) {
-                $this->options['order'] = [];
-            }
+        if (!isset($this->options['order'])) {
+            $this->options['order'] = [];
+        }
 
-            if (is_array($field)) {
-                $this->options['order'] = array_merge($this->options['order'], $field);
-            } else {
-                $this->options['order'][] = $field;
-            }
+        if (is_array($field)) {
+            $this->options['order'] = array_merge($this->options['order'], $field);
+        } else {
+            $this->options['order'][] = $field;
         }
 
         return $this;
@@ -2060,6 +2085,19 @@ class Query
 
     /**
      * 查询参数赋值
+     * @access public
+     * @param  string $name     参数名
+     * @param  mixed  $value    值
+     * @return $this
+     */
+    public function option($name, $value)
+    {
+        $this->options[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * 查询参数赋值
      * @access protected
      * @param  array $options 表达式参数
      * @return $this
@@ -2080,9 +2118,8 @@ class Query
     {
         if ('' === $name) {
             return $this->options;
-        } else {
-            return isset($this->options[$name]) ? $this->options[$name] : null;
         }
+        return isset($this->options[$name]) ? $this->options[$name] : null;
     }
 
     /**
@@ -2102,10 +2139,9 @@ class Query
      * 设置关联查询JOIN预查询
      * @access public
      * @param  string|array $with 关联方法名称
-     * @param  bool|array   $cache 设置关联缓存
      * @return $this
      */
-    public function with($with, $cache = false)
+    public function with($with)
     {
         if (empty($with)) {
             return $this;
@@ -2155,8 +2191,6 @@ class Query
         } else {
             $this->options['with'] = $with;
         }
-
-        $this->options['relation_cache'] = $cache;
 
         return $this;
     }
@@ -2519,7 +2553,7 @@ class Query
 
                 if (!empty($this->options['with'])) {
                     // 预载入
-                    $result->eagerlyResultSet($resultSet, $this->options['with'], $this->options['relation_cache']);
+                    $result->eagerlyResultSet($resultSet, $this->options['with']);
                 }
 
                 // 模型数据集转换
@@ -2637,7 +2671,7 @@ class Query
 
         // 预载入查询
         if (!$resultSet && !empty($options['with'])) {
-            $result->eagerlyResult($result, $options['with'], $options['relation_cache']);
+            $result->eagerlyResult($result, $options['with']);
         }
 
         // 关联统计
@@ -2660,10 +2694,9 @@ class Query
         if (!empty($this->model)) {
             $class = get_class($this->model);
             throw new ModelNotFoundException('model data Not Found:' . $class, $class, $options);
-        } else {
-            $table = is_array($options['table']) ? key($options['table']) : $options['table'];
-            throw new DataNotFoundException('table data not Found:' . $table, $table, $options);
         }
+        $table = is_array($options['table']) ? key($options['table']) : $options['table'];
+        throw new DataNotFoundException('table data not Found:' . $table, $table, $options);
     }
 
     /**

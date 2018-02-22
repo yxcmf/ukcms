@@ -40,24 +40,47 @@ class RuleGroup extends Rule
     // 自动路由
     protected $auto;
 
+    // 完整名称
+    protected $fullName;
+
     /**
      * 架构函数
      * @access public
      * @param  Route       $router   路由对象
-     * @param  RuleGroup   $group    路由所属分组对象
+     * @param  RuleGroup   $parent   上级对象
      * @param  string      $name     分组名称
      * @param  mixed       $rule     分组路由
      * @param  array       $option   路由参数
      * @param  array       $pattern  变量规则
      */
-    public function __construct(Route $router, RuleGroup $group = null, $name = '', $rule = [], $option = [], $pattern = [])
+    public function __construct(Route $router, RuleGroup $parent = null, $name = '', $rule = [], $option = [], $pattern = [])
     {
         $this->router  = $router;
-        $this->parent  = $group;
+        $this->parent  = $parent;
         $this->rule    = $rule;
         $this->name    = trim($name, '/');
         $this->option  = $option;
         $this->pattern = $pattern;
+
+        $this->setFullName();
+
+        if ($this->parent) {
+            $this->parent->addRule($this);
+        }
+    }
+
+    /**
+     * 设置分组的路由规则
+     * @access public
+     * @return void
+     */
+    protected function setFullName()
+    {
+        if ($this->parent && $this->parent->getFullName()) {
+            $this->fullName = $this->parent->getFullName() . ($this->name ? '/' . $this->name : '');
+        } else {
+            $this->fullName = $this->name;
+        }
     }
 
     /**
@@ -93,13 +116,14 @@ class RuleGroup extends Rule
             return false;
         }
 
-        if ($this->name && !($this instanceof Domain)) {
+        if ($this->fullName) {
             // 分组URL匹配检查
-            $pos = strpos(str_replace('<', ':', $this->name), ':');
+            $pos = strpos(str_replace('<', ':', $this->fullName), ':');
+
             if (false !== $pos) {
-                $str = substr($this->name, 0, $pos);
+                $str = substr($this->fullName, 0, $pos);
             } else {
-                $str = $this->name;
+                $str = $this->fullName;
             }
 
             if (0 !== stripos(str_replace('|', '/', $url), $str)) {
@@ -153,17 +177,16 @@ class RuleGroup extends Rule
             $request->route($this->option['append']);
         }
 
-        if (isset($rules[$url])) {
-            // 快速定位
-            $item   = $rules[$url];
-            $result = $item->check($request, $url, $depr, $completeMatch);
+        if (!empty($this->option['merge_rule_regex'])) {
+            // 合并路由正则规则进行路由匹配检查
+            $result = $this->checkMergeRuleRegex($request, $rules, $url, $depr, $completeMatch);
 
             if (false !== $result) {
                 return $result;
             }
         }
 
-        // 遍历分组路由
+        // 检查分组路由
         foreach ($rules as $key => $item) {
             $result = $item->check($request, $url, $depr, $completeMatch);
 
@@ -186,6 +209,102 @@ class RuleGroup extends Rule
     }
 
     /**
+     * 检测分组路由
+     * @access public
+     * @param  Request      $request  请求对象
+     * @param  array        $rules    路由规则
+     * @param  string       $url      访问地址
+     * @param  string       $depr     路径分隔符
+     * @param  bool         $completeMatch   路由是否完全匹配
+     * @return Dispatch|false
+     */
+    protected function checkMergeRuleRegex($request, &$rules, $url, $depr, $completeMatch)
+    {
+        $url = $depr . str_replace('|', $depr, $url);
+
+        foreach ($rules as $key => $item) {
+            if ($item instanceof RuleItem) {
+                $rule = $depr . str_replace('/', $depr, $item->getRule());
+
+                $complete = null !== $item->getOption('complete_match') ? $item->getOption('complete_match') : $completeMatch;
+
+                if (false === strpos($rule, ':') && false === strpos($rule, '<')) {
+                    if (($complete && 0 === strcasecmp($rule, $url)) || (!$complete && 0 === strncasecmp($rule, $url, strlen($rule)))) {
+                        return $item->checkHasMatchRule($request, $url);
+                    }
+
+                    unset($rules[$key]);
+                    continue;
+                }
+
+                if ($matchRule = preg_split('/(?:[\/\-]<\w+\??>|[\/\-]\[?\:\w+\]?)/', $rule, 2)) {
+                    if ($matchRule[0] && 0 !== strncasecmp($rule, $url, strlen($matchRule[0]))) {
+                        unset($rules[$key]);
+                        continue;
+                    }
+                }
+
+                if (preg_match_all('/(?:[\/\-]<\w+\??>|[\/\-]\[?\:?\w+\]?)/', $rule, $matches)) {
+                    unset($rules[$key]);
+                    $pattern = array_merge($this->getPattern(), $item->getPattern());
+                    $option  = array_merge($this->getOption(), $item->getOption());
+
+                    $regex[$key] = $this->buildRuleRegex($rule, $matches[0], $pattern, $option, $complete, '_THINK_' . $key);
+                    $items[$key] = $item;
+                }
+            }
+        }
+
+        if (!empty($regex) && preg_match('/^(?:' . implode('|', $regex) . ')/', $url, $match)) {
+            $var = [];
+            foreach ($match as $key => $val) {
+                if (is_string($key) && '' !== $val) {
+                    list($name, $pos) = explode('_THINK_', $key);
+
+                    $var[$name] = $val;
+                }
+            }
+
+            if (!isset($pos)) {
+                foreach ($regex as $key => $item) {
+                    if (0 === strpos(str_replace(['\/', '\-'], ['/', '-'], $item), $match[0])) {
+                        $pos = $key;
+                        break;
+                    }
+                }
+            }
+
+            return $items[$pos]->checkHasMatchRule($request, $url, $var);
+        }
+
+        return false;
+    }
+
+    /**
+     * 设置自动路由
+     * @access public
+     * @param  RuleItem     $rule   路由规则
+     * @return $this
+     */
+    public function setAutoRule(RuleItem $rule)
+    {
+        $this->auto = $rule;
+        return $this;
+    }
+
+    /**
+     * 设置为MISS路由
+     * @access public
+     * @param  RuleItem     $rule   路由规则
+     * @return $this
+     */
+    public function setMissRule(RuleItem $rule)
+    {
+        $this->miss = $rule;
+        return $this;
+    }
+
+    /**
      * 添加分组下的路由规则或者子分组
      * @access public
      * @param  Rule     $rule   路由规则
@@ -194,26 +313,12 @@ class RuleGroup extends Rule
      */
     public function addRule($rule, $method = '*')
     {
-        $name = $rule->getName();
-
-        if ($this->name && $rule instanceof RuleGroup && !($this instanceof Domain)) {
-            $rule->name($this->name . '/' . $name);
-        }
-
         if (strpos($method, '|')) {
             $rule->method($method);
             $method = '*';
         }
 
         $this->rules[$method][] = $rule;
-
-        if ($rule instanceof RuleItem) {
-            if ($rule->isMiss()) {
-                $this->miss = $rule;
-            } elseif ($rule->isAuto()) {
-                $this->auto = $rule;
-            }
-        }
 
         return $this;
     }
@@ -231,6 +336,27 @@ class RuleGroup extends Rule
         }
 
         return $this->option('prefix', $prefix);
+    }
+
+    /**
+     * 合并分组的路由规则正则
+     * @access public
+     * @param  bool     $merge
+     * @return $this
+     */
+    public function mergeRuleRegex($merge = true)
+    {
+        return $this->option('merge_rule_regex', $merge);
+    }
+
+    /**
+     * 获取完整分组Name
+     * @access public
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->fullName;
     }
 
     /**

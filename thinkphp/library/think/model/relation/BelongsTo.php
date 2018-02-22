@@ -109,10 +109,9 @@ class BelongsTo extends OneToOne
      * @param  string    $relation 当前关联名
      * @param  string    $subRelation 子关联名
      * @param  \Closure  $closure 闭包
-     * @param  mixed     $cache   缓存
      * @return void
      */
-    protected function eagerlySet(&$resultSet, $relation, $subRelation, $closure, $cache = false)
+    protected function eagerlySet(&$resultSet, $relation, $subRelation, $closure)
     {
         $localKey   = $this->localKey;
         $foreignKey = $this->foreignKey;
@@ -126,9 +125,11 @@ class BelongsTo extends OneToOne
         }
 
         if (!empty($range)) {
+            $this->query->removeWhereField($localKey);
+
             $data = $this->eagerlyWhere([
                 [$localKey, 'in', $range],
-            ], $localKey, $relation, $subRelation, $closure, $cache);
+            ], $localKey, $relation, $subRelation, $closure);
 
             // 关联属性名
             $attr = Loader::parseName($relation);
@@ -162,17 +163,18 @@ class BelongsTo extends OneToOne
      * @param  string    $relation 当前关联名
      * @param  string    $subRelation 子关联名
      * @param  \Closure  $closure 闭包
-     * @param  mixed     $cache       缓存
      * @return void
      */
-    protected function eagerlyOne(&$result, $relation, $subRelation, $closure, $cache = false)
+    protected function eagerlyOne(&$result, $relation, $subRelation, $closure)
     {
         $localKey   = $this->localKey;
         $foreignKey = $this->foreignKey;
 
+        $this->query->removeWhereField($localKey);
+
         $data = $this->eagerlyWhere([
             [$localKey, '=', $result->$foreignKey],
-        ], $localKey, $relation, $subRelation, $closure, $cache);
+        ], $localKey, $relation, $subRelation, $closure);
 
         // 关联模型
         if (!isset($data[$result->$foreignKey])) {
@@ -222,5 +224,22 @@ class BelongsTo extends OneToOne
         $this->parent->save();
 
         return $this->parent->setRelation($this->relation, null);
+    }
+
+    /**
+     * 执行基础查询（仅执行一次）
+     * @access protected
+     * @return void
+     */
+    protected function baseQuery()
+    {
+        if (empty($this->baseQuery)) {
+            if (isset($this->parent->{$this->foreignKey})) {
+                // 关联查询带入关联条件
+                $this->query->where($this->localKey, '=', $this->parent->{$this->foreignKey});
+            }
+
+            $this->baseQuery = true;
+        }
     }
 }

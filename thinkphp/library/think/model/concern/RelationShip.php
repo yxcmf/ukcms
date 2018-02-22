@@ -89,9 +89,8 @@ trait RelationShip
             return $this->relation;
         } elseif (array_key_exists($name, $this->relation)) {
             return $this->relation[$name];
-        } else {
-            return;
         }
+        return;
     }
 
     /**
@@ -210,10 +209,9 @@ trait RelationShip
      * @access public
      * @param  array  $resultSet 数据集
      * @param  string $relation  关联名
-     * @param  mixed  $cache    关联缓存
      * @return array
      */
-    public function eagerlyResultSet(&$resultSet, $relation, $cache = false)
+    public function eagerlyResultSet(&$resultSet, $relation)
     {
         $relations = is_string($relation) ? explode(',', $relation) : $relation;
 
@@ -233,10 +231,9 @@ trait RelationShip
                 list($relation, $subRelation) = explode('.', $relation, 2);
             }
 
-            $relationCache = isset($cache[$relation]) ? $cache[$relation] : $cache;
-            $relation      = Loader::parseName($relation, 1, false);
+            $relation = Loader::parseName($relation, 1, false);
 
-            $this->$relation()->eagerlyResultSet($resultSet, $relation, $subRelation, $closure, $relationCache);
+            $this->$relation()->eagerlyResultSet($resultSet, $relation, $subRelation, $closure);
         }
     }
 
@@ -245,10 +242,9 @@ trait RelationShip
      * @access public
      * @param  Model  $result   数据对象
      * @param  string $relation 关联名
-     * @param  mixed  $cache    关联缓存
      * @return Model
      */
-    public function eagerlyResult(&$result, $relation, $cache = false)
+    public function eagerlyResult(&$result, $relation)
     {
         $relations = is_string($relation) ? explode(',', $relation) : $relation;
 
@@ -268,10 +264,9 @@ trait RelationShip
                 list($relation, $subRelation) = explode('.', $relation, 2);
             }
 
-            $relationCache = isset($cache[$relation]) ? $cache[$relation] : $cache;
-            $relation      = Loader::parseName($relation, 1, false);
+            $relation = Loader::parseName($relation, 1, false);
 
-            $this->$relation()->eagerlyResult($result, $relation, $subRelation, $closure, $relationCache);
+            $this->$relation()->eagerlyResult($result, $relation, $subRelation, $closure);
         }
     }
 

@@ -478,13 +478,11 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             $where = $array;
         }
 
-        if (!empty($this->relationWrite)) {
-            foreach ($this->relationWrite as $name => $val) {
-                if (is_array($val)) {
-                    foreach ($val as $key) {
-                        if (isset($data[$key])) {
-                            unset($data[$key]);
-                        }
+        foreach ((array) $this->relationWrite as $name => $val) {
+            if (is_array($val)) {
+                foreach ($val as $key) {
+                    if (isset($data[$key])) {
+                        unset($data[$key]);
                     }
                 }
             }
@@ -772,10 +770,11 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param  mixed     $data  主键值或者查询条件（闭包）
      * @param  mixed     $with  关联预查询
      * @param  bool      $cache 是否缓存
+     * @param  bool      $failException 是否抛出异常
      * @return static|null
      * @throws exception\DbException
      */
-    public static function get($data, $with = [], $cache = false)
+    public static function get($data, $with = [], $cache = false, $failException = false)
     {
         if (is_null($data)) {
             return;
@@ -788,7 +787,21 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
 
         $query = static::parseQuery($data, $with, $cache);
 
-        return $query->find($data);
+        return $query->failException($failException)->find($data);
+    }
+
+    /**
+     * 查找单条记录 如果不存在直接抛出异常
+     * @access public
+     * @param  mixed     $data  主键值或者查询条件（闭包）
+     * @param  mixed     $with  关联预查询
+     * @param  bool      $cache 是否缓存
+     * @return static|null
+     * @throws exception\DbException
+     */
+    public static function getOrFail($data, $with = [], $cache = false)
+    {
+        return self::get($data, $with, $cache, true);
     }
 
     /**
@@ -822,7 +835,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     protected static function parseQuery(&$data, $with, $cache)
     {
-        $result = self::with($with, true === $cache ? true : false)->cache($cache);
+        $result = self::with($with)->cache($cache);
 
         if (is_array($data) && key($data) !== 0) {
             $result = $result->where($data);
@@ -846,13 +859,15 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public static function destroy($data)
     {
+        if (empty($data) && 0 !== $data) {
+            return 0;
+        }
+
         $model = new static();
 
         $query = $model->db();
 
-        if (empty($data) && 0 !== $data) {
-            return 0;
-        } elseif (is_array($data) && key($data) !== 0) {
+        if (is_array($data) && key($data) !== 0) {
             $query->where($data);
             $data = null;
         } elseif ($data instanceof \Closure) {
@@ -932,9 +947,9 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     {
         if (array_key_exists($name, $this->data) || array_key_exists($name, $this->relation)) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
