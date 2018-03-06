@@ -1,0 +1,72 @@
+.ui.items>.item>.content>.header:not(.ui) {
+    font-size: 1.113em;
+}
+.ui.cards>.card>.content>.header:not(.ui) {
+    font-weight: 600;
+    font-size: 1.113em;
+    margin-top: -.31425em;
+    line-height: 1.113em;
+}
+.titFilter{filter:alpha(Opacity=60);-moz-opacity:0.6;opacity: 0.6; }
+.cursorPoint{cursor:pointer}
+/*菜单下拉a颜色*/
+.ui.vertical.inverted.menu .menu .item a:not(.ui), .ui.dropdown.item .item a:not(.ui){
+    color: #333;
+}
+/*复制action属性*/
+.ui.inverted.blue.menu .downaction.item {
+    background-color: rgba(0,0,0,.1)!important;
+}
+.ui.inverted.menu .downaction.item {
+    background: rgba(255,255,255,.15);
+    color: #fff!important;
+}
+.ui.blue.menu .downaction.item, .ui.menu .blue.downaction.item {
+    border-color: #2185D0!important;
+    color: #2185D0!important;
+}
+.ui.menu .downaction.item>i.icon {
+    color:#fff;
+    opacity: 1;
+}
+/*复制action属性结束*/
+#topMenuCon.menu .toc.item {
+    display: none;
+}
+#sideMenuCon .dropdown.item .menu{
+    left:2%;
+    position: static;
+}
+#banner{margin-bottom: 20px}
+#bannerPre,#bannerNext{
+    width:68px;
+    height:68px;
+    top:45%;
+    filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5; 
+}
+#box{margin-bottom: 20px}
+#aboutUs{padding-right:0}
+.aboutBox{padding-top:5px}
+.aboutBox p{line-height: 21px; text-indent: 28px}
+.moreBox{ padding-bottom: 20px}
+.articleList .item *{ height: 30px; line-height: 30px }
+.articleList .item span{ color: #999 }
+.footer.segment .column p{line-height: 22px}
+.footer.segment {
+    padding: 30px 0;
+}
+#listBanner{filter:alpha(Opacity=90);-moz-opacity:0.9;opacity: 0.9;}
+#listBanner > div{margin-bottom: 20px; padding:25px 0 }
+.contentInfo{text-align: right; color: #999}
+@media only screen and (max-width: 700px) {
+    #topMenuCon.menu>.item {
+        display: none;
+    }
+    #topMenuCon.menu .toc.item {
+        display: block;
+    }
+}
+.topbar{background-color: #f7f6f6; height:45px; line-height: 40px; padding: 0 15px;clear: both }
+.topbar-left{float:left; width:55%;height:45px; color:#666; overflow: hidden}
+.topbar-right{float:right; width:45%;height:45px; text-align: right}
+.topbar a{ }

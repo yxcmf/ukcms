@@ -1,0 +1,25 @@
+body{background-color:#336699;}
+.layui-form-label{width: 60px }
+.layui-input-block{margin-left: 90px;}
+.box{ background-color:#fff;box-shadow:5px 5px 6px #2d5c8b;border-radius:4px}
+.layui-form-pane .layui-form-label {
+    width: 90px;
+}
+.layui-form-pane .layui-input-block {
+    margin-left: 90px;
+}
+.binfo{
+    text-align: right;
+    color:#666
+}
+.box-title{height:60px; line-height: 60px; border-bottom: 1px solid #eee; margin-bottom: 25px; color:#333; font-size: 18px; font-weight: 600;font-family: "Microsoft YaHei","lucida grande", verdana, lucida, STSong, sans-serif; text-align: center}
+@media screen and (max-width:768px){
+    .layui-form-pane .layui-input-block {
+        margin-left: 0px;
+    }
+}
+@media screen and (max-width: 450px){
+    .layui-form-item .layui-input-inline {
+        margin: 0;
+    }
+}
