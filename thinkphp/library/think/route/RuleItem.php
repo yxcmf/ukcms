@@ -11,6 +11,7 @@
 
 namespace think\route;
 
+use think\Container;
 use think\Route;
 
 class RuleItem extends Rule
@@ -57,7 +58,9 @@ class RuleItem extends Rule
 
         $this->setRule($rule);
 
-        $this->parent->addRule($this, $method);
+        if (!empty($option['cross_domain'])) {
+            $this->router->setCrossDomainRule($this, $method);
+        }
     }
 
     /**
@@ -75,13 +78,17 @@ class RuleItem extends Rule
             $this->option['complete_match'] = true;
         }
 
-        $rule = '/' != $rule ? ltrim($rule, '/') : '/';
+        $rule = '/' != $rule ? ltrim($rule, '/') : '';
 
         if ($this->parent && $prefix = $this->parent->getFullName()) {
             $rule = $prefix . ($rule ? '/' . ltrim($rule, '/') : '');
         }
 
-        $this->rule = $rule;
+        if (false !== strpos($rule, ':')) {
+            $this->rule = preg_replace(['/\[\:(\w+)\]/', '/\:(\w+)/'], ['<\1?>', '<\1>'], $rule);
+        } else {
+            $this->rule = $rule;
+        }
 
         // 生成路由标识的快捷访问
         $this->setRuleName();
@@ -95,6 +102,26 @@ class RuleItem extends Rule
     public function getRule()
     {
         return $this->rule;
+    }
+
+    /**
+     * 获取当前路由地址
+     * @access public
+     * @return mixed
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    /**
+     * 获取当前路由的请求类型
+     * @access public
+     * @return string
+     */
+    public function getMethod()
+    {
+        return strtolower($this->method);
     }
 
     /**
@@ -112,38 +139,6 @@ class RuleItem extends Rule
     }
 
     /**
-     * 获取当前路由地址
-     * @access public
-     * @return mixed
-     */
-    public function getRoute()
-    {
-        return $this->route;
-    }
-
-    /**
-     * 设置为自动路由
-     * @access public
-     * @return $this
-     */
-    public function isAuto()
-    {
-        $this->parent->setAutoRule($this);
-        return $this;
-    }
-
-    /**
-     * 设置为MISS路由
-     * @access public
-     * @return $this
-     */
-    public function isMiss()
-    {
-        $this->parent->setMissRule($this);
-        return $this;
-    }
-
-    /**
      * 设置路由标识 用于URL反解生成
      * @access protected
      * @param  bool     $first   是否插入开头
@@ -152,7 +147,20 @@ class RuleItem extends Rule
     protected function setRuleName($first = false)
     {
         if ($this->name) {
-            $this->router->setRuleName($this->rule, $this->name, $this->option, $first);
+            $vars = $this->parseVar($this->rule);
+            $name = strtolower($this->name);
+
+            if (isset($this->option['ext'])) {
+                $suffix = $this->option['ext'];
+            } elseif ($this->parent->getOption('ext')) {
+                $suffix = $this->parent->getOption('ext');
+            } else {
+                $suffix = null;
+            }
+
+            $value = [$this->rule, $vars, $this->parent->getDomain(), $suffix];
+
+            Container::get('rule_name')->set($name, $value, $first);
         }
     }
 
@@ -217,11 +225,6 @@ class RuleItem extends Rule
         }
 
         if (false !== $match = $this->match($url, $pattern, $option, $depr, $completeMatch)) {
-            // 匹配到路由规则
-            if (!empty($option['append'])) {
-                $request->route($option['append']);
-            }
-
             return $this->parseRule($request, $this->rule, $this->route, $url, $option, $match);
         }
 
@@ -296,20 +299,22 @@ class RuleItem extends Rule
         $url  = $depr . str_replace('|', $depr, $url);
         $rule = $depr . str_replace('/', $depr, $this->rule);
 
-        if (false === strpos($rule, ':') && false === strpos($rule, '<')) {
+        if (false === strpos($rule, '<')) {
             if (($completeMatch && 0 === strcasecmp($rule, $url)) || (!$completeMatch && 0 === strncasecmp($rule, $url, strlen($rule)))) {
                 return $var;
             }
             return false;
         }
 
-        if ($matchRule = preg_split('/(?:[\/\-]<\w+\??>|[\/\-]\[?\:\w+\]?)/', $rule, 2)) {
+        $slash = preg_quote('/-' . $depr, '/');
+
+        if ($matchRule = preg_split('/[' . $slash . ']?<\w+\??>/', $rule, 2)) {
             if ($matchRule[0] && 0 !== strncasecmp($rule, $url, strlen($matchRule[0]))) {
                 return false;
             }
         }
 
-        if (preg_match_all('/(?:[\/\-]<\w+\??>|[\/\-]\[?\:?\w+\]?)/', $rule, $matches)) {
+        if (preg_match_all('/[' . $slash . ']?<?\w+\??>?/', $rule, $matches)) {
             $regex = $this->buildRuleRegex($rule, $matches[0], $pattern, $option, $completeMatch);
 
             if (!preg_match('/^' . $regex . ($completeMatch ? '$' : '') . '/', $url, $match)) {
