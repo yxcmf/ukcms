@@ -210,7 +210,7 @@ class RuleGroup extends Rule
                 $str = $this->fullName;
             }
 
-            if (0 !== stripos(str_replace('|', '/', $url), $str)) {
+            if ($str && 0 !== stripos(str_replace('|', '/', $url), $str)) {
                 return false;
             }
         }
@@ -296,11 +296,15 @@ class RuleGroup extends Rule
         foreach ($rules as $key => $item) {
             if ($item instanceof RuleItem) {
                 $rule = $depr . str_replace('/', $depr, $item->getRule());
+                if ($depr == $rule && $depr != $url) {
+                    unset($rules[$key]);
+                    continue;
+                }
 
                 $complete = null !== $item->getOption('complete_match') ? $item->getOption('complete_match') : $completeMatch;
 
                 if (false === strpos($rule, '<')) {
-                    if (($complete && 0 === strcasecmp($rule, $url)) || (!$complete && 0 === strncasecmp($rule, $url, strlen($rule)))) {
+                    if (0 === strcasecmp($rule, $url) || (!$complete && 0 === strncasecmp($rule, $url, strlen($rule)))) {
                         return $item->checkHasMatchRule($request, $url);
                     }
 

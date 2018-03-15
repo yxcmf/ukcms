@@ -12,7 +12,7 @@ class Column extends \app\common\model\Column {
         $cacheKey = 'db_column_' . $type . $column . $key . $rootId . $select;
         $list = $ifcache ? cache($cacheKey) : false;
         if (false===$list) {
-            $where = '';
+            $where = '1=1';
             switch ($select) {
                 case 'show':
                     $where = "status='1'";

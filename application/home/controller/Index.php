@@ -7,7 +7,7 @@ use think\Db;
 class Index extends Common {
 
     public function index() {
-        return $this->fetch('index/index');
+        return $this->display('index/index');
     }
 
     public function search($mid = 0, $cid = 0, $keyword = '') {
@@ -74,7 +74,7 @@ class Index extends Common {
             'columnlist' => model('Column')->getColumn('sort', 'id,path,title,type,model_id'),
             'modellist' => $modellist
         ]);
-        return $this->fetch('index/search');
+        return $this->display('index/search');
     }
 
 }

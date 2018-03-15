@@ -168,7 +168,7 @@ class Column extends Common {
                 'rootId' => $this->getColumnId($columnInfo['path'] . $columnInfo['id']),
                 'parentId' => $this->getColumnId($columnInfo['path'], 'parent'),
             ]);
-            return $this->fetch('column/index/' . $columnInfo['template_list']);
+            return $this->display('column/index/' . $columnInfo['template_list']);
         }
     }
 
@@ -214,7 +214,7 @@ class Column extends Common {
             'rootId' => $this->getColumnId($columnInfo['path'] . $columnInfo['id']),
             'parentId' => $columnInfo['id'],
         ]);
-        return $this->fetch('column/content/' . $columnInfo['template_content']);
+        return $this->display('column/content/' . $columnInfo['template_content']);
     }
 
 }

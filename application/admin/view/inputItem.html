@@ -573,7 +573,11 @@
 {/case}
 
 {case value="Ueditor"}
-<script>
+<script type="text/javascript">
+    if("undefined" == typeof UE){ 
+        document.write('<scr'+'ipt type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></sc'+'ript>');
+        document.write('<scr'+'ipt type="text/javascript" src="__STATIC__/ueditor/editor_api.js" data-bind="__STATIC__/ueditor/_src/"  id="uapi"></sc'+'ript>');
+    }
     $(function () {
 // 百度编辑器ajax注销
        if("undefined" != typeof ueditid){

@@ -22,7 +22,7 @@ class Common extends Controller {
             $nowDomain = $this->request->host();
             //缓存当前域名信息
             $nowDomainInfo = cache($nowDomain);
-            if (false===$nowDomainInfo) {
+            if (false === $nowDomainInfo) {
                 $nowDomainInfo = Db::name('domain')->where('name', $nowDomain)->where('status', 1)->find();
                 if (!$nowDomainInfo) {
                     $nowDomainInfo['view_directory'] = false;
@@ -70,8 +70,8 @@ class Common extends Controller {
         }
     }
 
-    protected function fetch($template = '', $vars = [], $replace = [], $config = []) {
-        $content = $this->view->fetch($this->viewDirectory . '/' . $template, $vars, $replace, $config);
+    protected function display($template = '', $vars = [], $config = []) {
+        $content = $this->view->fetch($this->viewDirectory . '/' . $template, $vars, $config);
         return defined('__MESSAGE__') ? $content : (isEngine() ? $content . core_message() : $content);
     }
 

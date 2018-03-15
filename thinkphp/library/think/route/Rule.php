@@ -220,7 +220,9 @@ abstract class Rule
      */
     public function model($var, $model = null, $exception = true)
     {
-        if (is_array($var)) {
+        if ($var instanceof \Closure) {
+            $this->option['model'][] = $var;
+        } elseif (is_array($var)) {
             $this->option['model'] = $var;
         } elseif (is_null($model)) {
             $this->option['model']['id'] = [$var, true];
@@ -576,7 +578,9 @@ abstract class Rule
         // 替换路由地址中的变量
         if (is_string($route) && !empty($matches)) {
             foreach ($matches as $key => $val) {
-                if (false !== strpos($route, ':' . $key)) {
+                if (false !== strpos($route, '<' . $key . '>')) {
+                    $route = str_replace('<' . $key . '>', $val, $route);
+                } elseif (false !== strpos($route, ':' . $key)) {
                     $route = str_replace(':' . $key, $val, $route);
                 }
             }

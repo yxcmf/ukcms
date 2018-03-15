@@ -442,17 +442,17 @@ CREATE TABLE `uk_column` (
 -- Records of uk_column
 -- ----------------------------
 INSERT INTO `uk_column` VALUES ('1', '1', '0,', '4', '0', '关于我们', 'aboutus', 'UkcmsWeb内容管理系统', 'ukcms,cms,建站系统,内容管理系统,web平台管理软件', 'UKcms是一款基于PHP7和mysql技术，简洁、灵活、强大的网站内容管理系统。底层使用面向对象的轻量级PHP开发框架，采用惰性加载，及路由、配置和自动加载的缓存机 制，确保系统高效运行，可使网站数据达到百万级负载。灵活强大的标签库可任意拓展，让您随心所欲。拥有建站各种实用功能，摒弃各种复杂繁琐的功能操作。卓越的用 户体验，让您使用起来方便明了。支持excel表格数据导入，让你摆脱逐条添加数据的辛苦。独创的模型字段关系定义，让你的模型关系更加丰富。遵循GPL开源协议，允许代码的开源/免费使用和引用/修改/衍生代码的开源/免费使用。', '2', 'page', '', '10', '', '1500022338', '1502846229', '', '1', '1');
-INSERT INTO `uk_column` VALUES ('2', '2', '0,', '0', '2', 'WEB知识', 'web', 'WEB知识', 'web,html,javascript,php', 'WEB网站相关知识介绍', '0', 'list', 'content', '10', '', '1500022615', '1504403445', 'create_time desc', '2', '1');
-INSERT INTO `uk_column` VALUES ('3', '2', '0,2,', '0', '2', '前端知识', 'front', '前端', 'html,html5,javascript', '前端知识相关介绍', '0', 'list', 'content', '10', '', '1500022756', '1504403445', 'create_time desc', '1', '1');
-INSERT INTO `uk_column` VALUES ('4', '2', '0,2,', '0', '2', 'PHP介绍', 'php', 'php基础介绍', 'php,php7', '最新的php7对php语言发展起到很大促进作用', '0', 'list', 'content', '10', '', '1500022797', '1504403445', 'create_time desc', '2', '1');
-INSERT INTO `uk_column` VALUES ('5', '2', '0,2,3,', '0', '2', '前端框架', 'frontframe', '前端框架', 'bootstarp,妹子,vue', '前端框架常用框架介绍', '0', 'list', 'content', '10', '', '1500022899', '1504403445', 'create_time desc', '2', '1');
-INSERT INTO `uk_column` VALUES ('6', '2', '0,2,3,', '0', '2', '前端基础', 'frontbase', '前端基础', 'html,html5,javascript', '前端基础相关介绍', '0', 'list', 'content', '10', '', '1500079094', '1504403445', 'create_time desc', '1', '1');
-INSERT INTO `uk_column` VALUES ('7', '2', '0,2,3,5,', '0', '2', '主流框架', 'mainframe', '主流前端', 'bootstarp,Semantic', '主流前端框架介绍', '0', 'list', 'content', '10', '', '1500079377', '1504403445', 'create_time desc', '1', '1');
-INSERT INTO `uk_column` VALUES ('8', '2', '0,2,3,5,', '0', '2', '最新框架', 'newframe', '最新前端框架', 'React,vue.js', '最新前端框架展望', '0', 'list', 'content', '10', '', '1500079447', '1504403445', 'create_time desc', '2', '1');
-INSERT INTO `uk_column` VALUES ('9', '2', '0,2,', '0', '2', 'UKcms常见问题', 'ukcms', 'ukcms解答', 'ukcms,yxcms', '针对ukcms用户的疑惑提供常见解答', '0', 'list', 'content', '10', '', '1500080492', '1504403445', 'create_time desc', '3', '1');
-INSERT INTO `uk_column` VALUES ('10', '2', '0,', '0', '1', '传奇影星', 'legend', '传奇影星介绍', '欧美,影星', '以影星为例演示图集', '0', 'photolist', 'photocontent', '10', '', '1500080820', '1504403445', 'create_time desc', '3', '1');
-INSERT INTO `uk_column` VALUES ('11', '2', '0,', '0', '3', '产品演示', 'product', '汽车产品演示', '汽车,电动车,跑车', '以汽车为例演示产品', '0', 'productlist', 'productcontent', '10', 'year,color', '1500081209', '1504403445', 'create_time desc', '4', '1');
-INSERT INTO `uk_column` VALUES ('12', '2', '0,', '0', '5', '留言本', 'guestbook', '留言本', '留言本', '通过留言本演示模型在允许投稿下自定义字段的运用', '0', 'guestbook', 'content', '10', '', '1500960951', '1504403445', 'create_time desc', '5', '1');
+INSERT INTO `uk_column` VALUES ('2', '2', '0,', '0', '2', 'WEB知识', 'web', 'WEB知识', 'web,html,javascript,php', 'WEB网站相关知识介绍', '0', 'list', 'content', '10', '', '1500022615', '1504403445', 'orders asc', '2', '1');
+INSERT INTO `uk_column` VALUES ('3', '2', '0,2,', '0', '2', '前端知识', 'front', '前端', 'html,html5,javascript', '前端知识相关介绍', '0', 'list', 'content', '10', '', '1500022756', '1504403445', 'orders asc', '1', '1');
+INSERT INTO `uk_column` VALUES ('4', '2', '0,2,', '0', '2', 'PHP介绍', 'php', 'php基础介绍', 'php,php7', '最新的php7对php语言发展起到很大促进作用', '0', 'list', 'content', '10', '', '1500022797', '1504403445', 'orders asc', '2', '1');
+INSERT INTO `uk_column` VALUES ('5', '2', '0,2,3,', '0', '2', '前端框架', 'frontframe', '前端框架', 'bootstarp,妹子,vue', '前端框架常用框架介绍', '0', 'list', 'content', '10', '', '1500022899', '1504403445', 'orders asc', '2', '1');
+INSERT INTO `uk_column` VALUES ('6', '2', '0,2,3,', '0', '2', '前端基础', 'frontbase', '前端基础', 'html,html5,javascript', '前端基础相关介绍', '0', 'list', 'content', '10', '', '1500079094', '1504403445', 'orders asc', '1', '1');
+INSERT INTO `uk_column` VALUES ('7', '2', '0,2,3,5,', '0', '2', '主流框架', 'mainframe', '主流前端', 'bootstarp,Semantic', '主流前端框架介绍', '0', 'list', 'content', '10', '', '1500079377', '1504403445', 'orders asc', '1', '1');
+INSERT INTO `uk_column` VALUES ('8', '2', '0,2,3,5,', '0', '2', '最新框架', 'newframe', '最新前端框架', 'React,vue.js', '最新前端框架展望', '0', 'list', 'content', '10', '', '1500079447', '1504403445', 'orders asc', '2', '1');
+INSERT INTO `uk_column` VALUES ('9', '2', '0,2,', '0', '2', 'UKcms常见问题', 'ukcms', 'ukcms解答', 'ukcms,yxcms', '针对ukcms用户的疑惑提供常见解答', '0', 'list', 'content', '10', '', '1500080492', '1504403445', 'orders asc', '3', '1');
+INSERT INTO `uk_column` VALUES ('10', '2', '0,', '0', '1', '传奇影星', 'legend', '传奇影星介绍', '欧美,影星', '以影星为例演示图集', '0', 'photolist', 'photocontent', '10', '', '1500080820', '1504403445', 'orders asc', '3', '1');
+INSERT INTO `uk_column` VALUES ('11', '2', '0,', '0', '3', '产品演示', 'product', '汽车产品演示', '汽车,电动车,跑车', '以汽车为例演示产品', '0', 'productlist', 'productcontent', '10', 'year,color', '1500081209', '1504403445', 'orders asc', '4', '1');
+INSERT INTO `uk_column` VALUES ('12', '2', '0,', '0', '5', '留言本', 'guestbook', '留言本', '留言本', '通过留言本演示模型在允许投稿下自定义字段的运用', '0', 'guestbook', 'content', '10', '', '1500960951', '1504403445', 'orders asc', '5', '1');
 
 -- ----------------------------
 -- Table structure for uk_comment

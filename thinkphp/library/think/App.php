@@ -228,6 +228,9 @@ class App implements \ArrayAccess
         // 设置系统时区
         date_default_timezone_set($this->config('app.default_timezone'));
 
+        // 读取语言包
+        $this->loadLangPack();
+
         // 监听app_init
         $this->hook->listen('app_init');
     }
@@ -298,10 +301,10 @@ class App implements \ArrayAccess
      */
     public function run()
     {
-        // 初始化应用
-        $this->initialize();
-
         try {
+            // 初始化应用
+            $this->initialize();
+
             if ($this->bind) {
                 // 模块/控制器绑定
                 $this->route->bind($this->bind);
@@ -312,21 +315,6 @@ class App implements \ArrayAccess
                     $this->route->bind($name);
                 }
             }
-
-            // 读取默认语言
-            $this->lang->range($this->config('app.default_lang'));
-            if ($this->config('app.lang_switch_on')) {
-                // 开启多语言机制 检测当前语言
-                $this->lang->detect();
-            }
-
-            $this->request->langset($this->lang->range());
-
-            // 加载系统语言包
-            $this->lang->load([
-                $this->thinkPath . 'lang/' . $this->request->langset() . '.php',
-                $this->appPath . 'lang/' . $this->request->langset() . '.php',
-            ]);
 
             // 监听app_dispatch
             $this->hook->listen('app_dispatch');
@@ -390,6 +378,24 @@ class App implements \ArrayAccess
         return $response;
     }
 
+    protected function loadLangPack()
+    {
+        // 读取默认语言
+        $this->lang->range($this->config('app.default_lang'));
+        if ($this->config('app.lang_switch_on')) {
+            // 开启多语言机制 检测当前语言
+            $this->lang->detect();
+        }
+
+        $this->request->langset($this->lang->range());
+
+        // 加载系统语言包
+        $this->lang->load([
+            $this->thinkPath . 'lang/' . $this->request->langset() . '.php',
+            $this->appPath . 'lang/' . $this->request->langset() . '.php',
+        ]);
+    }
+
     /**
      * 设置当前请求的调度信息
      * @access public
@@ -409,9 +415,9 @@ class App implements \ArrayAccess
      * @param  string $type 信息类型
      * @return void
      */
-    public function log($log, $type = 'info')
+    public function log($msg, $type = 'info')
     {
-        $this->debug && $this->log->record($log, $type);
+        $this->debug && $this->log->record($msg, $type);
     }
 
     /**

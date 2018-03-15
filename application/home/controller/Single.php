@@ -56,7 +56,7 @@ class Single extends Common {
                 $fieldList = model('ModelField')->getFieldList($info['id']);
                 $this->assign('fieldList', $fieldList);
             }
-            return $this->fetch('single/index');
+            return $this->display('single/index');
         }
     }
 
@@ -77,7 +77,7 @@ class Single extends Common {
             $this->error('内容不存在或未审核~');
         }
         $this->assign('data', $data);
-        return $this->fetch('single/content');
+        return $this->display('single/content');
     }
 
 }
