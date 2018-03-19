@@ -145,6 +145,8 @@ class RuleGroup extends Rule
         if ($this->parent) {
             // 合并分组参数
             $this->mergeGroupOptions();
+            // 合并分组变量规则
+            $this->pattern = array_merge($this->parent->getPattern(), $this->pattern);
         }
 
         if (isset($this->option['complete_match'])) {
@@ -226,6 +228,13 @@ class RuleGroup extends Rule
      */
     protected function afterMatchGroup($request)
     {
+        if (!empty($this->option['middleware'])) {
+            foreach ($this->option['middleware'] as $middleware) {
+                Container::get('middlewareDispatcher')->add($middleware);
+            }
+            unset($this->option['middleware']);
+        }
+
         if (!empty($this->option['response'])) {
             Container::get('hook')->add('response_send', $this->option['response']);
         }
@@ -305,7 +314,7 @@ class RuleGroup extends Rule
 
                 if (false === strpos($rule, '<')) {
                     if (0 === strcasecmp($rule, $url) || (!$complete && 0 === strncasecmp($rule, $url, strlen($rule)))) {
-                        return $item->checkHasMatchRule($request, $url);
+                        return $item->checkMatchRule($request, $url);
                     }
 
                     unset($rules[$key]);
@@ -332,29 +341,33 @@ class RuleGroup extends Rule
             }
         }
 
-        if (!empty($regex) && preg_match('/^(?:' . implode('|', $regex) . ')/', $url, $match)) {
-            $var = [];
-            foreach ($match as $key => $val) {
-                if (is_string($key) && '' !== $val) {
-                    list($name, $pos) = explode('_THINK_', $key);
+        try {
+            if (!empty($regex) && preg_match('/^(?:' . implode('|', $regex) . ')/', $url, $match)) {
+                $var = [];
+                foreach ($match as $key => $val) {
+                    if (is_string($key) && '' !== $val) {
+                        list($name, $pos) = explode('_THINK_', $key);
 
-                    $var[$name] = $val;
-                }
-            }
-
-            if (!isset($pos)) {
-                foreach ($regex as $key => $item) {
-                    if (0 === strpos(str_replace(['\/', '\-', '\\' . $depr], ['/', '-', $depr], $item), $match[0])) {
-                        $pos = $key;
-                        break;
+                        $var[$name] = $val;
                     }
                 }
+
+                if (!isset($pos)) {
+                    foreach ($regex as $key => $item) {
+                        if (0 === strpos(str_replace(['\/', '\-', '\\' . $depr], ['/', '-', $depr], $item), $match[0])) {
+                            $pos = $key;
+                            break;
+                        }
+                    }
+                }
+
+                return $items[$pos]->checkMatchRule($request, $url, $var);
             }
 
-            return $items[$pos]->checkHasMatchRule($request, $url, $var);
+            return false;
+        } catch (\Exception $e) {
+            throw new Exception('route pattern error');
         }
-
-        return false;
     }
 
     /**
