@@ -45,7 +45,7 @@
                     </div>
                     {/if}
                     <div class="content">
-                        <a class="header" href="{$vo.url}"><div class="ui blue horizontal label">{$columList[$vo.cname]['title']}</div> {$vo.title}</a>
+                        <a class="header" href="{$vo.url}" style="color:{$vo.color}"><div class="ui blue horizontal label">{$columList[$vo.cname]['title']}</div> {$vo.title}</a>
                         <div class="meta">
                             <span>{:date('Y-m-d H:i:s',$vo.create_time)}</span>
                         </div>
