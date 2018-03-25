@@ -12,6 +12,7 @@
 namespace think\route;
 
 use think\Container;
+use think\Exception;
 use think\Request;
 use think\Response;
 use think\Route;
@@ -135,12 +136,13 @@ class RuleGroup extends Rule
             $this->parseGroupRule($this->rule);
         }
 
-        // 分组匹配后执行的行为
-        $this->afterMatchGroup($request);
-
         // 获取当前路由规则
         $method = strtolower($request->method());
         $rules  = $this->getMethodRules($method);
+
+        if (count($rules) == 0) {
+            return false;
+        }
 
         if ($this->parent) {
             // 合并分组参数
@@ -221,36 +223,6 @@ class RuleGroup extends Rule
     }
 
     /**
-     * 分组匹配后执行的行为
-     * @access protected
-     * @param  Request     $request
-     * @return void
-     */
-    protected function afterMatchGroup($request)
-    {
-        if (!empty($this->option['middleware'])) {
-            foreach ($this->option['middleware'] as $middleware) {
-                Container::get('middlewareDispatcher')->add($middleware);
-            }
-            unset($this->option['middleware']);
-        }
-
-        if (!empty($this->option['response'])) {
-            Container::get('hook')->add('response_send', $this->option['response']);
-        }
-
-        // 开启请求缓存
-        if (isset($this->option['cache']) && $request->isGet()) {
-            $this->parseRequestCache($request, $this->option['cache']);
-        }
-
-        if (!empty($this->option['append'])) {
-            $request->route($this->option['append']);
-            unset($this->option['append']);
-        }
-    }
-
-    /**
      * 延迟解析分组的路由规则
      * @access public
      * @param  bool     $lazy   路由是否延迟解析
@@ -314,7 +286,7 @@ class RuleGroup extends Rule
 
                 if (false === strpos($rule, '<')) {
                     if (0 === strcasecmp($rule, $url) || (!$complete && 0 === strncasecmp($rule, $url, strlen($rule)))) {
-                        return $item->checkMatchRule($request, $url);
+                        return $item->checkRule($request, $url, []);
                     }
 
                     unset($rules[$key]);
@@ -361,7 +333,7 @@ class RuleGroup extends Rule
                     }
                 }
 
-                return $items[$pos]->checkMatchRule($request, $url, $var);
+                return $items[$pos]->checkRule($request, $url, $var);
             }
 
             return false;

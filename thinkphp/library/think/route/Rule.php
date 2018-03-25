@@ -34,7 +34,7 @@ abstract class Rule
     // 路由变量规则
     protected $pattern = [];
     // 需要合并的路由参数
-    protected $mergeOptions = ['after', 'before', 'model'];
+    protected $mergeOptions = ['after', 'before', 'model', 'header', 'response', 'append', 'middleware'];
 
     abstract public function check($request, $url, $depr = '/');
 
@@ -128,23 +128,6 @@ abstract class Rule
     }
 
     /**
-     * 附加路由隐式参数
-     * @access public
-     * @param  array     $append
-     * @return $this
-     */
-    public function append(array $append = [])
-    {
-        if (isset($this->option['append'])) {
-            $this->option['append'] = array_merge($this->option['append'], $append);
-        } else {
-            $this->option['append'] = $append;
-        }
-
-        return $this;
-    }
-
-    /**
      * 设置路由请求类型
      * @access public
      * @param  string     $method
@@ -234,6 +217,23 @@ abstract class Rule
     }
 
     /**
+     * 附加路由隐式参数
+     * @access public
+     * @param  array     $append
+     * @return $this
+     */
+    public function append(array $append = [])
+    {
+        if (isset($this->option['append'])) {
+            $this->option['append'] = array_merge($this->option['append'], $append);
+        } else {
+            $this->option['append'] = $append;
+        }
+
+        return $this;
+    }
+
+    /**
      * 绑定验证
      * @access public
      * @param  mixed    $validate 验证器类
@@ -257,7 +257,8 @@ abstract class Rule
      */
     public function response($response)
     {
-        return $this->option('response', $response);
+        $this->option['response'][] = $response;
+        return $this;
     }
 
     /**
@@ -269,14 +270,30 @@ abstract class Rule
      */
     public function header($header, $value = null)
     {
-        if (empty($this->option['header'])) {
-            $this->option['header'] = [];
-        }
-
         if (is_array($header)) {
-            $this->option['header'] = array_merge($this->option['header'], $header);
+            $this->option['header'] = $header;
         } else {
             $this->option['header'][$header] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * 指定路由中间件
+     * @access public
+     * @param  string|array|\Closure    $middleware
+     * @param  mixed                    $param
+     * @return $this
+     */
+    public function middleware($middleware, $param = null)
+    {
+        if (is_null($param) && is_array($middleware)) {
+            $this->option['middleware'] = $middleware;
+        } else {
+            foreach ((array) $middleware as $item) {
+                $this->option['middleware'][] = [$item, $param];
+            }
         }
 
         return $this;
@@ -302,30 +319,6 @@ abstract class Rule
     public function depr($depr)
     {
         return $this->option('param_depr', $depr);
-    }
-
-    /**
-     * 指定路由中间件
-     * @access public
-     * @param  string|\Closure     $middleware
-     * @param  bool                $first
-     * @return $this
-     */
-    public function middleware($middleware, $first = false)
-    {
-        if (empty($this->option['middleware'])) {
-            $this->option['middleware'] = [];
-        }
-
-        if (is_array($middleware)) {
-            $this->option['middleware'] = array_merge($this->option['middleware'], $middleware);
-        } elseif ($first) {
-            array_unshift($this->option['middleware'], $middleware);
-        } else {
-            $this->option['middleware'][] = $middleware;
-        }
-
-        return $this;
     }
 
     /**
@@ -643,12 +636,12 @@ abstract class Rule
         // 添加中间件
         if (!empty($option['middleware'])) {
             foreach ($option['middleware'] as $middleware) {
-                Container::get('middlewareDispatcher')->add($middleware);
+                Container::get('middleware')->add($middleware);
             }
         }
 
         // 绑定模型数据
-        if (isset($option['model'])) {
+        if (!empty($option['model'])) {
             $this->createBindModel($option['model'], $matches);
         }
 
@@ -740,6 +733,8 @@ abstract class Rule
      */
     protected function checkAfter($after)
     {
+        Container::get('log')->notice('路由后置行为建议使用中间件替代！');
+
         $hook = Container::get('hook');
 
         $result = null;
@@ -1024,7 +1019,14 @@ abstract class Rule
             $name = substr($name, 1, -1);
         }
 
-        $nameRule = isset($pattern[$name]) ? $pattern[$name] : '\w+';
+        if (isset($pattern[$name])) {
+            $nameRule = $pattern[$name];
+            if (0 === strpos($nameRule, '/') && '/' == substr($nameRule, -1)) {
+                $nameRule = substr($nameRule, 1, -1);
+            }
+        } else {
+            $nameRule = '\w+';
+        }
 
         return '(' . $prefix . '(?<' . $name . $suffix . '>' . $nameRule . '))' . $optional;
     }

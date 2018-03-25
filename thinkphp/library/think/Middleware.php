@@ -9,19 +9,17 @@
 // | Author: Slince <taosikai@yeah.net>
 // +----------------------------------------------------------------------
 
-namespace think\http\middleware;
+namespace think;
 
-use think\Container;
-use think\Request;
-use think\Response;
-
-class Dispatcher implements DispatcherInterface
+class Middleware
 {
-    protected $queue;
+    protected $queue = [];
 
-    public function __construct(array $middlewares = [])
+    public function import(array $middlewares = [])
     {
-        $this->queue = $middlewares;
+        foreach ($middlewares as $middleware) {
+            $this->add($middleware);
+        }
     }
 
     /**
@@ -29,7 +27,11 @@ class Dispatcher implements DispatcherInterface
      */
     public function add($middleware)
     {
-        $middleware = $this->makeInstance($middleware);
+        if (is_null($middleware)) {
+            return;
+        }
+
+        $middleware = $this->buildMiddleware($middleware);
 
         $this->queue[] = $middleware;
     }
@@ -37,9 +39,13 @@ class Dispatcher implements DispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function insert($middleware)
+    public function unshift($middleware)
     {
-        $middleware = $this->makeInstance($middleware);
+        if (is_null($middleware)) {
+            return;
+        }
+
+        $middleware = $this->buildMiddleware($middleware);
 
         array_unshift($this->queue, $middleware);
     }
@@ -60,10 +66,14 @@ class Dispatcher implements DispatcherInterface
         return call_user_func($this->resolve(), $request);
     }
 
-    protected function makeInstance($middleware)
+    protected function buildMiddleware($middleware)
     {
+        if (is_array($middleware)) {
+            list($middleware, $param) = $middleware;
+        }
+
         if ($middleware instanceof \Closure) {
-            return $middleware;
+            return [$middleware, null];
         }
 
         if (!is_string($middleware)) {
@@ -72,7 +82,11 @@ class Dispatcher implements DispatcherInterface
 
         $class = false === strpos($middleware, '\\') ? Container::get('app')->getNamespace() . '\\http\\middleware\\' . $middleware : $middleware;
 
-        return [Container::get($class), 'handle'];
+        if (strpos($class, ':')) {
+            list($class, $param) = explode(':', $class, 2);
+        }
+
+        return [[Container::get($class), 'handle'], isset($param) ? $param : null];
     }
 
     protected function resolve()
@@ -81,7 +95,9 @@ class Dispatcher implements DispatcherInterface
             $middleware = array_shift($this->queue);
 
             if (null !== $middleware) {
-                $response = call_user_func($middleware, $request, $this->resolve());
+                list($call, $param) = $middleware;
+
+                $response = call_user_func_array($call, [$request, $this->resolve(), $param]);
 
                 if (!$response instanceof Response) {
                     throw new \LogicException('The middleware must return Response instance');
@@ -89,7 +105,7 @@ class Dispatcher implements DispatcherInterface
 
                 return $response;
             } else {
-                throw new MissingResponseException('The queue was exhausted, with no response returned');
+                throw new \InvalidArgumentException('The queue was exhausted, with no response returned');
             }
         };
     }
