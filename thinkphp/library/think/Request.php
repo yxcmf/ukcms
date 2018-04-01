@@ -252,6 +252,12 @@ class Request
     protected $isCheckCache;
 
     /**
+     * 请求安全Key
+     * @var string
+     */
+    protected $secureKey;
+
+    /**
      * 架构函数
      * @access public
      * @param  array  $options 参数
@@ -1551,7 +1557,11 @@ class Request
             return $ip[$type];
         }
 
-        if ($adv) {
+        $httpAgentIp = $this->config->get('http_agent_ip');
+
+        if ($httpAgentIp && isset($_SERVER[$httpAgentIp])) {
+            $ip = $_SERVER[$httpAgentIp];
+        } elseif ($adv) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
                 $pos = array_search('unknown', $arr);
@@ -1711,6 +1721,20 @@ class Request
     }
 
     /**
+     * 获取当前请求的安全Key
+     * @access public
+     * @return string
+     */
+    public function secureKey()
+    {
+        if (is_null($this->secureKey)) {
+            $this->secureKey = uniqid('', true);
+        }
+
+        return $this->secureKey;
+    }
+
+    /**
      * 设置或者获取当前的模块名
      * @access public
      * @param  string $module 模块名
@@ -1750,12 +1774,13 @@ class Request
      */
     public function action($action = null)
     {
-        if (!is_null($action)) {
+        if (!is_null($action) && !is_bool($action)) {
             $this->action = $action;
             return $this;
         }
 
-        return $this->action ?: '';
+        $name = $this->action ?: '';
+        return true === $action ? $name : strtolower($name);
     }
 
     /**

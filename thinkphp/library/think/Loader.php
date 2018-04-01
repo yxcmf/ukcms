@@ -17,7 +17,7 @@ class Loader
      * 类名映射信息
      * @var array
      */
-    protected static $map = [];
+    protected static $classMap = [];
 
     /**
      * 类库别名
@@ -58,7 +58,9 @@ class Loader
         // 注册系统自动加载
         spl_autoload_register($autoload ?: 'think\\Loader::autoload', true, true);
 
-        $path = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
+        $scriptName = 'cli' == PHP_SAPI ? getcwd() . DIRECTORY_SEPARATOR . $_SERVER['argv'][0] : $_SERVER['SCRIPT_FILENAME'];
+
+        $path = realpath(dirname($scriptName));
 
         if ('cli-server' == PHP_SAPI || !is_file('./think')) {
             $rootPath = dirname($path) . DIRECTORY_SEPARATOR;
@@ -76,12 +78,11 @@ class Loader
                 $declaredClass = get_declared_classes();
                 $composerClass = array_pop($declaredClass);
 
-                self::$prefixLengthsPsr4 = $composerClass::$prefixLengthsPsr4;
-
-                self::$prefixDirsPsr4 = property_exists($composerClass, 'prefixDirsPsr4') ? $composerClass::$prefixDirsPsr4 : [];
-
-                self::$prefixesPsr0 = property_exists($composerClass, 'prefixesPsr0') ? $composerClass::$prefixesPsr0 : [];
-                self::$map          = property_exists($composerClass, 'classMap') ? $composerClass::$classMap : [];
+                foreach (['prefixLengthsPsr4', 'prefixDirsPsr4', 'prefixesPsr0', 'classMap'] as $attr) {
+                    if (property_exists($composerClass, $attr)) {
+                        self::${$attr} = $composerClass::${$attr};
+                    }
+                }
             } else {
                 self::registerComposerLoader(self::$composerPath);
             }
@@ -129,9 +130,9 @@ class Loader
      */
     private static function findFile($class)
     {
-        if (!empty(self::$map[$class])) {
+        if (!empty(self::$classMap[$class])) {
             // 类库映射
-            return self::$map[$class];
+            return self::$classMap[$class];
         }
 
         // 查找 PSR-4
@@ -186,16 +187,16 @@ class Loader
             }
         }
 
-        return self::$map[$class] = false;
+        return self::$classMap[$class] = false;
     }
 
     // 注册classmap
     public static function addClassMap($class, $map = '')
     {
         if (is_array($class)) {
-            self::$map = array_merge(self::$map, $class);
+            self::$classMap = array_merge(self::$classMap, $class);
         } else {
-            self::$map[$class] = $map;
+            self::$classMap[$class] = $map;
         }
     }
 

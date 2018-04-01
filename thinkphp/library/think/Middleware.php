@@ -11,6 +11,10 @@
 
 namespace think;
 
+use InvalidArgumentException;
+use LogicException;
+use think\exception\HttpResponseException;
+
 class Middleware
 {
     protected $queue = [];
@@ -33,7 +37,9 @@ class Middleware
 
         $middleware = $this->buildMiddleware($middleware);
 
-        $this->queue[] = $middleware;
+        if ($middleware) {
+            $this->queue[] = $middleware;
+        }
     }
 
     /**
@@ -47,7 +53,9 @@ class Middleware
 
         $middleware = $this->buildMiddleware($middleware);
 
-        array_unshift($this->queue, $middleware);
+        if ($middleware) {
+            array_unshift($this->queue, $middleware);
+        }
     }
 
     /**
@@ -73,20 +81,27 @@ class Middleware
         }
 
         if ($middleware instanceof \Closure) {
-            return [$middleware, null];
+            return [$middleware, isset($param) ? $param : null];
         }
 
         if (!is_string($middleware)) {
-            throw new \InvalidArgumentException('The middleware is invalid');
+            throw new InvalidArgumentException('The middleware is invalid');
         }
 
-        $class = false === strpos($middleware, '\\') ? Container::get('app')->getNamespace() . '\\http\\middleware\\' . $middleware : $middleware;
-
-        if (strpos($class, ':')) {
-            list($class, $param) = explode(':', $class, 2);
+        if (false === strpos($middleware, '\\')) {
+            $value      = Container::get('config')->get('middleware.' . $middleware);
+            $middleware = $value ?: Container::get('app')->getNamespace() . '\\http\\middleware\\' . $middleware;
         }
 
-        return [[Container::get($class), 'handle'], isset($param) ? $param : null];
+        if (is_array($middleware)) {
+            return $this->import($middleware);
+        }
+
+        if (strpos($middleware, ':')) {
+            list($middleware, $param) = explode(':', $middleware, 2);
+        }
+
+        return [[Container::get($middleware), 'handle'], isset($param) ? $param : null];
     }
 
     protected function resolve()
@@ -97,15 +112,19 @@ class Middleware
             if (null !== $middleware) {
                 list($call, $param) = $middleware;
 
-                $response = call_user_func_array($call, [$request, $this->resolve(), $param]);
+                try {
+                    $response = call_user_func_array($call, [$request, $this->resolve(), $param]);
+                } catch (HttpResponseException $exception) {
+                    $response = $exception->getResponse();
+                }
 
                 if (!$response instanceof Response) {
-                    throw new \LogicException('The middleware must return Response instance');
+                    throw new LogicException('The middleware must return Response instance');
                 }
 
                 return $response;
             } else {
-                throw new \InvalidArgumentException('The queue was exhausted, with no response returned');
+                throw new InvalidArgumentException('The queue was exhausted, with no response returned');
             }
         };
     }
