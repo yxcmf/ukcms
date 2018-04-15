@@ -78,7 +78,7 @@
                         <label>栏目名称*</label>
                         <input type="text" class="form-control" name="title" placeholder="栏目中文名称" value="{$info.title}">
                     </fieldset>
-                    <fieldset class="form-group listApagecolumn">
+                    <fieldset class="form-group">
                         <label>栏目标识*</label>
                         <input type="text" class="form-control" name="name" placeholder="栏目唯一英文标识" value="{$info.name}">
                     </fieldset>
@@ -147,7 +147,7 @@
                                 <option value="create_time" {if 'create_time'==$info.listorder.0}selected{/if}>创建时间</option>
                                 <option value="update_time" {if 'update_time'==$info.listorder.0}selected{/if}>更新时间</option>
                                 <option value="hits" {if 'hits'==$info.listorder.0}selected{/if}>点击量</option>
-                                <option value="rand" {if 'rand()'==$info.listorder.0}selected{/if}>随机</option>
+                                <option value="rand" {if '[rand]'==$info.listorder.0}selected{/if}>随机</option>
                             </select>
                         </fieldset>
                         <fieldset class="form-group col-sm-6">

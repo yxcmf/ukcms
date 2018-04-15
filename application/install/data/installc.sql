@@ -33,7 +33,7 @@ CREATE TABLE `uk_admin_menu` (
   `ifsystem` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否为系统菜单',
   `ifvisible` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=134 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
+) ENGINE=MyISAM AUTO_INCREMENT=135 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
 
 -- ----------------------------
 -- Records of uk_admin_menu
@@ -94,11 +94,11 @@ INSERT INTO `uk_admin_menu` VALUES ('56', '37', '栏目拓展内容', 'fa fa-tas
 INSERT INTO `uk_admin_menu` VALUES ('57', '35', '模型内容', 'fa fa-clone', '1', '', '_self', '1496640683', '1514014446', '2', '1', '1');
 INSERT INTO `uk_admin_menu` VALUES ('58', '37', '栏目批量移动', 'fa fa-reply', '1', 'admin/column/move', '_self', '1496742824', '1503901646', '10', '1', '0');
 INSERT INTO `uk_admin_menu` VALUES ('59', '37', '栏目批量编辑', 'fa fa-file-text', '1', 'admin/column/editAll', '_self', '1496742900', '1503901646', '11', '1', '0');
-INSERT INTO `uk_admin_menu` VALUES ('60', '57', '添加模型内容', 'fa fa-plus', '1', 'admin/content/add', '_self', '1496992960', '1501740936', '0', '1', '0');
-INSERT INTO `uk_admin_menu` VALUES ('61', '57', '编辑模型内容', 'fa fa-edit', '1', 'admin/content/edit', '_self', '1496993528', '1501740936', '3', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('62', '57', '删除模型内容', 'fa fa-close', '1', 'admin/content/delete', '_self', '1496993730', '1501740936', '4', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('63', '57', '设置模型内容状态', 'fa fa-toggle-on', '1', 'admin/content/setstate', '_self', '1496993816', '1501740936', '6', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('64', '57', '模型内容排序', 'fa fa-sort-numeric-desc', '1', 'admin/content/changeorder', '_self', '1496993920', '1501740936', '7', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('60', '57', '添加模型内容', 'fa fa-plus', '1', 'admin/content/add', '_self', '1496992960', '1523773580', '0', '1', '0');
+INSERT INTO `uk_admin_menu` VALUES ('61', '57', '编辑模型内容', 'fa fa-edit', '1', 'admin/content/edit', '_self', '1496993528', '1523773580', '4', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('62', '57', '删除模型内容', 'fa fa-close', '1', 'admin/content/delete', '_self', '1496993730', '1523773580', '5', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('63', '57', '设置模型内容状态', 'fa fa-toggle-on', '1', 'admin/content/setstate', '_self', '1496993816', '1523773580', '7', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('64', '57', '模型内容排序', 'fa fa-sort-numeric-desc', '1', 'admin/content/changeorder', '_self', '1496993920', '1523773580', '9', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('65', '2', '推荐位管理', 'fa fa-dot-circle-o', '1', 'admin/place/index', '_self', '1497768076', '1497771172', '2', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('66', '65', '添加推荐位', 'fa fa-plus', '1', 'admin/place/add', '_self', '1497768219', '1497774456', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('67', '65', '编辑推荐位', 'fa fa-edit', '1', 'admin/place/edit', '_self', '1497768262', '1497774468', '100', '0', '0');
@@ -115,10 +115,10 @@ INSERT INTO `uk_admin_menu` VALUES ('77', '70', '删除链接', 'fa fa-times-cir
 INSERT INTO `uk_admin_menu` VALUES ('78', '70', '设置链接状态', 'fa fa-toggle-on', '1', 'admin/link/setstate', '_self', '1498009327', '1498009327', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('79', '70', '设置链接排序', 'fa fa-sort-numeric-desc', '1', 'admin/link/changeorder', '_self', '1498009393', '1498009393', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('80', '36', '模型状态设置', 'fa fa-toggle-on', '1', 'admin/model/setstate', '_self', '1498894295', '1504450011', '2', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('81', '57', '模型内容移动栏目', 'fa fa-reply-all', '1', 'admin/content/move', '_self', '1498895686', '1501740936', '5', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('81', '57', '模型内容移动栏目', 'fa fa-reply-all', '1', 'admin/content/move', '_self', '1498895686', '1523773580', '6', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('82', '36', '模型是否可投稿', 'fa fa-circle-o', '1', 'admin/model/setsub', '_self', '1499416148', '1504450011', '3', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('83', '57', '导入模型内容', 'fa fa-exchange', '1', 'admin/content/importdata', '_self', '1501653553', '1501740936', '1', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('84', '57', '导入格式下载', 'fa fa-file-text-o', '1', 'admin/content/importexample', '_self', '1501739963', '1501740936', '2', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('83', '57', '导入模型内容', 'fa fa-exchange', '1', 'admin/content/importdata', '_self', '1501653553', '1523773580', '1', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('84', '57', '导入格式下载', 'fa fa-file-text-o', '1', 'admin/content/importexample', '_self', '1501739963', '1523773580', '3', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('85', '3', '清空缓存', 'fa fa-trash-o', '1', 'admin/index/clear', '_self', '1501837809', '1501837809', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('86', '2', 'TAG标签管理', 'fa fa-tags', '1', 'admin/tag/index', '_self', '1502153759', '1502153759', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('87', '86', '添加TAG', 'fa fa-plus', '1', 'admin/tag/add', '_self', '1502153780', '1502154092', '0', '0', '0');
@@ -164,8 +164,9 @@ INSERT INTO `uk_admin_menu` VALUES ('128', '126', '编辑域名', 'fa fa-edit', 
 INSERT INTO `uk_admin_menu` VALUES ('129', '126', '删除域名', 'fa fa-close', '1', 'admin/domain/delete', '_self', '1511686015', '1511686015', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('130', '126', '域名状态设置', 'fa fa-toggle-on', '1', 'admin/domain/setstate', '_self', '1511686423', '1511686423', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('131', '30', 'ajax通过ID获取附件信息', 'fa fa-file-archive-o', '1', 'admin/filemanage/ajaxgetfileinfo', '_self', '1511835064', '1511835076', '5', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('132', '57', '复制模型内容', 'fa fa-copy', '1', 'admin/content/copy', '_self', '1512630859', '1512630909', '6', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('132', '57', '复制模型内容', 'fa fa-copy', '1', 'admin/content/copy', '_self', '1512630859', '1523773580', '8', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('133', '30', 'ajax通过类型获取附件列表', 'fa fa-reorder', '1', 'admin/filemanage/showfilelist', '_self', '1515914039', '1515915509', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('134', '57', '导出模型内容', 'fa fa-mail-reply-all', '1', 'admin/content/exportdata', '_self', '1523772657', '1523773602', '2', '0', '0');
 
 -- ----------------------------
 -- Table structure for uk_admin_role

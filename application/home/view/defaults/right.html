@@ -58,7 +58,7 @@
 <div class="ui segment">
     <div class="ui top attached large  label blue">随机文章</div>
     <div class="ui divided list articleList">
-        {uk:select table="article" field="id,cname,title,description,create_time"  limit="4"  order="rand()"}
+        {uk:select table="article" field="id,cname,title,description,create_time"  limit="4"  order="[rand]"}
         <div class="item">
             <span class="right floated">{:date('Y-m-d',$vo.create_time)}</span>
             <a href="{$vo.url}"><i class="file outline icon"></i>{$vo.title}</a>

@@ -156,6 +156,121 @@ class Content extends Common {
         }
     }
 
+    //导出数据
+    public function exportdata($mid = 0, $cname = '') {
+        $modelId = intval($mid);
+        if (!$modelId) {
+            $this->error('mid参数错误~');
+        }
+        $modelInfo = Db::name('model')->where('id', $modelId)->where('status', 1)->field('table,title,type,purpose')->find();
+        if (empty($modelInfo)) {
+            return $this->error('模型被冻结不可操作');
+        }
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+            //栏目
+            if (!empty($data[cname])) {
+                $where[] = "cname='$data[cname]'";
+            }
+            //时间
+            $data['creattime'] = trim($data['creattime']);
+            if (!empty($data['creattime'])) {
+                list($beginTime, $endTime) = explode('-', $data['creattime']);
+                $beginTime = strtotime(trim($beginTime));
+                $endTime = strtotime(trim($endTime));
+                $where[] = "create_time>$beginTime";
+                $where[] =  "create_time<$endTime";
+            }
+            $whereStr = empty($where) ? '' : implode(' and ', $where);
+            //限制条数
+            $limit = $data['limitnum'] ? '0,' . intval($data['limitnum']) : '';
+
+            $list = model('ModelField')->getDataList($modelInfo['table'], $whereStr, "*", "*", 'orders,id desc', $limit);
+            if (empty($list)) {
+                return $this->error('没有满足条件的模型信息可以导出');
+            }
+//            print_r($list);
+//            die;
+            $objPHPExcel = new \PHPExcel();
+            $objPHPExcel->getProperties()->setCreator("UKcms")
+                    ->setLastModifiedBy("UKcms Adminstrator")
+                    ->setTitle("UKcms " . $modelInfo['table'])
+                    ->setSubject("UKcms " . $modelInfo['table'])
+                    ->setDescription("UKcms " . $modelInfo['table'])
+                    ->setKeywords("excel")
+                    ->setCategory("result file");
+
+            $Letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            $modelFields = Db::name('model_field')->where('model_id', $modelId)->where('name', 'not in', ['id', 'did', 'cname', 'uid', 'ifextend', 'status'])->order("orders ,id desc")->column('name,title,type');
+            $i = 0;
+            foreach ($modelFields as $value) {
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue($Letters[$i] . '1', $value['title'] . '[' . $value['type'] . ']');
+                $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension($Letters[$i])->setWidth(30);
+                $i++;
+            }
+            for ($i = 2; $i <= count($list)+1; $i++) {
+                $j = 0;
+                $n = $i - 2;
+                foreach ($modelFields as $value) {
+                    switch ($value['type']) {
+                        case 'datetime':
+                            $strValue = date('Y-m-d H:m:s', $list[$n][$value['name']]);
+                            break;
+                        case 'checkbox':
+                        case 'select':
+                        case 'files':
+                        case 'tags':
+                            $strValue = implode(',', $list[$n][$value['name']]);
+                            break;
+                        case 'image':
+                            $strValue = $list[$n][$value['name']]['path'] . ($list[$n][$value['name']]['thumb'] ? '|' . $list[$n][$value['name']]['thumb'] : '');
+                            break;
+                        case 'images':
+                            $strValue = '';
+                            if (!empty($list[$n][$value['name']])) {
+                                foreach ($list[$n][$value['name']] as $vo) {
+                                    $strValue .= $vo['path'] . ($vo['thumb'] ? '|' . $vo['thumb'] : '') . ",";
+                                }
+                            }
+                            break;
+                        default:
+                            $strValue = is_array($list[$n][$value['name']]) ? json_encode($list[$n][$value['name']]) : $list[$n][$value['name']];
+                    }
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue($Letters[$j] . $i, $strValue);
+                    $j++;
+                }
+            }
+
+
+            $objPHPExcel->getActiveSheet()->setTitle($modelInfo['table']);
+            $objPHPExcel->setActiveSheetIndex(0);
+            header("Content-Type: application/vnd.ms-excel");
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Content-Type: application/force-download");
+            header("Content-Type: application/octet-stream");
+            header("Content-Type: application/download");
+            header("Content-Disposition: attachment;filename=ukcms_" . $modelInfo['table'] . ".xls");
+            header("Content-Transfer-Encoding: binary ");
+            $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            $objWriter->save('php://output');
+            exit;
+        } else {
+            if ('column' == $modelInfo['purpose']) {
+                $columnList = model('Column')->getColumn('id,name,path,title,type,model_id', 'sort', false);
+                $this->assign('columnList', $columnList);
+            }
+            $this->assign([
+                'modelInfo' => $modelInfo,
+                'mid' => $mid,
+                //用于栏目列表添加链接
+                'cname' => $cname,
+            ]);
+            return $this->fetch();
+        }
+    }
+
     //导入数据
     public function importdata($mid = 0, $cname = '') {
         $modelId = intval($mid);
@@ -172,6 +287,7 @@ class Content extends Common {
 
         if ($this->request->isPost()) {
             set_time_limit(0);
+
             $data = $this->request->post();
             if (isset($data['iftranslate'])) {
                 $iftranslate = true;
@@ -192,16 +308,18 @@ class Content extends Common {
                 }
             }
             //随机时间处理
-            $creatTime = trim($data['creattime']);
-            if (!empty($creatTime)) {
-                $timeArr = explode('-', $creatTime);
-                $timeArr[0] = strtotime(trim($timeArr[0]));
-                $timeArr[1] = strtotime(trim($timeArr[1]));
-                unset($creatTime);
+            $data['creattime'] = trim($data['creattime']);
+            if (!empty($data['creattime'])) {
+                list($beginTime, $endTime) = explode('-', $data['creattime']);
+                $beginTime = strtotime(trim($beginTime));
+                $endTime = strtotime(trim($endTime));
             }
             $modelFields = Db::name('model_field')->where('model_id', $modelId)->where('name', 'not in', ['id', 'did', 'cname'])->column('name,ifmain,type,value,jsonrule');
 //            vendor("phpexcel.PHPExcel");
             $file = $this->request->file('excel');
+            if (null == $file) {
+                $this->error('没有选择数据文件~');
+            }
             $path = config('upload_temp_path');
             $info = $file->validate(['ext' => 'xlsx,xls,csv'])->move($path, 'model_data');
 
@@ -321,7 +439,7 @@ class Content extends Common {
                 }
                 //时间处理
                 if (isset($timeArr)) {
-                    $rowMain['create_time'] = $rowMain['update_time'] = rand($timeArr[0], $timeArr[1]);
+                    $rowMain['create_time'] = $rowMain['update_time'] = rand($beginTime, $endTime);
                 } else {
                     $rowMain['create_time'] = $rowMain['update_time'] = time();
                 }

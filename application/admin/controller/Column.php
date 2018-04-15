@@ -38,7 +38,7 @@ class Column extends Common {
                     break;
                 //列表
                 case 2:
-                    $data['listorder'] = 'rand' == $data['listorder'] ? $data['listorder'] . '()' : $data['listorder'] . ' ' . $data['listorderway'];
+                    $data['listorder'] = 'rand' == $data['listorder'] ? '['.$data['listorder'] . ']' : $data['listorder'] . ' ' . $data['listorderway'];
                     if (!empty($data['urls'])) {
                         $data['url'] = implode(',', $data['urls']);
                         unset($data['urls']);
@@ -48,7 +48,7 @@ class Column extends Common {
                     break;
                 //链接
                 case 3:
-                    $fields = ['type', 'path', 'title', 'cover_picture', 'url', 'orders', 'status'];
+                    $fields = ['type', 'path', 'title', 'name', 'cover_picture', 'url', 'orders', 'status'];
                     $scene = 'link';
                     break;
                 default:
@@ -117,7 +117,7 @@ class Column extends Common {
                     break;
                 //列表
                 case 2:
-                    $data['listorder'] = 'rand' == $data['listorder'] ? $data['listorder'] . '()' : $data['listorder'] . ' ' . $data['listorderway'];
+                    $data['listorder'] = 'rand' == $data['listorder'] ? '['.$data['listorder'] . ']' : $data['listorder'] . ' ' . $data['listorderway'];
                     if (!empty($data['urls'])) {
                         $data['url'] = implode(',', $data['urls']);
                         unset($data['urls']);
@@ -127,7 +127,6 @@ class Column extends Common {
                 //链接
                 case 3:
                     $scene = 'link';
-                    $data['name'] = '';
                     $data['model_id'] = 0;
                     $data['template_content'] = '';
                     $data['list_row'] = 0;

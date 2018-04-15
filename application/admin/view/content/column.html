@@ -18,7 +18,9 @@
     <div class="panel-heading">
         <span class="panel-title">栏目模型【{$modelTitle}】的内容</span>
         <div class="panel-heading-controls"> 
-            <a class="btn btn-xs btn-primary" href="{:url('add',['mid'=>$modelId])}"><i class="fa fa-plus"></i> 新增内容</a><a class="btn btn-xs btn-primary" href="{:url('importdata',['mid'=>$modelId])}"><i class="fa fa-plus-square"></i> 导入内容</a>
+            <a class="btn btn-xs btn-primary" href="{:url('add',['mid'=>$modelId])}"><i class="fa fa-plus"></i> 新增内容</a>
+            <a class="btn btn-xs btn-primary" href="{:url('importdata',['mid'=>$modelId])}"><i class="fa fa-plus-square"></i> 导入内容</a>
+            <a class="btn btn-xs btn-primary" href="{:url('exportdata',['mid'=>$modelId])}"><i class="fa fa-share"></i> 导出内容</a>
         </div>
     </div>
     <div class="panel-body">

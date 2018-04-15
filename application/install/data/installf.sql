@@ -33,7 +33,7 @@ CREATE TABLE `uk_admin_menu` (
   `ifsystem` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否为系统菜单',
   `ifvisible` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=140 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
+) ENGINE=MyISAM AUTO_INCREMENT=141 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
 
 -- ----------------------------
 -- Records of uk_admin_menu
@@ -94,11 +94,11 @@ INSERT INTO `uk_admin_menu` VALUES ('56', '37', '栏目拓展内容', 'fa fa-tas
 INSERT INTO `uk_admin_menu` VALUES ('57', '35', '模型内容', 'fa fa-clone', '1', '', '_self', '1496640683', '1514013717', '2', '1', '1');
 INSERT INTO `uk_admin_menu` VALUES ('58', '37', '栏目批量移动', 'fa fa-reply', '1', 'admin/column/move', '_self', '1496742824', '1503901646', '10', '1', '0');
 INSERT INTO `uk_admin_menu` VALUES ('59', '37', '栏目批量编辑', 'fa fa-file-text', '1', 'admin/column/editAll', '_self', '1496742900', '1503901646', '11', '1', '0');
-INSERT INTO `uk_admin_menu` VALUES ('60', '57', '添加模型内容', 'fa fa-plus', '1', 'admin/content/add', '_self', '1496992960', '1512630909', '0', '1', '0');
-INSERT INTO `uk_admin_menu` VALUES ('61', '57', '编辑模型内容', 'fa fa-edit', '1', 'admin/content/edit', '_self', '1496993528', '1512630909', '3', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('62', '57', '删除模型内容', 'fa fa-close', '1', 'admin/content/delete', '_self', '1496993730', '1512630909', '4', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('63', '57', '设置模型内容状态', 'fa fa-toggle-on', '1', 'admin/content/setstate', '_self', '1496993816', '1512630909', '7', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('64', '57', '模型内容排序', 'fa fa-sort-numeric-desc', '1', 'admin/content/changeorder', '_self', '1496993920', '1512630909', '8', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('60', '57', '添加模型内容', 'fa fa-plus', '1', 'admin/content/add', '_self', '1496992960', '1523772682', '0', '1', '0');
+INSERT INTO `uk_admin_menu` VALUES ('61', '57', '编辑模型内容', 'fa fa-edit', '1', 'admin/content/edit', '_self', '1496993528', '1523772682', '4', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('62', '57', '删除模型内容', 'fa fa-close', '1', 'admin/content/delete', '_self', '1496993730', '1523772682', '5', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('63', '57', '设置模型内容状态', 'fa fa-toggle-on', '1', 'admin/content/setstate', '_self', '1496993816', '1523772682', '8', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('64', '57', '模型内容排序', 'fa fa-sort-numeric-desc', '1', 'admin/content/changeorder', '_self', '1496993920', '1523772682', '9', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('65', '2', '推荐位管理', 'fa fa-dot-circle-o', '1', 'admin/place/index', '_self', '1497768076', '1497771172', '2', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('66', '65', '添加推荐位', 'fa fa-plus', '1', 'admin/place/add', '_self', '1497768219', '1497774456', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('67', '65', '编辑推荐位', 'fa fa-edit', '1', 'admin/place/edit', '_self', '1497768262', '1497774468', '100', '0', '0');
@@ -115,10 +115,10 @@ INSERT INTO `uk_admin_menu` VALUES ('77', '70', '删除链接', 'fa fa-times-cir
 INSERT INTO `uk_admin_menu` VALUES ('78', '70', '设置链接状态', 'fa fa-toggle-on', '1', 'admin/link/setstate', '_self', '1498009327', '1498009327', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('79', '70', '设置链接排序', 'fa fa-sort-numeric-desc', '1', 'admin/link/changeorder', '_self', '1498009393', '1498009393', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('80', '36', '模型状态设置', 'fa fa-toggle-on', '1', 'admin/model/setstate', '_self', '1498894295', '1510206728', '2', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('81', '57', '模型内容移动栏目', 'fa fa-reply-all', '1', 'admin/content/move', '_self', '1498895686', '1512630909', '5', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('81', '57', '模型内容移动栏目', 'fa fa-reply-all', '1', 'admin/content/move', '_self', '1498895686', '1523772682', '6', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('82', '36', '模型是否可投稿', 'fa fa-circle-o', '1', 'admin/model/setsub', '_self', '1499416148', '1510206728', '3', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('83', '57', '导入模型内容', 'fa fa-exchange', '1', 'admin/content/importdata', '_self', '1501653553', '1512630909', '1', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('84', '57', '导入格式下载', 'fa fa-file-text-o', '1', 'admin/content/importexample', '_self', '1501739963', '1512630909', '2', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('83', '57', '导入模型内容', 'fa fa-exchange', '1', 'admin/content/importdata', '_self', '1501653553', '1523772682', '1', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('84', '57', '导入格式下载', 'fa fa-file-text-o', '1', 'admin/content/importexample', '_self', '1501739963', '1523772682', '3', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('85', '3', '清空缓存', 'fa fa-trash-o', '1', 'admin/index/clear', '_self', '1501837809', '1501837809', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('86', '2', 'TAG标签管理', 'fa fa-tags', '1', 'admin/tag/index', '_self', '1502153759', '1502153759', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('87', '86', '添加TAG', 'fa fa-plus', '1', 'admin/tag/add', '_self', '1502153780', '1511144430', '0', '0', '0');
@@ -140,12 +140,12 @@ INSERT INTO `uk_admin_menu` VALUES ('102', '1', '应用管理', 'fa fa-hdd-o', '
 INSERT INTO `uk_admin_menu` VALUES ('103', '102', '应用状态', 'fa fa-toggle-on', '1', 'admin/app/setstate', '_self', '1506914560', '1509439223', '0', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('104', '102', '应用安装', 'fa fa-plus', '1', 'admin/app/install', '_self', '1506915151', '1509439223', '1', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('105', '102', '应用卸载', 'fa fa-close', '1', 'admin/app/uninstall', '_self', '1506915217', '1509439223', '2', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('107', '57', '图集', 'fa fa-sticky-note', '1', 'admin/content/photo', '_self', '1500017712', '1512630909', '9', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('108', '57', '文章', 'fa fa-sticky-note', '1', 'admin/content/article', '_self', '1500017779', '1512630909', '10', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('109', '57', '产品', 'fa fa-sticky-note', '1', 'admin/content/product', '_self', '1500017841', '1512630909', '11', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('110', '57', '单页', 'fa fa-sticky-note', '1', 'admin/content/page', '_self', '1500018204', '1512630909', '12', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('111', '57', '留言本', 'fa fa-sticky-note', '1', 'admin/content/guestbook', '_self', '1500018312', '1512630909', '13', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('112', '57', '内容评论', 'fa fa-sticky-note-o', '1', 'admin/content/comment', '_self', '1501223252', '1512630909', '14', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('107', '57', '图集', 'fa fa-sticky-note', '1', 'admin/content/photo', '_self', '1500017712', '1523772682', '10', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('108', '57', '文章', 'fa fa-sticky-note', '1', 'admin/content/article', '_self', '1500017779', '1523772682', '11', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('109', '57', '产品', 'fa fa-sticky-note', '1', 'admin/content/product', '_self', '1500017841', '1523772682', '12', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('110', '57', '单页', 'fa fa-sticky-note', '1', 'admin/content/page', '_self', '1500018204', '1523772682', '13', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('111', '57', '留言本', 'fa fa-sticky-note', '1', 'admin/content/guestbook', '_self', '1500018312', '1523772682', '14', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('112', '57', '内容评论', 'fa fa-sticky-note-o', '1', 'admin/content/comment', '_self', '1501223252', '1523772682', '15', '1', '1');
 INSERT INTO `uk_admin_menu` VALUES ('113', '35', 'SEO优化', 'fa fa-paw', '1', '', '_self', '1509086034', '1514013308', '4', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('114', '113', 'SiteMap', 'fa fa-map', '1', 'admin/sitemap/index', '_self', '1509086579', '1509086579', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('115', '36', '字段必填设置', 'fa fa-dot-circle-o', '1', 'admin/field/setrequire', '_self', '1509352076', '1510206728', '12', '0', '0');
@@ -170,8 +170,9 @@ INSERT INTO `uk_admin_menu` VALUES ('134', '132', '编辑域名', 'fa fa-edit', 
 INSERT INTO `uk_admin_menu` VALUES ('135', '132', '删除域名', 'fa fa-close', '1', 'admin/domain/delete', '_self', '1511686015', '1511686015', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('136', '132', '域名状态设置', 'fa fa-toggle-on', '1', 'admin/domain/setstate', '_self', '1511686423', '1511686423', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('137', '30', 'ajax通过ID获取附件信息', 'fa fa-file-archive-o', '1', 'admin/filemanage/ajaxgetfileinfo', '_self', '1511835064', '1515915377', '5', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('138', '57', '复制模型内容', 'fa fa-copy', '1', 'admin/content/copy', '_self', '1512630859', '1512630909', '6', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('138', '57', '复制模型内容', 'fa fa-copy', '1', 'admin/content/copy', '_self', '1512630859', '1523772682', '7', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('139', '30', 'ajax通过类型获取附件列表', 'fa fa-reorder', '1', 'admin/filemanage/showfilelist', '_self', '1515914039', '1515915509', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('140', '57', '导出模型内容', 'fa fa-mail-reply-all', '1', 'admin/content/exportdata', '_self', '1523772657', '1523772682', '2', '0', '0');
 
 -- ----------------------------
 -- Table structure for uk_admin_role
@@ -826,10 +827,10 @@ INSERT INTO `uk_model_field` VALUES ('61', '5', 'name', '姓名', 'text', 'varch
 INSERT INTO `uk_model_field` VALUES ('62', '5', 'telephone', '手机号码', 'text', 'varchar(11) NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1500020744', '1505609089', '104', '1');
 INSERT INTO `uk_model_field` VALUES ('63', '5', 'sex', '性别', 'radio', 'varchar(32) NOT NULL', '', '1:男\r\n2:女', '', '', '1', '1', '0', '0', '0', '1500020807', '1501032699', '105', '1');
 INSERT INTO `uk_model_field` VALUES ('64', '5', 'content', '留言内容', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '1', '0', '1500020860', '1513401677', '102', '1');
-INSERT INTO `uk_model_field` VALUES ('96', '2', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"rand()\"}}', '', '1', '1', '0', '0', '0', '1502092804', '1502428928', '105', '1');
+INSERT INTO `uk_model_field` VALUES ('96', '2', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092804', '1502428928', '105', '1');
 INSERT INTO `uk_model_field` VALUES ('66', '2', 'description', 'SEO摘要', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500023214', '1513401473', '106', '1');
-INSERT INTO `uk_model_field` VALUES ('95', '1', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"rand()\"}}', '', '1', '1', '0', '0', '0', '1502092625', '1502092714', '105', '1');
-INSERT INTO `uk_model_field` VALUES ('97', '3', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"rand()\"}}', '', '1', '1', '0', '0', '0', '1502092922', '1502092940', '110', '1');
+INSERT INTO `uk_model_field` VALUES ('95', '1', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092625', '1502092714', '105', '1');
+INSERT INTO `uk_model_field` VALUES ('97', '3', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092922', '1502092940', '110', '1');
 INSERT INTO `uk_model_field` VALUES ('69', '3', 'description', 'SEO摘要', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500023535', '1513401494', '111', '1');
 INSERT INTO `uk_model_field` VALUES ('70', '2', 'cover', '封面图', 'image', 'int(5) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1500023619', '1500024391', '103', '1');
 INSERT INTO `uk_model_field` VALUES ('71', '3', 'cover', '封面图', 'image', 'int(5) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1500023836', '1501056037', '104', '1');
