@@ -55,7 +55,7 @@ class Model extends \think\Model {
                         'title' => 'SEO关键词',
                         'define' => 'varchar(256) NOT NULL',
                         'type' => 'tags',
-                        'jsonrule' => '{"string":{"table":"tag","key":"title","delimiter":",","where":"","limit":"6","order":"rand()"}}',
+                        'jsonrule' => '{"string":{"table":"tag","key":"title","delimiter":",","where":"","limit":"6","order":"[rand]"}}',
                         'ifeditable' => 1,
                         'iffixed' => 0,
                         'orders' => 100
