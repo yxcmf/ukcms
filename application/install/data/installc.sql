@@ -403,22 +403,22 @@ CREATE TABLE `uk_field_type` (
 -- ----------------------------
 -- Records of uk_field_type
 -- ----------------------------
-INSERT INTO `uk_field_type` VALUES ('text', '输入框', '1', 'varchar(128) NOT NULL DEFAULT \'\'', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('checkbox', '复选框', '2', 'varchar(32) NOT NULL DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
-INSERT INTO `uk_field_type` VALUES ('textarea', '多行文本', '3', 'varchar(3000) NOT NULL DEFAULT \'\'', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('radio', '单选按钮', '4', 'varchar(32) NOT NULL DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
-INSERT INTO `uk_field_type` VALUES ('switch', '开关', '5', 'tinyint(2) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', 'isBool');
-INSERT INTO `uk_field_type` VALUES ('array', '数组', '6', 'varchar(512) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('select', '下拉框', '7', 'varchar(64) NOT NULL DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
-INSERT INTO `uk_field_type` VALUES ('image', '单张图', '8', 'int(5) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', 'isNumber');
-INSERT INTO `uk_field_type` VALUES ('tags', '标签', '10', 'varchar(256) NOT NULL DEFAULT \'\'', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('number', '数字', '11', 'int(10) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', 'isNumber');
-INSERT INTO `uk_field_type` VALUES ('datetime', '日期和时间', '12', 'int(11) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('Ueditor', '百度编辑器', '13', 'text NOT NULL', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('images', '多张图', '9', 'varchar(256) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('color', '颜色值', '16', 'varchar(7) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('files', '多文件', '15', 'varchar(256) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('summernote', '简洁编辑器', '14', 'text NOT NULL', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('text', '输入框', '1', 'varchar(128) DEFAULT \'\'', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('checkbox', '复选框', '2', 'varchar(32) DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
+INSERT INTO `uk_field_type` VALUES ('textarea', '多行文本', '3', 'varchar(3000) DEFAULT \'\'', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('radio', '单选按钮', '4', 'varchar(32) DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
+INSERT INTO `uk_field_type` VALUES ('switch', '开关', '5', 'tinyint(2) UNSIGNED DEFAULT \'0\'', '0', '0', 'isBool');
+INSERT INTO `uk_field_type` VALUES ('array', '数组', '6', 'varchar(512) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('select', '下拉框', '7', 'varchar(64) DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
+INSERT INTO `uk_field_type` VALUES ('image', '单张图', '8', 'int(5) UNSIGNED DEFAULT \'0\'', '0', '0', 'isNumber');
+INSERT INTO `uk_field_type` VALUES ('tags', '标签', '10', 'varchar(256) DEFAULT \'\'', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('number', '数字', '11', 'int(10) UNSIGNED DEFAULT \'0\'', '0', '0', 'isNumber');
+INSERT INTO `uk_field_type` VALUES ('datetime', '日期和时间', '12', 'int(11) UNSIGNED DEFAULT \'0\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('Ueditor', '百度编辑器', '13', 'text', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('images', '多张图', '9', 'varchar(256) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('color', '颜色值', '16', 'varchar(7) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('files', '多文件', '15', 'varchar(256) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('summernote', '简洁编辑器', '14', 'text', '0', '1', '');
 
 -- ----------------------------
 -- Table structure for uk_hook

@@ -36,11 +36,11 @@ class Model extends \think\Model {
             case 'column':
                 $chooseSql = '';
                 if (isset($data['fields']['title'])) {
-                    $chooseSql.=" `title` varchar(256) NOT NULL DEFAULT '' COMMENT '标题' ,";
+                    $chooseSql.=" `title` varchar(256) DEFAULT '' COMMENT '标题' ,";
                     $chooseRecord[] = [
                         'name' => 'title',
                         'title' => '标题',
-                        'define' => 'varchar(256) NOT NULL',
+                        'define' => 'varchar(256)',
                         'type' => 'text',
                         'ifsearch' => 1,
                         'ifeditable' => 1,
@@ -49,11 +49,11 @@ class Model extends \think\Model {
                     ];
                 }
                 if (isset($data['fields']['keywords'])) {
-                    $chooseSql.="`keywords` varchar(256) NOT NULL DEFAULT '' COMMENT 'SEO关键词',";
+                    $chooseSql.="`keywords` varchar(256) DEFAULT '' COMMENT 'SEO关键词',";
                     $chooseRecord[] = [
                         'name' => 'keywords',
                         'title' => 'SEO关键词',
-                        'define' => 'varchar(256) NOT NULL',
+                        'define' => 'varchar(256)',
                         'type' => 'tags',
                         'jsonrule' => '{"string":{"table":"tag","key":"title","delimiter":",","where":"","limit":"6","order":"[rand]"}}',
                         'ifeditable' => 1,
@@ -62,11 +62,11 @@ class Model extends \think\Model {
                     ];
                 }
                 if (isset($data['fields']['description'])) {
-                    $chooseSql.="`description` varchar(3000) NOT NULL DEFAULT '' COMMENT 'SEO摘要',";
+                    $chooseSql.="`description` varchar(3000) DEFAULT '' COMMENT 'SEO摘要',";
                     $chooseRecord[] = [
                         'name' => 'description',
                         'title' => 'SEO摘要',
-                        'define' => 'varchar(3000) NOT NULL',
+                        'define' => 'varchar(3000)',
                         'type' => 'textarea',
                         'ifeditable' => 1,
                         'iffixed' => 0,
@@ -74,11 +74,11 @@ class Model extends \think\Model {
                     ];
                 }
                 if (isset($data['fields']['content']) && 2 == $data['type']) {
-                    $chooseSqlExt.="`content` text NOT NULL COMMENT '内容',";
+                    $chooseSqlExt.="`content` text COMMENT '内容',";
                     $chooseRecord[] = [
                         'name' => 'content',
                         'title' => '内容',
-                        'define' => 'text NOT NULL',
+                        'define' => 'text',
                         'type' => 'Ueditor',
                         'ifmain' => 0,
                         'ifeditable' => 1,
@@ -88,17 +88,17 @@ class Model extends \think\Model {
                 }
                 $sql = <<<EOF
             CREATE TABLE IF NOT EXISTS `{$table}` (
-            `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '文档id' ,
-            `cname` varchar(64) NOT NULL DEFAULT '' COMMENT '栏目标识' ,
-            `ifextend` tinyint(2) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否栏目拓展字段' ,
-            `uid` int(10) UNSIGNED NOT NULL DEFAULT 1 COMMENT '用户id' ,
-            `places` varchar(64) NOT NULL DEFAULT '' COMMENT '推荐位' ,
+            `id` int(11) UNSIGNED AUTO_INCREMENT COMMENT '文档id' ,
+            `cname` varchar(64) DEFAULT '' COMMENT '栏目标识' ,
+            `ifextend` tinyint(2) UNSIGNED  DEFAULT 0 COMMENT '是否栏目拓展字段' ,
+            `uid` int(10) UNSIGNED  DEFAULT 1 COMMENT '用户id' ,
+            `places` varchar(64) DEFAULT '' COMMENT '推荐位' ,
             {$chooseSql}
-            `create_time` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间' ,
-            `update_time` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新时间' ,
-            `orders` int(11) NOT NULL DEFAULT 100 COMMENT '排序' ,
-            `status` tinyint(2) UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态' ,
-            `hits` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '点击量' ,
+            `create_time` int(11) UNSIGNED DEFAULT 0 COMMENT '创建时间' ,
+            `update_time` int(11) UNSIGNED DEFAULT 0 COMMENT '更新时间' ,
+            `orders` int(11) DEFAULT 100 COMMENT '排序' ,
+            `status` tinyint(2) UNSIGNED DEFAULT 0 COMMENT '状态' ,
+            `hits` int(11) UNSIGNED DEFAULT 0 COMMENT '点击量' ,
             PRIMARY KEY (`id`)
             )
             ENGINE=MyISAM
@@ -113,12 +113,12 @@ EOF;
             case 'independence':
                 $sql = <<<EOF
             CREATE TABLE IF NOT EXISTS `{$table}` (
-            `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '文档id' ,
-            `uid` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户id' ,
-            `create_time` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间' ,
-            `update_time` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新时间' ,
-            `orders` int(11) NOT NULL DEFAULT 100 COMMENT '排序' ,
-            `status` tinyint(2) UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态' ,
+            `id` int(11) UNSIGNED AUTO_INCREMENT COMMENT '文档id' ,
+            `uid` int(10) UNSIGNED DEFAULT 0 COMMENT '用户id' ,
+            `create_time` int(11) UNSIGNED DEFAULT 0 COMMENT '创建时间' ,
+            `update_time` int(11) UNSIGNED DEFAULT 0 COMMENT '更新时间' ,
+            `orders` int(11) DEFAULT 100 COMMENT '排序' ,
+            `status` tinyint(2) UNSIGNED DEFAULT 0 COMMENT '状态' ,
             PRIMARY KEY (`id`)
             )
             ENGINE=MyISAM
@@ -137,7 +137,7 @@ EOF;
             // 新建附属表
             $sql = <<<EOF
                 CREATE TABLE IF NOT EXISTS `{$table}{$this->ext_table}` (
-                `did` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '文档id' ,
+                `did` int(11) UNSIGNED DEFAULT 0 COMMENT '文档id' ,
                 {$chooseSqlExt}
                 PRIMARY KEY (`did`)
                 )
@@ -221,14 +221,14 @@ EOF;
                     [
                         'name' => 'id',
                         'title' => '文档id',
-                        'define' => 'int(11) UNSIGNED NOT NULL',
+                        'define' => 'int(11) UNSIGNED',
                         'type' => 'hidden',
                         'ifeditable' => 1,
                     ],
                     [
                         'name' => 'cname',
                         'title' => '栏目标识',
-                        'define' => 'varchar(64) NOT NULL',
+                        'define' => 'varchar(64)',
                         'type' => 'text',
                         'ifeditable' => 0,
                         'ifrequire' => 1
@@ -236,7 +236,7 @@ EOF;
                     [
                         'name' => 'ifextend',
                         'title' => '是否栏目拓展',
-                        'define' => 'tinyint(2) NOT NULL',
+                        'define' => 'tinyint(2)',
                         'type' => 'number',
                         'ifeditable' => 0,
                         'value' => 0,
@@ -244,7 +244,7 @@ EOF;
                     [
                         'name' => 'uid',
                         'title' => '用户id',
-                        'define' => 'int(10) UNSIGNED NOT NULL',
+                        'define' => 'int(10) UNSIGNED',
                         'type' => 'number',
                         'ifeditable' => 0,
                         'value' => 1,
@@ -252,14 +252,14 @@ EOF;
                     [
                         'name' => 'places',
                         'title' => '推荐位',
-                        'define' => 'varchar(64) NOT NULL',
+                        'define' => 'varchar(64)',
                         'type' => 'checkbox',
                         'ifeditable' => 0
                     ],
                     [
                         'name' => 'create_time',
                         'title' => '创建时间',
-                        'define' => 'int(11) UNSIGNED NOT NULL',
+                        'define' => 'int(11) UNSIGNED',
                         'type' => 'datetime',
                         'value' => 0,
                         'ifeditable' => 1,
@@ -268,7 +268,7 @@ EOF;
                     [
                         'name' => 'update_time',
                         'title' => '更新时间',
-                        'define' => 'int(11) UNSIGNED NOT NULL',
+                        'define' => 'int(11) UNSIGNED',
                         'type' => 'datetime',
                         'ifeditable' => 0,
                         'value' => 0,
@@ -277,7 +277,7 @@ EOF;
                     [
                         'name' => 'orders',
                         'title' => '排序',
-                        'define' => 'int(10) UNSIGNED NOT NULL',
+                        'define' => 'int(10) UNSIGNED',
                         'type' => 'number',
                         'ifeditable' => 1,
                         'value' => 100,
@@ -286,7 +286,7 @@ EOF;
                     [
                         'name' => 'status',
                         'title' => '状态',
-                        'define' => 'tinyint(2) NOT NULL',
+                        'define' => 'tinyint(2)',
                         'type' => 'radio',
                         'ifeditable' => 1,
                         'value' => 1,
@@ -297,7 +297,7 @@ EOF;
                     [
                         'name' => 'hits',
                         'title' => '点击量',
-                        'define' => 'int(10) UNSIGNED NOT NULL',
+                        'define' => 'int(10) UNSIGNED',
                         'type' => 'number',
                         'ifeditable' => 1,
                         'value' => 0,
@@ -313,14 +313,14 @@ EOF;
                     [
                         'name' => 'id',
                         'title' => '文档id',
-                        'define' => 'int(11) UNSIGNED NOT NULL',
+                        'define' => 'int(11) UNSIGNED',
                         'type' => 'hidden',
                         'ifeditable' => 1,
                     ],
                     [
                         'name' => 'uid',
                         'title' => '用户id',
-                        'define' => 'int(10) UNSIGNED NOT NULL',
+                        'define' => 'int(10) UNSIGNED',
                         'type' => 'number',
                         'ifeditable' => 0,
                         'value' => 0,
@@ -328,7 +328,7 @@ EOF;
                     [
                         'name' => 'create_time',
                         'title' => '创建时间',
-                        'define' => 'int(11) UNSIGNED NOT NULL',
+                        'define' => 'int(11) UNSIGNED',
                         'type' => 'datetime',
                         'ifeditable' => 1,
                         'value' => 0,
@@ -337,7 +337,7 @@ EOF;
                     [
                         'name' => 'update_time',
                         'title' => '更新时间',
-                        'define' => 'int(11) UNSIGNED NOT NULL',
+                        'define' => 'int(11) UNSIGNED',
                         'type' => 'datetime',
                         'ifeditable' => 0,
                         'value' => 0,
@@ -346,7 +346,7 @@ EOF;
                     [
                         'name' => 'orders',
                         'title' => '排序',
-                        'define' => 'int(10) UNSIGNED NOT NULL',
+                        'define' => 'int(10) UNSIGNED',
                         'type' => 'number',
                         'ifeditable' => 1,
                         'value' => 100,
@@ -355,7 +355,7 @@ EOF;
                     [
                         'name' => 'status',
                         'title' => '状态',
-                        'define' => 'tinyint(2) NOT NULL',
+                        'define' => 'tinyint(2)',
                         'type' => 'radio',
                         'ifeditable' => 1,
                         'value' => 1,
@@ -370,7 +370,7 @@ EOF;
             $data[] = [
                 'name' => 'did',
                 'title' => '附表文档id',
-                'define' => 'int(11) UNSIGNED NOT NULL',
+                'define' => 'int(11) UNSIGNED',
                 'type' => 'hidden',
                 'ifeditable' => 0,
                 'ifmain' => 0,

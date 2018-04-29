@@ -246,22 +246,22 @@ INSERT INTO `uk_app` VALUES ('wechat', '0', '0');
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_article`;
 CREATE TABLE `uk_article` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '文档id',
-  `cname` varchar(64) NOT NULL DEFAULT '' COMMENT '栏目标识',
-  `ifextend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否栏目拓展',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `places` varchar(64) NOT NULL DEFAULT '' COMMENT '推荐位',
-  `title` varchar(256) NOT NULL DEFAULT '' COMMENT '标题',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `orders` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
-  `source` varchar(128) NOT NULL DEFAULT '' COMMENT '文章来源',
-  `description` varchar(3000) NOT NULL DEFAULT '' COMMENT 'SEO摘要',
-  `cover` int(5) unsigned NOT NULL DEFAULT '0' COMMENT '封面图',
-  `keywords` varchar(256) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
-  `color` varchar(7) NOT NULL DEFAULT '' COMMENT '标题颜色',
+  `id` int(11) unsigned AUTO_INCREMENT COMMENT '文档id',
+  `cname` varchar(64) DEFAULT '' COMMENT '栏目标识',
+  `ifextend` tinyint(2) DEFAULT '0' COMMENT '是否栏目拓展',
+  `uid` int(10) unsigned DEFAULT '0' COMMENT '用户id',
+  `places` varchar(64) DEFAULT '' COMMENT '推荐位',
+  `title` varchar(256) DEFAULT '' COMMENT '标题',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  `orders` int(11) DEFAULT '100' COMMENT '排序',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态',
+  `hits` int(11) unsigned DEFAULT '0' COMMENT '点击量',
+  `source` varchar(128) DEFAULT '' COMMENT '文章来源',
+  `description` varchar(3000) DEFAULT '' COMMENT 'SEO摘要',
+  `cover` int(5) unsigned DEFAULT '0' COMMENT '封面图',
+  `keywords` varchar(256) DEFAULT '' COMMENT 'SEO关键词',
+  `color` varchar(7) DEFAULT '' COMMENT '标题颜色',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章模型表';
 
@@ -288,8 +288,8 @@ INSERT INTO `uk_article` VALUES ('14', 'ukcms', '0', '1', ',1,', '授权用户�
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_article_data`;
 CREATE TABLE `uk_article_data` (
-  `did` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '文档id',
-  `content` text NOT NULL COMMENT '文章内容',
+  `did` int(11) unsigned DEFAULT '0' COMMENT '文档id',
+  `content` text COMMENT '文章内容',
   PRIMARY KEY (`did`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章模型扩展表';
 
@@ -460,16 +460,16 @@ INSERT INTO `uk_column` VALUES ('12', '2', '0,', '0', '5', '留言本', 'guestbo
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_comment`;
 CREATE TABLE `uk_comment` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '文档id',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `orders` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `did` int(10) unsigned NOT NULL COMMENT '内容id',
-  `commenter` varchar(128) NOT NULL DEFAULT '' COMMENT '留言者',
-  `message` varchar(3000) NOT NULL DEFAULT '' COMMENT '留言内容',
-  `mid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
+  `id` int(11) unsigned AUTO_INCREMENT COMMENT '文档id',
+  `uid` int(10) unsigned DEFAULT '0' COMMENT '用户id',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  `orders` int(11) DEFAULT '100' COMMENT '排序',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态',
+  `did` int(10) unsigned COMMENT '内容id',
+  `commenter` varchar(128) DEFAULT '' COMMENT '留言者',
+  `message` varchar(3000) DEFAULT '' COMMENT '留言内容',
+  `mid` int(10) unsigned DEFAULT '0' COMMENT '模型ID',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内容评论模型表';
 
@@ -562,47 +562,47 @@ CREATE TABLE `uk_field_type` (
 -- ----------------------------
 -- Records of uk_field_type
 -- ----------------------------
-INSERT INTO `uk_field_type` VALUES ('text', '输入框', '1', 'varchar(128) NOT NULL DEFAULT \'\'', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('checkbox', '复选框', '2', 'varchar(32) NOT NULL DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
-INSERT INTO `uk_field_type` VALUES ('textarea', '多行文本', '3', 'varchar(3000) NOT NULL DEFAULT \'\'', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('radio', '单选按钮', '4', 'varchar(32) NOT NULL DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
-INSERT INTO `uk_field_type` VALUES ('switch', '开关', '5', 'tinyint(2) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', 'isBool');
-INSERT INTO `uk_field_type` VALUES ('array', '数组', '6', 'varchar(512) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('select', '下拉框', '7', 'varchar(64) NOT NULL DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
-INSERT INTO `uk_field_type` VALUES ('image', '单张图', '8', 'int(5) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', 'isNumber');
-INSERT INTO `uk_field_type` VALUES ('tags', '标签', '10', 'varchar(256) NOT NULL DEFAULT \'\'', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('number', '数字', '11', 'int(10) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', 'isNumber');
-INSERT INTO `uk_field_type` VALUES ('datetime', '日期和时间', '12', 'int(11) UNSIGNED NOT NULL DEFAULT \'0\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('Ueditor', '百度编辑器', '13', 'text NOT NULL', '0', '1', '');
-INSERT INTO `uk_field_type` VALUES ('images', '多张图', '9', 'varchar(256) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('color', '颜色值', '16', 'varchar(7) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('files', '多文件', '15', 'varchar(256) NOT NULL DEFAULT \'\'', '0', '0', '');
-INSERT INTO `uk_field_type` VALUES ('summernote', '简洁编辑器', '14', 'text NOT NULL', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('text', '输入框', '1', 'varchar(128) DEFAULT \'\'', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('checkbox', '复选框', '2', 'varchar(32) DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
+INSERT INTO `uk_field_type` VALUES ('textarea', '多行文本', '3', 'varchar(3000) DEFAULT \'\'', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('radio', '单选按钮', '4', 'varchar(32) DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
+INSERT INTO `uk_field_type` VALUES ('switch', '开关', '5', 'tinyint(2) UNSIGNED DEFAULT \'0\'', '0', '0', 'isBool');
+INSERT INTO `uk_field_type` VALUES ('array', '数组', '6', 'varchar(512) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('select', '下拉框', '7', 'varchar(64) DEFAULT \'\'', '1', '0', 'isChsAlphaNum');
+INSERT INTO `uk_field_type` VALUES ('image', '单张图', '8', 'int(5) UNSIGNED DEFAULT \'0\'', '0', '0', 'isNumber');
+INSERT INTO `uk_field_type` VALUES ('tags', '标签', '10', 'varchar(256) DEFAULT \'\'', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('number', '数字', '11', 'int(10) UNSIGNED DEFAULT \'0\'', '0', '0', 'isNumber');
+INSERT INTO `uk_field_type` VALUES ('datetime', '日期和时间', '12', 'int(11) UNSIGNED DEFAULT \'0\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('Ueditor', '百度编辑器', '13', 'text', '0', '1', '');
+INSERT INTO `uk_field_type` VALUES ('images', '多张图', '9', 'varchar(256) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('color', '颜色值', '16', 'varchar(7) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('files', '多文件', '15', 'varchar(256) DEFAULT \'\'', '0', '0', '');
+INSERT INTO `uk_field_type` VALUES ('summernote', '简洁编辑器', '14', 'text', '0', '1', '');
 
 -- ----------------------------
 -- Table structure for uk_guestbook
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_guestbook`;
 CREATE TABLE `uk_guestbook` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '文档id',
-  `cname` varchar(64) NOT NULL DEFAULT '' COMMENT '栏目标识',
-  `ifextend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否栏目拓展',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `places` varchar(64) NOT NULL DEFAULT '' COMMENT '推荐位',
-  `title` varchar(256) NOT NULL DEFAULT '' COMMENT '标题',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `orders` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `hits` int(11) NOT NULL DEFAULT '0' COMMENT '点击量',
-  `name` varchar(128) NOT NULL DEFAULT '' COMMENT '姓名',
-  `telephone` varchar(11) NOT NULL DEFAULT '' COMMENT '手机号码',
-  `sex` varchar(32) NOT NULL DEFAULT '' COMMENT '性别',
-  `content` varchar(3000) NOT NULL DEFAULT '' COMMENT '留言内容',
-  `first` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否第一次使用',
-  `impression` varchar(32) NOT NULL DEFAULT '' COMMENT '使用印象',
-  `evaluate` varchar(64) NOT NULL DEFAULT '' COMMENT '评价',
-  `usetime` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '使用时间',
+  `id` int(11) unsigned AUTO_INCREMENT COMMENT '文档id',
+  `cname` varchar(64) DEFAULT '' COMMENT '栏目标识',
+  `ifextend` tinyint(2) DEFAULT '0' COMMENT '是否栏目拓展',
+  `uid` int(10) unsigned DEFAULT '0' COMMENT '用户id',
+  `places` varchar(64) DEFAULT '' COMMENT '推荐位',
+  `title` varchar(256) DEFAULT '' COMMENT '标题',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  `orders` int(11) DEFAULT '100' COMMENT '排序',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态',
+  `hits` int(11) DEFAULT '0' COMMENT '点击量',
+  `name` varchar(128) DEFAULT '' COMMENT '姓名',
+  `telephone` varchar(11) DEFAULT '' COMMENT '手机号码',
+  `sex` varchar(32) DEFAULT '' COMMENT '性别',
+  `content` varchar(3000) DEFAULT '' COMMENT '留言内容',
+  `first` tinyint(2) unsigned DEFAULT '0' COMMENT '是否第一次使用',
+  `impression` varchar(32) DEFAULT '' COMMENT '使用印象',
+  `evaluate` varchar(64) DEFAULT '' COMMENT '评价',
+  `usetime` int(11) unsigned DEFAULT '0' COMMENT '使用时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='留言本模型表';
 
@@ -764,120 +764,119 @@ CREATE TABLE `uk_model_field` (
 -- ----------------------------
 -- Records of uk_model_field
 -- ----------------------------
-INSERT INTO `uk_model_field` VALUES ('1', '1', 'id', '文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('2', '1', 'cname', '栏目标识', 'text', 'varchar(64) NOT NULL', '0', '', '', '', '1', '0', '0', '1', '1', '1500017712', '1500017712', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('3', '1', 'uid', '用户id', 'number', 'int(10) UNSIGNED NOT NULL', '1', '', '', '', '1', '0', '0', '0', '1', '1500017712', '1500017712', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('4', '1', 'places', '推荐位', 'checkbox', 'varchar(64) NOT NULL', '', '', '', '', '1', '0', '0', '0', '1', '1500017712', '1500017712', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('5', '1', 'title', '标题', 'text', 'varchar(256) NOT NULL', '', '', '', '', '1', '1', '1', '1', '0', '1500017712', '1500017712', '101', '1');
-INSERT INTO `uk_model_field` VALUES ('6', '1', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('7', '1', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1500017712', '1500017712', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('8', '1', 'orders', '排序', 'number', 'int(10) UNSIGNED NOT NULL', '100', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('9', '1', 'status', '状态', 'radio', 'tinyint(2) NOT NULL', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('10', '1', 'hits', '点击量', 'number', 'int(10) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('11', '1', 'did', '附表文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '0', '0', '0', '0', '1', '1500017712', '1500017712', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('12', '2', 'id', '文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('13', '2', 'cname', '栏目标识', 'text', 'varchar(64) NOT NULL', '0', '', '', '', '1', '0', '0', '1', '1', '1500017779', '1500017779', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('14', '2', 'uid', '用户id', 'number', 'int(10) UNSIGNED NOT NULL', '1', '', '', '', '1', '0', '0', '0', '1', '1500017779', '1500017779', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('15', '2', 'places', '推荐位', 'checkbox', 'varchar(64) NOT NULL', '', '', '', '', '1', '0', '0', '0', '1', '1500017779', '1500017779', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('16', '2', 'title', '标题', 'text', 'varchar(256) NOT NULL', '', '', '', '', '1', '1', '1', '1', '0', '1500017779', '1500017779', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('17', '2', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('18', '2', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1500017779', '1500017779', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('19', '2', 'orders', '排序', 'number', 'int(10) UNSIGNED NOT NULL', '100', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('20', '2', 'status', '状态', 'radio', 'tinyint(2) NOT NULL', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('21', '2', 'hits', '点击量', 'number', 'int(10) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('22', '2', 'did', '附表文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '0', '0', '0', '0', '1', '1500017779', '1500017779', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('23', '3', 'id', '文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('24', '3', 'cname', '栏目标识', 'text', 'varchar(64) NOT NULL', '0', '', '', '', '1', '0', '0', '1', '1', '1500017841', '1500017841', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('25', '3', 'uid', '用户id', 'number', 'int(10) UNSIGNED NOT NULL', '1', '', '', '', '1', '0', '0', '0', '1', '1500017841', '1500017841', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('26', '3', 'places', '推荐位', 'checkbox', 'varchar(64) NOT NULL', '', '', '', '', '1', '0', '0', '0', '1', '1500017841', '1500017841', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('27', '3', 'title', '标题', 'text', 'varchar(256) NOT NULL', '', '', '', '', '1', '1', '1', '1', '0', '1500017841', '1500017841', '101', '1');
-INSERT INTO `uk_model_field` VALUES ('28', '3', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('29', '3', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1500017841', '1500017841', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('30', '3', 'orders', '排序', 'number', 'int(10) UNSIGNED NOT NULL', '100', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('31', '3', 'status', '状态', 'radio', 'tinyint(2) NOT NULL', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('32', '3', 'hits', '点击量', 'number', 'int(10) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('33', '3', 'did', '附表文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '0', '0', '0', '0', '1', '1500017841', '1500017841', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('34', '4', 'id', '文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('35', '4', 'cname', '栏目标识', 'text', 'varchar(64) NOT NULL', '0', '', '', '', '1', '0', '0', '1', '1', '1500018204', '1500018204', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('36', '4', 'uid', '用户id', 'number', 'int(10) UNSIGNED NOT NULL', '1', '', '', '', '1', '0', '0', '0', '1', '1500018204', '1500018204', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('37', '4', 'places', '推荐位', 'checkbox', 'varchar(64) NOT NULL', '', '', '', '', '1', '0', '0', '0', '1', '1500018204', '1500018204', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('39', '4', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('40', '4', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1500018204', '1500018204', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('41', '4', 'orders', '排序', 'number', 'int(10) UNSIGNED NOT NULL', '100', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('42', '4', 'status', '状态', 'radio', 'tinyint(2) NOT NULL', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('43', '4', 'hits', '点击量', 'number', 'int(10) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('44', '5', 'id', '文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '1', '1500018311', '1500018311', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('45', '5', 'uid', '用户id', 'number', 'int(10) UNSIGNED NOT NULL', '1', '', '', '', '1', '0', '0', '0', '1', '1500018311', '1500018311', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('46', '5', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1500018311', '1510821338', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('47', '5', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1500018311', '1500018311', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('48', '5', 'orders', '排序', 'number', 'int(10) UNSIGNED NOT NULL', '100', '', '', '', '1', '1', '0', '0', '1', '1500018311', '1500018311', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('49', '5', 'status', '状态', 'radio', 'tinyint(2) NOT NULL', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500018311', '1500018311', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('50', '1', 'cover', '封面图', 'image', 'int(5) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1500018462', '1501055972', '102', '1');
-INSERT INTO `uk_model_field` VALUES ('51', '1', 'pictures', '图片集', 'images', 'varchar(128) NOT NULL', '', '', '{\"thumb\":{\"ifon\":\"1\",\"size\":\"300,300\",\"type\":\"3\"}}', '', '0', '1', '0', '1', '0', '1500018860', '1512005672', '103', '1');
-INSERT INTO `uk_model_field` VALUES ('52', '1', 'description', 'SEO摘要', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500019150', '1513401446', '106', '1');
-INSERT INTO `uk_model_field` VALUES ('53', '1', 'content', '图集介绍', 'Ueditor', 'text NOT NULL', '', '', '', '', '0', '1', '0', '0', '0', '1500019175', '1500024292', '104', '1');
-INSERT INTO `uk_model_field` VALUES ('54', '2', 'source', '文章来源', 'text', 'varchar(128) NOT NULL', '原创', '', '', '', '1', '1', '0', '0', '0', '1500019359', '1500024357', '102', '1');
-INSERT INTO `uk_model_field` VALUES ('55', '2', 'content', '文章内容', 'Ueditor', 'text NOT NULL', '', '', '', '', '0', '1', '0', '1', '0', '1500019439', '1501056003', '104', '1');
-INSERT INTO `uk_model_field` VALUES ('56', '3', 'price', '价格', 'text', 'varchar(128) NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1500019559', '1501056017', '106', '1');
-INSERT INTO `uk_model_field` VALUES ('57', '4', 'content', '内容', 'Ueditor', 'text NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1500019647', '1501056104', '101', '1');
-INSERT INTO `uk_model_field` VALUES ('58', '3', 'model', '型号', 'text', 'varchar(128) NOT NULL', '', '', '', '', '0', '1', '0', '0', '0', '1500020181', '1500511013', '107', '1');
-INSERT INTO `uk_model_field` VALUES ('59', '3', 'brand', '品牌', 'text', 'varchar(128) NOT NULL', '', '', '', '', '0', '1', '0', '0', '0', '1500020234', '1500510946', '108', '1');
-INSERT INTO `uk_model_field` VALUES ('60', '3', 'content', '详细介绍', 'Ueditor', 'text NOT NULL', '', '', '', '', '0', '1', '0', '0', '0', '1500020579', '1500025262', '109', '1');
-INSERT INTO `uk_model_field` VALUES ('61', '5', 'name', '姓名', 'text', 'varchar(128) NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1500020703', '1501032477', '103', '1');
-INSERT INTO `uk_model_field` VALUES ('62', '5', 'telephone', '手机号码', 'text', 'varchar(11) NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1500020744', '1505609089', '104', '1');
-INSERT INTO `uk_model_field` VALUES ('63', '5', 'sex', '性别', 'radio', 'varchar(32) NOT NULL', '', '1:男\r\n2:女', '', '', '1', '1', '0', '0', '0', '1500020807', '1501032699', '105', '1');
-INSERT INTO `uk_model_field` VALUES ('64', '5', 'content', '留言内容', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '1', '0', '1500020860', '1513401677', '102', '1');
-INSERT INTO `uk_model_field` VALUES ('96', '2', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092804', '1502428928', '105', '1');
-INSERT INTO `uk_model_field` VALUES ('66', '2', 'description', 'SEO摘要', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500023214', '1513401473', '106', '1');
-INSERT INTO `uk_model_field` VALUES ('95', '1', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092625', '1502092714', '105', '1');
-INSERT INTO `uk_model_field` VALUES ('97', '3', 'keywords', 'SEO关键词', 'tags', 'varchar(256) NOT NULL', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092922', '1502092940', '110', '1');
-INSERT INTO `uk_model_field` VALUES ('69', '3', 'description', 'SEO摘要', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500023535', '1513401494', '111', '1');
-INSERT INTO `uk_model_field` VALUES ('70', '2', 'cover', '封面图', 'image', 'int(5) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1500023619', '1500024391', '103', '1');
-INSERT INTO `uk_model_field` VALUES ('71', '3', 'cover', '封面图', 'image', 'int(5) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1500023836', '1501056037', '104', '1');
-INSERT INTO `uk_model_field` VALUES ('72', '3', 'pictures', '产品图集', 'images', 'varchar(128) NOT NULL', '', '', '{\"thumb\":{\"ifon\":\"1\",\"size\":\"300,200\",\"type\":\"1\"}}', '', '0', '1', '0', '1', '0', '1500023897', '1512005814', '105', '1');
-INSERT INTO `uk_model_field` VALUES ('76', '5', 'cname', '栏目标识', 'text', 'varchar(64) NOT NULL', '', '', '', '', '1', '0', '0', '1', '1', '1500020860', '1500020860', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('78', '5', 'places', '推荐位', 'checkbox', 'varchar(64) NOT NULL', '', '', '', '', '1', '0', '0', '0', '1', '1500020860', '1500020860', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('79', '5', 'title', '标题', 'text', 'varchar(256) NOT NULL', '', '', '', '', '1', '1', '1', '1', '0', '1500020860', '1500020860', '101', '1');
-INSERT INTO `uk_model_field` VALUES ('80', '5', 'hits', '点击量', 'number', 'int(10) UNSIGNED NOT NULL', '', '', '', '', '1', '0', '0', '0', '1', '1500020860', '1510821331', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('81', '5', 'first', '是否第一次使用', 'switch', 'tinyint(2) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1501032638', '1501032650', '106', '1');
-INSERT INTO `uk_model_field` VALUES ('82', '5', 'impression', '使用印象', 'checkbox', 'varchar(32) NOT NULL', '', '1:好看\r\n2:简洁\r\n3:灵活\r\n4:强大', '', '', '1', '1', '0', '0', '0', '1501033547', '1501033649', '107', '1');
-INSERT INTO `uk_model_field` VALUES ('83', '5', 'evaluate', '评价', 'select', 'varchar(64) NOT NULL', '', '1:很一般\r\n2:凑合能用吧\r\n3:挺好很喜欢', '', '', '1', '1', '0', '0', '0', '1501033871', '1501034144', '108', '1');
-INSERT INTO `uk_model_field` VALUES ('84', '5', 'usetime', '使用时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '0', '1501034126', '1501034152', '109', '1');
-INSERT INTO `uk_model_field` VALUES ('85', '6', 'id', '文档id', 'hidden', 'int(11) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('86', '6', 'uid', '用户id', 'number', 'int(10) UNSIGNED NOT NULL', '1', '', '', '', '1', '0', '0', '0', '1', '1501223252', '1501223252', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('87', '6', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('88', '6', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1501223252', '1501223252', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('89', '6', 'orders', '排序', 'number', 'int(10) UNSIGNED NOT NULL', '100', '', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('90', '6', 'status', '状态', 'radio', 'tinyint(2) NOT NULL', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '200', '1');
-INSERT INTO `uk_model_field` VALUES ('91', '6', 'did', '内容id', 'number', 'int(10) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1501223339', '1501403079', '102', '1');
-INSERT INTO `uk_model_field` VALUES ('92', '6', 'commenter', '留言者', 'text', 'varchar(128) NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1501223463', '1501403027', '101', '1');
-INSERT INTO `uk_model_field` VALUES ('93', '6', 'message', '留言内容', 'textarea', 'varchar(3000) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '1', '1', '0', '1501224724', '1513401527', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('94', '6', 'mid', '模型ID', 'number', 'int(10) UNSIGNED NOT NULL', '', '', '', '', '1', '1', '0', '1', '0', '1501231006', '1501403087', '103', '1');
-INSERT INTO `uk_model_field` VALUES ('98', '3', 'year', '年份', 'radio', 'varchar(32) NOT NULL', '', '1:2014\r\n2:2015\r\n3:2016\r\n4:2017', '', '', '1', '1', '0', '0', '0', '1504142118', '1504142118', '102', '1');
-INSERT INTO `uk_model_field` VALUES ('99', '3', 'color', '颜色', 'checkbox', 'varchar(32) NOT NULL', '', '1:黑色\r\n2:白色\r\n3:银色', '', '', '1', '1', '0', '0', '0', '1504142199', '1504142199', '103', '1');
-INSERT INTO `uk_model_field` VALUES ('100', '1', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2) NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169522', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('101', '2', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2) NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169707', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('102', '3', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2) NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169713', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('103', '4', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2) NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169717', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('104', '5', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2) NOT NULL', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169731', '100', '1');
-INSERT INTO `uk_model_field` VALUES ('105', '2', 'color', '标题颜色', 'color', 'varchar(7) NOT NULL DEFAULT \'\'', '', '', '', '', '1', '1', '0', '0', '0', '1521436172', '1521436172', '101', '1');
-
+INSERT INTO `uk_model_field` VALUES ('1', '1', 'id', '文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('2', '1', 'cname', '栏目标识', 'text', 'varchar(64)', '0', '', '', '', '1', '0', '0', '1', '1', '1500017712', '1500017712', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('3', '1', 'uid', '用户id', 'number', 'int(10) UNSIGNED', '1', '', '', '', '1', '0', '0', '0', '1', '1500017712', '1500017712', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('4', '1', 'places', '推荐位', 'checkbox', 'varchar(64)', '', '', '', '', '1', '0', '0', '0', '1', '1500017712', '1500017712', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('5', '1', 'title', '标题', 'text', 'varchar(256)', '', '', '', '', '1', '1', '1', '1', '0', '1500017712', '1500017712', '101', '1');
+INSERT INTO `uk_model_field` VALUES ('6', '1', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('7', '1', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '0', '0', '0', '1', '1500017712', '1500017712', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('8', '1', 'orders', '排序', 'number', 'int(10) UNSIGNED', '100', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('9', '1', 'status', '状态', 'radio', 'tinyint(2)', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('10', '1', 'hits', '点击量', 'number', 'int(10) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500017712', '1500017712', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('11', '1', 'did', '附表文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '0', '0', '0', '0', '1', '1500017712', '1500017712', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('12', '2', 'id', '文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('13', '2', 'cname', '栏目标识', 'text', 'varchar(64)', '0', '', '', '', '1', '0', '0', '1', '1', '1500017779', '1500017779', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('14', '2', 'uid', '用户id', 'number', 'int(10) UNSIGNED', '1', '', '', '', '1', '0', '0', '0', '1', '1500017779', '1500017779', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('15', '2', 'places', '推荐位', 'checkbox', 'varchar(64)', '', '', '', '', '1', '0', '0', '0', '1', '1500017779', '1500017779', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('16', '2', 'title', '标题', 'text', 'varchar(256)', '', '', '', '', '1', '1', '1', '1', '0', '1500017779', '1500017779', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('17', '2', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('18', '2', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '0', '0', '0', '1', '1500017779', '1500017779', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('19', '2', 'orders', '排序', 'number', 'int(10) UNSIGNED', '100', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('20', '2', 'status', '状态', 'radio', 'tinyint(2)', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('21', '2', 'hits', '点击量', 'number', 'int(10) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500017779', '1500017779', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('22', '2', 'did', '附表文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '0', '0', '0', '0', '1', '1500017779', '1500017779', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('23', '3', 'id', '文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('24', '3', 'cname', '栏目标识', 'text', 'varchar(64)', '0', '', '', '', '1', '0', '0', '1', '1', '1500017841', '1500017841', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('25', '3', 'uid', '用户id', 'number', 'int(10) UNSIGNED', '1', '', '', '', '1', '0', '0', '0', '1', '1500017841', '1500017841', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('26', '3', 'places', '推荐位', 'checkbox', 'varchar(64)', '', '', '', '', '1', '0', '0', '0', '1', '1500017841', '1500017841', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('27', '3', 'title', '标题', 'text', 'varchar(256)', '', '', '', '', '1', '1', '1', '1', '0', '1500017841', '1500017841', '101', '1');
+INSERT INTO `uk_model_field` VALUES ('28', '3', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('29', '3', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '0', '0', '0', '1', '1500017841', '1500017841', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('30', '3', 'orders', '排序', 'number', 'int(10) UNSIGNED', '100', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('31', '3', 'status', '状态', 'radio', 'tinyint(2)', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('32', '3', 'hits', '点击量', 'number', 'int(10) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500017841', '1500017841', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('33', '3', 'did', '附表文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '0', '0', '0', '0', '1', '1500017841', '1500017841', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('34', '4', 'id', '文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('35', '4', 'cname', '栏目标识', 'text', 'varchar(64)', '0', '', '', '', '1', '0', '0', '1', '1', '1500018204', '1500018204', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('36', '4', 'uid', '用户id', 'number', 'int(10) UNSIGNED', '1', '', '', '', '1', '0', '0', '0', '1', '1500018204', '1500018204', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('37', '4', 'places', '推荐位', 'checkbox', 'varchar(64)', '', '', '', '', '1', '0', '0', '0', '1', '1500018204', '1500018204', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('39', '4', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('40', '4', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '0', '0', '0', '1', '1500018204', '1500018204', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('41', '4', 'orders', '排序', 'number', 'int(10) UNSIGNED', '100', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('42', '4', 'status', '状态', 'radio', 'tinyint(2)', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('43', '4', 'hits', '点击量', 'number', 'int(10) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500018204', '1500018204', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('44', '5', 'id', '文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '1', '1500018311', '1500018311', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('45', '5', 'uid', '用户id', 'number', 'int(10) UNSIGNED', '1', '', '', '', '1', '0', '0', '0', '1', '1500018311', '1500018311', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('46', '5', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1500018311', '1510821338', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('47', '5', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '0', '0', '0', '1', '1500018311', '1500018311', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('48', '5', 'orders', '排序', 'number', 'int(10) UNSIGNED', '100', '', '', '', '1', '1', '0', '0', '1', '1500018311', '1500018311', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('49', '5', 'status', '状态', 'radio', 'tinyint(2)', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1500018311', '1500018311', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('50', '1', 'cover', '封面图', 'image', 'int(5) UNSIGNED', '', '', '', '', '1', '1', '0', '1', '0', '1500018462', '1501055972', '102', '1');
+INSERT INTO `uk_model_field` VALUES ('51', '1', 'pictures', '图片集', 'images', 'varchar(128)', '', '', '{\"thumb\":{\"ifon\":\"1\",\"size\":\"300,300\",\"type\":\"3\"}}', '', '0', '1', '0', '1', '0', '1500018860', '1512005672', '103', '1');
+INSERT INTO `uk_model_field` VALUES ('52', '1', 'description', 'SEO摘要', 'textarea', 'varchar(3000) DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500019150', '1513401446', '106', '1');
+INSERT INTO `uk_model_field` VALUES ('53', '1', 'content', '图集介绍', 'Ueditor', 'text', '', '', '', '', '0', '1', '0', '0', '0', '1500019175', '1500024292', '104', '1');
+INSERT INTO `uk_model_field` VALUES ('54', '2', 'source', '文章来源', 'text', 'varchar(128)', '原创', '', '', '', '1', '1', '0', '0', '0', '1500019359', '1500024357', '102', '1');
+INSERT INTO `uk_model_field` VALUES ('55', '2', 'content', '文章内容', 'Ueditor', 'text', '', '', '', '', '0', '1', '0', '1', '0', '1500019439', '1501056003', '104', '1');
+INSERT INTO `uk_model_field` VALUES ('56', '3', 'price', '价格', 'text', 'varchar(128)', '', '', '', '', '1', '1', '0', '1', '0', '1500019559', '1501056017', '106', '1');
+INSERT INTO `uk_model_field` VALUES ('57', '4', 'content', '内容', 'Ueditor', 'text', '', '', '', '', '1', '1', '0', '1', '0', '1500019647', '1501056104', '101', '1');
+INSERT INTO `uk_model_field` VALUES ('58', '3', 'model', '型号', 'text', 'varchar(128)', '', '', '', '', '0', '1', '0', '0', '0', '1500020181', '1500511013', '107', '1');
+INSERT INTO `uk_model_field` VALUES ('59', '3', 'brand', '品牌', 'text', 'varchar(128)', '', '', '', '', '0', '1', '0', '0', '0', '1500020234', '1500510946', '108', '1');
+INSERT INTO `uk_model_field` VALUES ('60', '3', 'content', '详细介绍', 'Ueditor', 'text', '', '', '', '', '0', '1', '0', '0', '0', '1500020579', '1500025262', '109', '1');
+INSERT INTO `uk_model_field` VALUES ('61', '5', 'name', '姓名', 'text', 'varchar(128)', '', '', '', '', '1', '1', '0', '0', '0', '1500020703', '1501032477', '103', '1');
+INSERT INTO `uk_model_field` VALUES ('62', '5', 'telephone', '手机号码', 'text', 'varchar(11)', '', '', '', '', '1', '1', '0', '0', '0', '1500020744', '1505609089', '104', '1');
+INSERT INTO `uk_model_field` VALUES ('63', '5', 'sex', '性别', 'radio', 'varchar(32)', '', '1:男\r\n2:女', '', '', '1', '1', '0', '0', '0', '1500020807', '1501032699', '105', '1');
+INSERT INTO `uk_model_field` VALUES ('64', '5', 'content', '留言内容', 'textarea', 'varchar(3000) DEFAULT \'\'', '', '', '', '', '1', '1', '1', '1', '0', '1500020860', '1513401677', '102', '1');
+INSERT INTO `uk_model_field` VALUES ('96', '2', 'keywords', 'SEO关键词', 'tags', 'varchar(256)', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092804', '1502428928', '105', '1');
+INSERT INTO `uk_model_field` VALUES ('66', '2', 'description', 'SEO摘要', 'textarea', 'varchar(3000) DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500023214', '1513401473', '106', '1');
+INSERT INTO `uk_model_field` VALUES ('95', '1', 'keywords', 'SEO关键词', 'tags', 'varchar(256)', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092625', '1502092714', '105', '1');
+INSERT INTO `uk_model_field` VALUES ('97', '3', 'keywords', 'SEO关键词', 'tags', 'varchar(256)', '', '', '{\"string\":{\"table\":\"tag\",\"key\":\"title\",\"delimiter\":\",\",\"where\":\"\",\"limit\":\"6\",\"order\":\"[rand]\"}}', '', '1', '1', '0', '0', '0', '1502092922', '1502092940', '110', '1');
+INSERT INTO `uk_model_field` VALUES ('69', '3', 'description', 'SEO摘要', 'textarea', 'varchar(3000) DEFAULT \'\'', '', '', '', '', '1', '1', '1', '0', '0', '1500023535', '1513401494', '111', '1');
+INSERT INTO `uk_model_field` VALUES ('70', '2', 'cover', '封面图', 'image', 'int(5) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '0', '1500023619', '1500024391', '103', '1');
+INSERT INTO `uk_model_field` VALUES ('71', '3', 'cover', '封面图', 'image', 'int(5) UNSIGNED', '', '', '', '', '1', '1', '0', '1', '0', '1500023836', '1501056037', '104', '1');
+INSERT INTO `uk_model_field` VALUES ('72', '3', 'pictures', '产品图集', 'images', 'varchar(128)', '', '', '{\"thumb\":{\"ifon\":\"1\",\"size\":\"300,200\",\"type\":\"1\"}}', '', '0', '1', '0', '1', '0', '1500023897', '1512005814', '105', '1');
+INSERT INTO `uk_model_field` VALUES ('76', '5', 'cname', '栏目标识', 'text', 'varchar(64)', '', '', '', '', '1', '0', '0', '1', '1', '1500020860', '1500020860', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('78', '5', 'places', '推荐位', 'checkbox', 'varchar(64)', '', '', '', '', '1', '0', '0', '0', '1', '1500020860', '1500020860', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('79', '5', 'title', '标题', 'text', 'varchar(256)', '', '', '', '', '1', '1', '1', '1', '0', '1500020860', '1500020860', '101', '1');
+INSERT INTO `uk_model_field` VALUES ('80', '5', 'hits', '点击量', 'number', 'int(10) UNSIGNED', '', '', '', '', '1', '0', '0', '0', '1', '1500020860', '1510821331', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('81', '5', 'first', '是否第一次使用', 'switch', 'tinyint(2) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '0', '1501032638', '1501032650', '106', '1');
+INSERT INTO `uk_model_field` VALUES ('82', '5', 'impression', '使用印象', 'checkbox', 'varchar(32)', '', '1:好看\r\n2:简洁\r\n3:灵活\r\n4:强大', '', '', '1', '1', '0', '0', '0', '1501033547', '1501033649', '107', '1');
+INSERT INTO `uk_model_field` VALUES ('83', '5', 'evaluate', '评价', 'select', 'varchar(64)', '', '1:很一般\r\n2:凑合能用吧\r\n3:挺好很喜欢', '', '', '1', '1', '0', '0', '0', '1501033871', '1501034144', '108', '1');
+INSERT INTO `uk_model_field` VALUES ('84', '5', 'usetime', '使用时间', 'datetime', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '0', '1501034126', '1501034152', '109', '1');
+INSERT INTO `uk_model_field` VALUES ('85', '6', 'id', '文档id', 'hidden', 'int(11) UNSIGNED', '', '', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('86', '6', 'uid', '用户id', 'number', 'int(10) UNSIGNED', '1', '', '', '', '1', '0', '0', '0', '1', '1501223252', '1501223252', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('87', '6', 'create_time', '创建时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('88', '6', 'update_time', '更新时间', 'datetime', 'int(11) UNSIGNED', '0', '', '', '', '1', '0', '0', '0', '1', '1501223252', '1501223252', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('89', '6', 'orders', '排序', 'number', 'int(10) UNSIGNED', '100', '', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('90', '6', 'status', '状态', 'radio', 'tinyint(2)', '1', '0:禁用\r\n1:启用', '', '', '1', '1', '0', '0', '1', '1501223252', '1501223252', '200', '1');
+INSERT INTO `uk_model_field` VALUES ('91', '6', 'did', '内容id', 'number', 'int(10) UNSIGNED', '', '', '', '', '1', '1', '0', '1', '0', '1501223339', '1501403079', '102', '1');
+INSERT INTO `uk_model_field` VALUES ('92', '6', 'commenter', '留言者', 'text', 'varchar(128)', '', '', '', '', '1', '1', '0', '1', '0', '1501223463', '1501403027', '101', '1');
+INSERT INTO `uk_model_field` VALUES ('93', '6', 'message', '留言内容', 'textarea', 'varchar(3000) DEFAULT \'\'', '', '', '', '', '1', '1', '1', '1', '0', '1501224724', '1513401527', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('94', '6', 'mid', '模型ID', 'number', 'int(10) UNSIGNED', '', '', '', '', '1', '1', '0', '1', '0', '1501231006', '1501403087', '103', '1');
+INSERT INTO `uk_model_field` VALUES ('98', '3', 'year', '年份', 'radio', 'varchar(32)', '', '1:2014\r\n2:2015\r\n3:2016\r\n4:2017', '', '', '1', '1', '0', '0', '0', '1504142118', '1504142118', '102', '1');
+INSERT INTO `uk_model_field` VALUES ('99', '3', 'color', '颜色', 'checkbox', 'varchar(32)', '', '1:黑色\r\n2:白色\r\n3:银色', '', '', '1', '1', '0', '0', '0', '1504142199', '1504142199', '103', '1');
+INSERT INTO `uk_model_field` VALUES ('100', '1', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2)', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169522', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('101', '2', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2)', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169707', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('102', '3', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2)', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169713', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('103', '4', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2)', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169717', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('104', '5', 'ifextend', '是否栏目拓展', 'number', 'tinyint(2)', '0', '', '', '', '1', '0', '0', '0', '1', '1509439230', '1511169731', '100', '1');
+INSERT INTO `uk_model_field` VALUES ('105', '2', 'color', '标题颜色', 'color', 'varchar(7) DEFAULT \'\'', '', '', '', '', '1', '1', '0', '0', '0', '1521436172', '1521436172', '101', '1');
 -- ----------------------------
 -- Table structure for uk_page
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_page`;
 CREATE TABLE `uk_page` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '文档id',
-  `cname` varchar(64) NOT NULL DEFAULT '' COMMENT '栏目标识',
-  `ifextend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否栏目拓展',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `places` varchar(64) NOT NULL DEFAULT '' COMMENT '推荐位',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `orders` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
-  `content` text NOT NULL COMMENT '内容',
+  `id` int(11) unsigned AUTO_INCREMENT COMMENT '文档id',
+  `cname` varchar(64) DEFAULT '' COMMENT '栏目标识',
+  `ifextend` tinyint(2) DEFAULT '0' COMMENT '是否栏目拓展',
+  `uid` int(10) unsigned DEFAULT '0' COMMENT '用户id',
+  `places` varchar(64) DEFAULT '' COMMENT '推荐位',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  `orders` int(11) DEFAULT '100' COMMENT '排序',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态',
+  `hits` int(11) unsigned DEFAULT '0' COMMENT '点击量',
+  `content` text COMMENT '内容',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='单页介绍模型表';
 
@@ -891,20 +890,20 @@ INSERT INTO `uk_page` VALUES ('1', 'aboutus', '1', '1', '', '1500022338', '15028
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_photo`;
 CREATE TABLE `uk_photo` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '文档id',
-  `cname` varchar(64) NOT NULL DEFAULT '' COMMENT '栏目标识',
-  `ifextend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否栏目拓展',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `places` varchar(64) NOT NULL DEFAULT '' COMMENT '推荐位',
-  `title` varchar(256) NOT NULL DEFAULT '' COMMENT '标题',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `orders` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
-  `cover` int(5) unsigned NOT NULL DEFAULT '0' COMMENT '封面图',
-  `description` varchar(3000) NOT NULL DEFAULT '' COMMENT 'SEO摘要',
-  `keywords` varchar(256) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
+  `id` int(11) unsigned AUTO_INCREMENT COMMENT '文档id',
+  `cname` varchar(64) DEFAULT '' COMMENT '栏目标识',
+  `ifextend` tinyint(2) DEFAULT '0' COMMENT '是否栏目拓展',
+  `uid` int(10) unsigned DEFAULT '0' COMMENT '用户id',
+  `places` varchar(64) DEFAULT '' COMMENT '推荐位',
+  `title` varchar(256) DEFAULT '' COMMENT '标题',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  `orders` int(11) DEFAULT '100' COMMENT '排序',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态',
+  `hits` int(11) unsigned DEFAULT '0' COMMENT '点击量',
+  `cover` int(5) unsigned DEFAULT '0' COMMENT '封面图',
+  `description` varchar(3000) DEFAULT '' COMMENT 'SEO摘要',
+  `keywords` varchar(256) DEFAULT '' COMMENT 'SEO关键词',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='图集模型表';
 
@@ -923,9 +922,9 @@ INSERT INTO `uk_photo` VALUES ('6', 'legend', '0', '1', ',', '小罗伯特·唐�
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_photo_data`;
 CREATE TABLE `uk_photo_data` (
-  `did` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '文档id',
-  `pictures` varchar(128) NOT NULL COMMENT '图片集',
-  `content` text NOT NULL COMMENT '图集介绍',
+  `did` int(11) unsigned DEFAULT '0' COMMENT '文档id',
+  `pictures` varchar(128) COMMENT '图片集',
+  `content` text COMMENT '图集介绍',
   PRIMARY KEY (`did`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='图集模型扩展表';
 
@@ -964,23 +963,23 @@ INSERT INTO `uk_place` VALUES ('1', '0', '推荐', '1500272764', '1500519504', '
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_product`;
 CREATE TABLE `uk_product` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '文档id',
-  `cname` varchar(64) NOT NULL DEFAULT '' COMMENT '栏目标识',
-  `ifextend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否栏目拓展',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `places` varchar(64) NOT NULL DEFAULT '' COMMENT '推荐位',
-  `title` varchar(256) NOT NULL DEFAULT '' COMMENT '标题',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `orders` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
-  `price` varchar(128) NOT NULL DEFAULT '' COMMENT '价格',
-  `description` varchar(3000) NOT NULL DEFAULT '' COMMENT 'SEO摘要',
-  `cover` int(5) unsigned NOT NULL DEFAULT '0' COMMENT '封面图',
-  `keywords` varchar(256) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
-  `year` varchar(32) NOT NULL DEFAULT '' COMMENT '年份',
-  `color` varchar(32) NOT NULL DEFAULT '' COMMENT '颜色',
+  `id` int(11) unsigned AUTO_INCREMENT COMMENT '文档id',
+  `cname` varchar(64) DEFAULT '' COMMENT '栏目标识',
+  `ifextend` tinyint(2) DEFAULT '0' COMMENT '是否栏目拓展',
+  `uid` int(10) unsigned DEFAULT '0' COMMENT '用户id',
+  `places` varchar(64) DEFAULT '' COMMENT '推荐位',
+  `title` varchar(256) DEFAULT '' COMMENT '标题',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  `orders` int(11) DEFAULT '100' COMMENT '排序',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态',
+  `hits` int(11) unsigned DEFAULT '0' COMMENT '点击量',
+  `price` varchar(128) DEFAULT '' COMMENT '价格',
+  `description` varchar(3000) DEFAULT '' COMMENT 'SEO摘要',
+  `cover` int(5) unsigned DEFAULT '0' COMMENT '封面图',
+  `keywords` varchar(256) DEFAULT '' COMMENT 'SEO关键词',
+  `year` varchar(32) DEFAULT '' COMMENT '年份',
+  `color` varchar(32) DEFAULT '' COMMENT '颜色',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='产品模型表';
 
@@ -997,11 +996,11 @@ INSERT INTO `uk_product` VALUES ('4', 'product', '0', '1', ',,1,,', 'Fenyr Super
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_product_data`;
 CREATE TABLE `uk_product_data` (
-  `did` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '文档id',
-  `model` varchar(128) NOT NULL DEFAULT '' COMMENT '型号',
-  `brand` varchar(128) NOT NULL DEFAULT '' COMMENT '品牌',
-  `content` text NOT NULL COMMENT '详细介绍',
-  `pictures` varchar(128) NOT NULL COMMENT '产品图集',
+  `did` int(11) unsigned DEFAULT '0' COMMENT '文档id',
+  `model` varchar(128) DEFAULT '' COMMENT '型号',
+  `brand` varchar(128) DEFAULT '' COMMENT '品牌',
+  `content` text COMMENT '详细介绍',
+  `pictures` varchar(128) COMMENT '产品图集',
   PRIMARY KEY (`did`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='产品模型扩展表';
 
