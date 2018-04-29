@@ -282,3 +282,17 @@ if (!function_exists('deletehtml')) {
     }
 
 }
+
+if (!function_exists('appUrl')) {
+
+    function appUrl($entry = '', $url = '') {
+        $entry = 'index' == $entry ? '' : $entry . '.php/';
+        if (!empty($url)) {
+            $url.= '.' . config('url_html_suffix');
+        }
+        $urlPath = think\facade\Request::baseFile();
+        $urlPath = substr($urlPath, 0, strripos($urlPath, '/') + 1);
+        return $urlPath . $entry . $url;
+    }
+
+}

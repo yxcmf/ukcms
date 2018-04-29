@@ -133,7 +133,7 @@ class Column extends Common {
                                     }
                                     unset($nowParam);
                                 }
-                                $conditionParam[$vo]['options'][$k]['url'] = url('home/column/index', ['name' => $columnInfo['name'], 'condition' => $conditionParam[$vo]['options'][$k]['param']]);
+                                $conditionParam[$vo]['options'][$k]['url'] = url('column/index', ['name' => $columnInfo['name'], 'condition' => $conditionParam[$vo]['options'][$k]['param']]);
                                 ksort($conditionParam[$vo]['options']);
                             }
                         }

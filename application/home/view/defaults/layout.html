@@ -62,9 +62,9 @@
             <div class="topbar-left"><i class="volume up icon"></i>演示通过应用钩子调用会员登录状态</div>
             <div class="topbar-right">
               {if $memberInfo}
-                 <a class="ui primary button tiny" href="{:url('member/index/index')}"><i class="icon user"></i>{$memberInfo}</a>  <a class="ui button tiny" href="{:url('member/open/loginout')}"><i class="icon power"></i>退出</a>
+                 <a class="ui primary button tiny" href="{:appUrl('member','index/index')}"><i class="icon user"></i>{$memberInfo}</a>  <a class="ui button tiny" href="{:appUrl('member','open/loginout')}"><i class="icon power"></i>退出</a>
               {else}
-                 <a class="ui primary button tiny" href="{:url('member/open/login')}">登录</a>  <a class="ui  button tiny" href="{:url('member/open/register')}">注册</a>
+                 <a class="ui primary button tiny" href="{:appUrl('member','open/login')}">登录</a>  <a class="ui  button tiny" href="{:appUrl('member','open/register')}">注册</a>
               {/if}
             </div>
         </div>
@@ -78,7 +78,7 @@
                     <a class="toc item">
                         <i class="sidebar icon"></i>
                     </a>
-                    <a href="{:url('home/index/index')}" class="{if 0==$rootId}active{/if} header item">
+                    <a href="{:url('index/index')}" class="{if 0==$rootId}active{/if} header item">
                         <img class="logo" src="__UPLOAD__/{:config('web_site_logo')['path']}" width="100" alt="UKcmsLogo">
                     </a>
                     <!--查询栏目存储在$colums中-->

@@ -87,10 +87,6 @@ class Content extends Common {
                 $this->assign('list', $list);
                 $this->assign('page', $list->render());
                 $columnList = model('Column')->getColumn('id,name,path,title,type,model_id', 'sort', false, 'name');
-                $entryFile = $this->request->baseFile();
-
-                $entryFile = substr($entryFile, 0, strripos($entryFile, '/') + 1);
-                $this->assign('entryFile', $entryFile);
                 $this->assign('columnList', $columnList);
                 $this->assign('fieldArr', $fieldArr);
                 return $this->fetch('column');

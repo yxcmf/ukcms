@@ -101,7 +101,7 @@ class Column extends \app\common\model\Column {
                 $url = empty($url) ? '#' : ((strpos($url, '://') !== false) ? $url : url($url));
                 break;
             default:
-                $url = url('home/column/index', ['name' => $name]);
+                $url = url('column/index', ['name' => $name]);
                 break;
         }
         return $url;

@@ -54,8 +54,8 @@ class Common extends Controller {
                 //栏目一维数组结构
                 'columList' => $this->columList,
 //                'templeDir' =>$this->templeDir,
-                'rootId' => 0,
-                'parentId' => 0
+                'rootName' => '',
+                'parentName' => ''
             ]);
             //前台控制器初始化钩子
             $behaviorParam = \think\facade\Hook::listen('home_begin');

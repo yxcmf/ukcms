@@ -455,7 +455,7 @@ class ModelField extends \think\Model {
     
     //创建内容链接
     public function buildContentUrl($id, $modelUse, $cOrmName) {
-        return url('home/' . $modelUse . '/content', ['name' => $cOrmName, 'id' => $id]);
+        return url($modelUse . '/content', ['name' => $cOrmName, 'id' => $id]);
     }
     
     //格式化显示数据

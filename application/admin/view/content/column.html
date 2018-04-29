@@ -70,7 +70,7 @@
                         <td>{$vo.id}</td>
                         {volist name="fieldArr" id="v"}
                         {if $i==1}
-                        <td><a href="{if $columnList[$vo['cname']]['type']==2}{$entryFile}index.php/{$vo.cname}/{$vo.id}.html{else}{$entryFile}index.php/{$vo.cname}.html{/if}" 
+                        <td><a href="{if $columnList[$vo['cname']]['type']==2}{:appUrl('index',$vo['cname'].'/'.$vo['id'])}{else}{:appUrl('index',$vo['cname'])}{/if}" 
                                target="_blank" >{$vo[$v.name]}</a></td>
                         {else}
                         <td>{$vo[$v.name]}</td>
