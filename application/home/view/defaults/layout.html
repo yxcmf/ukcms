@@ -85,8 +85,8 @@
                     {uk:column  select="show" id="colums" }
                     <!--演示四层栏目调用-->
                     {volist name="colums" id="v1"}
-                    {if !isset($v1.cnode)}<a class="item {if $v1.id==$rootId}active{/if}" href="{$v1.url}">{$v1.title}</a>{else}
-                    <div class="ui dropdown item {if $v1.id==$rootId}downaction{/if}">
+                    {if !isset($v1.cnode)}<a class="item {if $v1.name==$rootName}active{/if}" href="{$v1.url}">{$v1.title}</a>{else}
+                    <div class="ui dropdown item {if $v1.name==$rootName}downaction{/if}">
                         <a href="{$v1.url}">{$v1.title}</a><i class="dropdown icon"></i>
                         <div class="menu">
                             {volist name="$v1.cnode" id="v2"}

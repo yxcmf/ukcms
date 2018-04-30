@@ -161,12 +161,11 @@ class Column extends Common {
                 $this->assign('list', $list->toArray());
                 $this->assign('page', $list->render());
             }
-
             $this->assign([
                 'info' => $columnInfo,
                 'crumbs' => $Column->getBreadcrumb($columnInfo['path'] . $columnInfo['id']),
-                'rootId' => $this->getColumnId($columnInfo['path'] . $columnInfo['id']),
-                'parentId' => $this->getColumnId($columnInfo['path'], 'parent'),
+                'rootName' => $this->getColumnName($columnInfo['path'] . $columnInfo['id']),
+                'parentName' => $this->getColumnName($columnInfo['path'], 'parent'),
             ]);
             return $this->display('column/index/' . $columnInfo['template_list']);
         }
@@ -211,8 +210,8 @@ class Column extends Common {
             'info' => $columnInfo,
             'data' => $data,
             'crumbs' => $Column->getBreadcrumb($columnInfo['path'] . $columnInfo['id']),
-            'rootId' => $this->getColumnId($columnInfo['path'] . $columnInfo['id']),
-            'parentId' => $columnInfo['id'],
+            'rootName' => $this->getColumnName($columnInfo['path'] . $columnInfo['id']),
+            'parentName' => $columnInfo['name'],
         ]);
         return $this->display('column/content/' . $columnInfo['template_content']);
     }

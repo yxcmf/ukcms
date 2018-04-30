@@ -76,27 +76,28 @@ class Common extends Controller {
     }
 
 //通过栏目路径获取特定栏目节点
-    protected function getColumnId($path, $type = 'root') {
+    protected function getColumnName($path, $type = 'root') {
         if (empty($path)) {
             return 0;
         }
         $id = 0;
         $pathArr = explode(',', $path);
-        $lenth = count($pathArr);
+
         switch ($type) {
             case 'root':
-                for ($i = 0; $i < $lenth; $i++) {
-                    $id = intval($pathArr[$i]);
-                    if ($id) {
-                        return $id;
+                $rootId = intval($pathArr[1]);
+                foreach ($this->columList as $vo) {
+                    if($vo['id']==$rootId){
+                        return $vo['name'];
                     }
                 }
                 break;
             case 'parent':
-                for ($i = $lenth - 1; $i >= 0; $i--) {
-                    $id = intval($pathArr[$i]);
-                    if ($id) {
-                        return $id;
+                $lenth = count($pathArr);
+                $parentId = intval($pathArr[$lenth - 2]);
+                foreach ($this->columList as $vo) {
+                    if($vo['id']==$parentId){
+                        return $vo['name'];
                     }
                 }
                 break;
