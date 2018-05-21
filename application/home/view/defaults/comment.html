@@ -3,7 +3,7 @@
     <a class="item" data-tab="second">评论内容</a>
 </div>
 <div class="ui bottom attached active tab segment" data-tab="first">
-    <form class="ui reply form" action="{:url('home/single/index',['id'=>6])}" method="post">
+    <form class="ui reply form" action="{:url('single/index',['id'=>6])}" method="post">
         <input name="modelField[mid]" type="hidden" value="{$info.model_id}">
         <input name="modelField[did]" type="hidden" value="{$data.id}">
         <div class="field">

@@ -1,8 +1,14 @@
 {extend name="layout"/}
 {block name="css"}
 <style>
-    .custom-control{margin-left: 18px}
-    .pagination{margin: 0; float:right}
+    .custom-control {
+        margin-left: 18px
+    }
+
+    .pagination {
+        margin: 0;
+        float: right
+    }
 </style>
 {/block}
 
@@ -10,7 +16,7 @@
 <div class="panel">
     <div class="panel-heading">
         <span class="panel-title">模型列表</span>
-        <div class="panel-heading-controls"> 
+        <div class="panel-heading-controls">
             <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-plus"></i> 新增模型</a>
         </div>
     </div>
@@ -19,7 +25,16 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <tr>
-                        <th width="60">ID</th><th>模型名称</th><th>表名</th><th width="70">类型</th><th width="80">用途</th><th width="160">创建时间</th><th width="60">投稿</th><th width="60">状态</th><th width="120">操作</th>
+                        <th width="60">ID</th>
+                        <th>模型名称</th>
+                        <th>表名</th>
+                        <th width="70">类型</th>
+                        <th width="80">用途</th>
+                        <th width="160">创建时间</th>
+                        <th width="80">数据管理</th>
+                        <th width="60">投稿</th>
+                        <th width="60">状态</th>
+                        <th width="120">操作</th>
                     </tr>
                     {volist name="mlist" id="vo"}
                     <tr id="{$vo.id}">
@@ -30,23 +45,27 @@
                         <td>{if $vo.purpose=='column'}栏目内容{elseif $vo.purpose=='independence'}独立内容{/if}</td>
                         <td>{$vo.create_time}</td>
                         <td>
-                            {if $vo.ifsub} 
-                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded ifsub">允许</button>
+                            <a class="btn btn-xs btn-primary" href="{:url('importdata',['mid'=>$vo.id])}" data-toggle="tooltip" data-placement="top" data-original-title="导入模型数据"><i class="fa fa-plus-square"></i></a>
+                            <a class="btn btn-xs btn-primary" href="{:url('exportdata',['mid'=>$vo.id])}" data-toggle="tooltip" data-placement="top" data-original-title="导出模型数据"><i class="fa fa-share"></i></a>
+                        </td>
+                        <td>
+                            {if $vo.ifsub}
+                            <button data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded ifsub">允许</button>
                             {else}
-                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded ifsub">禁止</button>
+                            <button data-id="1" type="button" class="btn btn-sm btn-default btn-rounded ifsub">禁止</button>
                             {/if}
                         </td>
                         <td>
-                            {if $vo.status} 
-                            <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
+                            {if $vo.status}
+                            <button data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
                             {else}
-                            <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">冻结</button>
+                            <button data-id="1" type="button" class="btn btn-sm btn-default btn-rounded status">冻结</button>
                             {/if}
                         </td>
                         <td>
-                            <a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a>
-                            <a href="{:url('field/index',['mid'=>$vo.id])}"><i  class="fa fa-server btn  btn-sm btn-info" data-toggle="tooltip" data-placement="top"  data-original-title="字段管理"></i></a>
-                            <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i>
+                            <a href="{:url('edit',['id'=>$vo.id])}"><i class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top" data-original-title="编辑"></i></a>
+                            <a href="{:url('field/index',['mid'=>$vo.id])}"><i class="fa fa-server btn  btn-sm btn-info" data-toggle="tooltip" data-placement="top" data-original-title="字段管理"></i></a>
+                            <i class="fa fa-times btn btn-sm btn-warning del" data-toggle="tooltip" data-placement="top" data-original-title="删除"></i>
                         </td>
                     </tr>
                     {/volist}
@@ -100,11 +119,10 @@
                 }
             });
         });
-         $('.status').click(function () {
+        $('.status').click(function () {
             var nowdom = $(this);
             var id = nowdom.parent().parent().attr('id');
             var status = nowdom.attr('data-id');
-
             $.ajax({
                 url: "{:url('setstate')}",
                 type: "GET",

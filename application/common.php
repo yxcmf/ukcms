@@ -296,3 +296,12 @@ if (!function_exists('appUrl')) {
     }
 
 }
+if (!function_exists('pathToId')) {
+
+    function pathToId($path) {
+        $path = substr($path, 0, -1);
+        $path = substr($path, strripos($path, ',') + 1);
+        return intval($path);
+    }
+
+}

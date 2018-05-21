@@ -16,14 +16,14 @@ class Field extends Common {
         if (!$mid) {
             $this->error('参数错误~');
         }
-        $flist = model('ModelField')->where('model_id', $mid)->order('orders,id')->paginate(20);
+        $banFields=['id', 'did', 'status', 'cname', 'places', 'uid', 'ifextend'];
+        $flist = model('ModelField')->where('model_id', $mid)->whereNotIn('name', $banFields)->order('orders,id')->paginate(20);
         $page = $flist->render();
         $this->assign('flist', $flist);
         $this->assign('page', $page);
         $modelInfo = Db::name('model')->where('id', $mid)->find();
         $this->assign('modelTitle', $modelInfo['title']);
         $this->assign('mid', $modelInfo['id']);
-        $this->assign('banFields', ['id', 'did', 'status', 'cname', 'places', 'uid', 'ifextend']);
         $this->assign('stringFieldType', Db::name('field_type')->where('ifstring', 1)->column('name'));
         return $this->fetch();
     }

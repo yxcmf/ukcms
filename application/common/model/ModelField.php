@@ -9,14 +9,16 @@ use think\Validate;
  * 通用字段模型
  * @package app\common\model
  */
-class ModelField extends \think\Model {
+class ModelField extends \think\Model
+{
 
     protected $ext_table = '_data';
     // 自动写入时间戳
     protected $pk = 'id';
     protected $autoWriteTimestamp = true;
 
-    public function getModelInfo($modelId, $fields = '*') {
+    public function getModelInfo($modelId, $fields = '*')
+    {
         $ifcache = config('app_cache') ? true : false;
         $cacheKey = 'db_model_' . $modelId . $fields;
         $modeInfo = $ifcache ? cache($cacheKey) : false;
@@ -41,7 +43,8 @@ class ModelField extends \think\Model {
     }
 
     //查询解析模型数据用以构造from表单
-    public function getFieldList($modelId, $id = null, $model = 'document', $where = "status='1'", $fields = "name,title,remark,type,value,options,ifmain,ifeditable,ifrequire,jsonrule") {
+    public function getFieldList($modelId, $id = null, $model = 'document', $where = "status='1'", $fields = "name,title,remark,type,value,options,ifmain,ifeditable,ifrequire,jsonrule")
+    {
         $ifcache = config('app_cache') ? true : false;
         $cacheKey = 'db_model_field_' . $modelId . $id . $model . $where . $fields;
         $list = $ifcache ? cache($cacheKey) : false;
@@ -125,7 +128,7 @@ class ModelField extends \think\Model {
                             $value['param']['thumbtype'] = $dataRule['thumb']['type'];
                         }
                         if (!empty($value['value'])) {
-                            $value['value'].=',';
+                            $value['value'] .= ',';
                         }
                     }
                     if ($value['type'] == 'files') {
@@ -135,7 +138,7 @@ class ModelField extends \think\Model {
                             $value['param']['extlimit'] = $dataRule['file']['type'];
                         }
                         if (!empty($value['value'])) {
-                            $value['value'].=',';
+                            $value['value'] .= ',';
                         }
                     }
                     if ($value['type'] == 'Ueditor') {
@@ -154,12 +157,13 @@ class ModelField extends \think\Model {
     }
 
     //添加模型内容
-    public function addModelData($modeId, $data, $dataExt = []) {
+    public function addModelData($modeId, $data, $dataExt = [])
+    {
         $modelTable = $this->getModelInfo($modeId, 'table');
         if (false == $modelTable) {
             throw new \Exception("ID为{$modeId}的模型不存在");
         }
-        $data['uid'] = session('user_info.uid')? : 0;
+        $data['uid'] = session('user_info.uid') ?: 0;
 
         $dataAll = $this->dealModelPostData($modeId, $data, $dataExt);
         list($data, $dataExt) = $dataAll;
@@ -186,7 +190,8 @@ class ModelField extends \think\Model {
     }
 
     //编辑模型内容
-    public function editModelData($modeId, $data, $dataExt = []) {
+    public function editModelData($modeId, $data, $dataExt = [], $ignoreField = [])
+    {
         $modelTable = $this->getModelInfo($modeId, 'table');
         if (false == $modelTable) {
             throw new \Exception("ID为{$modeId}的模型不存在");
@@ -194,7 +199,7 @@ class ModelField extends \think\Model {
         $id = intval($data['id']);
         unset($data['id']);
 
-        $dataAll = $this->dealModelPostData($modeId, $data, $dataExt);
+        $dataAll = $this->dealModelPostData($modeId, $data, $dataExt, $ignoreField);
 
         list($data, $dataExt) = $dataAll;
         if (!isset($data['update_time'])) {
@@ -216,9 +221,14 @@ class ModelField extends \think\Model {
     }
 
     //处理post提交的模型数据
-    protected function dealModelPostData($modeId, $data, $dataExt = []) {
+    protected function dealModelPostData($modeId, $data, $dataExt = [], $ignoreField = [])
+    {
         //字段类型
-        $filedTypeList = self::where('model_id', $modeId)->where('status', 1)->column('name,title,type,ifmain,ifeditable,ifrequire');
+        $query = self::where('model_id', $modeId)->where('status', 1);
+        if ([] != $ignoreField) {
+            $query = $query->where('name', 'not in', $ignoreField);
+        }
+        $filedTypeList = $query->column('name,title,type,ifmain,ifeditable,ifrequire');
         //字段规则
         $fieldRule = Db::name('field_type')->column('name', 'vrule');
         foreach ($filedTypeList as $name => $vo) {
@@ -285,14 +295,15 @@ class ModelField extends \think\Model {
                 throw new \Exception("'" . $vo['title'] . "'格式错误~");
                 //安全过滤
             } else {
-                
+
             }
         }
-        return[$data, $dataExt];
+        return [$data, $dataExt];
     }
 
     //删除模型内容
-    public function deleteModelData($modeId, $ids) {
+    public function deleteModelData($modeId, $ids)
+    {
         $modelInfo = $this->getModelInfo($modeId, 'table,type');
         if (false == $modelInfo) {
             return false;
@@ -324,7 +335,8 @@ class ModelField extends \think\Model {
         }
     }
 
-    public function getDataList($table, $where, $field, $extfield, $order, $limit = '', $page = null, $cid = 0, $place = '') {
+    public function getDataList($table, $where, $field, $extfield, $order, $limit = '', $page = null, $cid = 0, $place = '')
+    {
         $ifcache = config('app_cache') ? true : false;
         //去除时间对缓存key的影响
         $timePlace = strpos($where, 'create_time');
@@ -338,9 +350,9 @@ class ModelField extends \think\Model {
             $listRows = $page[0];
             $simple = $page[1];
             $config = $page[2];
-            $cacheKey.=$listRows . $config['page'];
+            $cacheKey .= $listRows . $config['page'];
         } else {
-            $cacheKey.=$page;
+            $cacheKey .= $page;
         }
         $datalist = $ifcache ? cache($cacheKey) : false;
         if (false === $datalist) {
@@ -353,10 +365,9 @@ class ModelField extends \think\Model {
                 try {
                     $datalist = null == $page ?
                         Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->select() :
-                        Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->paginate($listRows, $simple, $config)
-                ;
+                        Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->paginate($listRows, $simple, $config);
                 } catch (\Exception $exc) {
-                   return [];
+                    return [];
                 }
             } else {
                 //推荐条件
@@ -366,15 +377,15 @@ class ModelField extends \think\Model {
                         $placeWhere = '';
                         foreach ($placeArr as $vo) {
                             if ('' != trim($vo)) {
-                                $placeWhere.= "places like '%," . $vo . ",%' or ";
+                                $placeWhere .= "places like '%," . $vo . ",%' or ";
                             }
                         }
                         if ('' != $placeWhere) {
                             $placeWhere = '(' . substr($placeWhere, 0, -4) . ')';
-                            $where.=$where ? ' and ' . $placeWhere : $placeWhere;
+                            $where .= $where ? ' and ' . $placeWhere : $placeWhere;
                         }
                     } else {
-                        $where.=$where ? " and places like '%," . $place . ",%'" : "places like '%," . $place . ",%'";
+                        $where .= $where ? " and places like '%," . $place . ",%'" : "places like '%," . $place . ",%'";
                     }
                 }
                 //栏目条件
@@ -382,11 +393,11 @@ class ModelField extends \think\Model {
                     $cnamesArr = $this->getColumnNames($cid, $info['id'], $ifcache);
                     $cnamesWhere = '';
                     foreach ($cnamesArr as $vo) {
-                        $cnamesWhere.= "cname ='$vo' or ";
+                        $cnamesWhere .= "cname ='$vo' or ";
                     }
                     if ('' != $cnamesWhere) {
                         $cnamesWhere = '(' . substr($cnamesWhere, 0, -4) . ')';
-                        $where.=$where ? ' and ' . $cnamesWhere : $cnamesWhere;
+                        $where .= $where ? ' and ' . $cnamesWhere : $cnamesWhere;
                     } else {
                         $where = "1=2";
                     }
@@ -395,24 +406,22 @@ class ModelField extends \think\Model {
                 if ($info['type'] == 2 && $field && $extfield) {
                     $extTable = $table . $this->ext_table;
                     $datalist = null == $page ?
-                            Db::view($table, $field)
-                                    ->where($where)
-                                    ->view($extTable, $extfield, $table . '.id=' . $extTable . '.did', 'LEFT')
-                                    ->order($order)
-                                    ->limit($limit)
-                                    ->select() :
-                            Db::view($table, $field)
-                                    ->where($where)
-                                    ->view($extTable, $extfield, $table . '.id=' . $extTable . '.did', 'LEFT')
-                                    ->order($order)
-                                    ->limit($limit)
-                                    ->paginate($listRows, $simple, $config)
-                    ;
+                        Db::view($table, $field)
+                            ->where($where)
+                            ->view($extTable, $extfield, $table . '.id=' . $extTable . '.did', 'LEFT')
+                            ->order($order)
+                            ->limit($limit)
+                            ->select() :
+                        Db::view($table, $field)
+                            ->where($where)
+                            ->view($extTable, $extfield, $table . '.id=' . $extTable . '.did', 'LEFT')
+                            ->order($order)
+                            ->limit($limit)
+                            ->paginate($listRows, $simple, $config);
                 } else {
                     $datalist = null == $page ?
-                            Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->select() :
-                            Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->paginate($listRows, $simple, $config)
-                    ;
+                        Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->select() :
+                        Db::name($table)->where($where)->field($field)->order($order)->limit($limit)->paginate($listRows, $simple, $config);
                 }
 
                 //数据格式化处理
@@ -433,33 +442,36 @@ class ModelField extends \think\Model {
         }
         return $datalist;
     }
-    
+
     //获取同模型栏目以及子栏目名称
-    protected function getColumnNames($cid, $mid, $ifcache = false) {
+    protected function getColumnNames($cid, $mid, $ifcache = false)
+    {
         if (false !== strpos($cid, ',')) {
             $cidArr = explode(',', $cid);
             $cwhere = '';
             foreach ($cidArr as $vo) {
-                $cwhere.="path like '%," . $vo . ",%' or ";
+                $cwhere .= "path like '%," . $vo . ",%' or ";
             }
             $cwhere = substr($cwhere, 0, -4);
-            return Db::name('column')->where('model_id', $mid)->where(function ($query) use($cidArr, $cwhere) {
-                        $query->where('id', 'in', $cidArr)->whereor($cwhere);
-                    })->column('name');
+            return Db::name('column')->where('model_id', $mid)->where(function ($query) use ($cidArr, $cwhere) {
+                $query->where('id', 'in', $cidArr)->whereor($cwhere);
+            })->column('name');
         } else {
-            return Db::name('column')->where('model_id', $mid)->where(function ($query) use($cid) {
-                        $query->where('id', $cid)->whereor('path', 'like', '%,' . $cid . ',%');
-                    })->column('name');
+            return Db::name('column')->where('model_id', $mid)->where(function ($query) use ($cid) {
+                $query->where('id', $cid)->whereor('path', 'like', '%,' . $cid . ',%');
+            })->column('name');
         }
     }
-    
+
     //创建内容链接
-    public function buildContentUrl($id, $modelUse, $cOrmName) {
+    public function buildContentUrl($id, $modelUse, $cOrmName)
+    {
         return url($modelUse . '/content', ['name' => $cOrmName, 'id' => $id]);
     }
-    
+
     //格式化显示数据
-    protected function dealModelShowData($fieldinfo, $data) {
+    protected function dealModelShowData($fieldinfo, $data)
+    {
         $newdata = [];
         foreach ($data as $key => $value) {
 //            $newdata[$key]['title'] = $fieldinfo[$key]['title'];

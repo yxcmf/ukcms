@@ -33,7 +33,7 @@ CREATE TABLE `uk_admin_menu` (
   `ifsystem` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否为系统菜单',
   `ifvisible` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=141 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
+) ENGINE=MyISAM AUTO_INCREMENT=159 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
 
 -- ----------------------------
 -- Records of uk_admin_menu
@@ -91,7 +91,7 @@ INSERT INTO `uk_admin_menu` VALUES ('50', '37', '栏目排序', 'fa fa-sort-alph
 INSERT INTO `uk_admin_menu` VALUES ('51', '37', '批量添加栏目', 'fa fa-plus-square', '1', 'admin/column/addAll', '_self', '1496041478', '1503901646', '3', '1', '0');
 INSERT INTO `uk_admin_menu` VALUES ('55', '37', '栏目状态设置', 'fa fa-eye', '1', 'admin/column/setstate', '_self', '1496129249', '1503901646', '9', '1', '0');
 INSERT INTO `uk_admin_menu` VALUES ('56', '37', '栏目拓展内容', 'fa fa-tasks', '1', 'admin/column/extfields', '_self', '1496300432', '1503901646', '2', '1', '0');
-INSERT INTO `uk_admin_menu` VALUES ('57', '35', '模型内容', 'fa fa-clone', '1', '', '_self', '1496640683', '1514013717', '2', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('57', '35', '栏目内容', 'fa fa-clone', '1', '', '_self', '1496640683', '1514013717', '2', '1', '1');
 INSERT INTO `uk_admin_menu` VALUES ('58', '37', '栏目批量移动', 'fa fa-reply', '1', 'admin/column/move', '_self', '1496742824', '1503901646', '10', '1', '0');
 INSERT INTO `uk_admin_menu` VALUES ('59', '37', '栏目批量编辑', 'fa fa-file-text', '1', 'admin/column/editAll', '_self', '1496742900', '1503901646', '11', '1', '0');
 INSERT INTO `uk_admin_menu` VALUES ('60', '57', '添加模型内容', 'fa fa-plus', '1', 'admin/content/add', '_self', '1496992960', '1523772682', '0', '1', '0');
@@ -103,7 +103,7 @@ INSERT INTO `uk_admin_menu` VALUES ('65', '2', '推荐位管理', 'fa fa-dot-cir
 INSERT INTO `uk_admin_menu` VALUES ('66', '65', '添加推荐位', 'fa fa-plus', '1', 'admin/place/add', '_self', '1497768219', '1497774456', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('67', '65', '编辑推荐位', 'fa fa-edit', '1', 'admin/place/edit', '_self', '1497768262', '1497774468', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('68', '65', '删除推荐位', 'fa fa-remove', '1', 'admin/place/delete', '_self', '1497768361', '1497774482', '100', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('69', '35', '广告管理', 'fa fa-photo', '1', '', '_self', '1497771040', '1514013308', '3', '0', '1');
+INSERT INTO `uk_admin_menu` VALUES ('69', '35', '广告管理', 'fa fa-photo', '1', '', '_self', '1497771040', '1514013308', '4', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('70', '69', '链接管理', 'fa fa-link', '1', 'admin/link/index', '_self', '1497771084', '1498009133', '1', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('71', '69', '分组管理', 'fa fa-window-maximize', '1', 'admin/linkgroup/index', '_self', '1497771145', '1514013906', '0', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('72', '71', '添加分组', 'fa fa-plus', '1', 'admin/linkgroup/add', '_self', '1498008871', '1498009140', '0', '0', '0');
@@ -117,8 +117,8 @@ INSERT INTO `uk_admin_menu` VALUES ('79', '70', '设置链接排序', 'fa fa-sor
 INSERT INTO `uk_admin_menu` VALUES ('80', '36', '模型状态设置', 'fa fa-toggle-on', '1', 'admin/model/setstate', '_self', '1498894295', '1510206728', '2', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('81', '57', '模型内容移动栏目', 'fa fa-reply-all', '1', 'admin/content/move', '_self', '1498895686', '1523772682', '6', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('82', '36', '模型是否可投稿', 'fa fa-circle-o', '1', 'admin/model/setsub', '_self', '1499416148', '1510206728', '3', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('83', '57', '导入模型内容', 'fa fa-exchange', '1', 'admin/content/importdata', '_self', '1501653553', '1523772682', '1', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('84', '57', '导入格式下载', 'fa fa-file-text-o', '1', 'admin/content/importexample', '_self', '1501739963', '1523772682', '3', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('83', '36', '导入模型内容', 'fa fa-exchange', '1', 'admin/model/importdata', '_self', '1501653553', '1523772682', '1', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('84', '36', '导入格式下载', 'fa fa-file-text-o', '1', 'admin/model/importexample', '_self', '1501739963', '1523772682', '3', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('85', '3', '清空缓存', 'fa fa-trash-o', '1', 'admin/index/clear', '_self', '1501837809', '1501837809', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('86', '2', 'TAG标签管理', 'fa fa-tags', '1', 'admin/tag/index', '_self', '1502153759', '1502153759', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('87', '86', '添加TAG', 'fa fa-plus', '1', 'admin/tag/add', '_self', '1502153780', '1511144430', '0', '0', '0');
@@ -134,21 +134,16 @@ INSERT INTO `uk_admin_menu` VALUES ('96', '92', '参数排序', 'fa fa-sort-nume
 INSERT INTO `uk_admin_menu` VALUES ('97', '92', '参数状态', 'fa fa-eye', '1', 'admin/configset/setstate', '_self', '1503461504', '1511681043', '4', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('98', '37', '列表栏目筛选条件选项字段', 'fa fa-arrows-v', '1', 'admin/column/getoptionfield', '_self', '1503901633', '1503901646', '12', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('99', '36', '字段排序', 'fa fa-sort-numeric-asc', '1', 'admin/field/changeorder', '_self', '1504449938', '1510206728', '8', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('116', '101', '钩子管理', 'fa fa-anchor', '1', 'admin/hook/index', '_self', '1509439663', '1509439663', '100', '0', '1');
+INSERT INTO `uk_admin_menu` VALUES ('100', '35', '独立模型内容', 'fa fa-suitcase', '1', '', '_self', '1506914011', '1511681732', '3', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('101', '1', '插件管理', 'fa fa-code', '1', '', '_self', '1506914011', '1511679739', '6', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('102', '1', '应用管理', 'fa fa-hdd-o', '1', 'admin/app/index', '_self', '1506914336', '1511679739', '5', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('103', '102', '应用状态', 'fa fa-toggle-on', '1', 'admin/app/setstate', '_self', '1506914560', '1509439223', '0', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('104', '102', '应用安装', 'fa fa-plus', '1', 'admin/app/install', '_self', '1506915151', '1509439223', '1', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('105', '102', '应用卸载', 'fa fa-close', '1', 'admin/app/uninstall', '_self', '1506915217', '1509439223', '2', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('107', '57', '图集', 'fa fa-sticky-note', '1', 'admin/content/photo', '_self', '1500017712', '1523772682', '10', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('108', '57', '文章', 'fa fa-sticky-note', '1', 'admin/content/article', '_self', '1500017779', '1523772682', '11', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('109', '57', '产品', 'fa fa-sticky-note', '1', 'admin/content/product', '_self', '1500017841', '1523772682', '12', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('110', '57', '单页', 'fa fa-sticky-note', '1', 'admin/content/page', '_self', '1500018204', '1523772682', '13', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('111', '57', '留言本', 'fa fa-sticky-note', '1', 'admin/content/guestbook', '_self', '1500018312', '1523772682', '14', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('112', '57', '内容评论', 'fa fa-sticky-note-o', '1', 'admin/content/comment', '_self', '1501223252', '1523772682', '15', '1', '1');
-INSERT INTO `uk_admin_menu` VALUES ('113', '35', 'SEO优化', 'fa fa-paw', '1', '', '_self', '1509086034', '1514013308', '4', '0', '1');
+INSERT INTO `uk_admin_menu` VALUES ('113', '35', 'SEO优化', 'fa fa-paw', '1', '', '_self', '1509086034', '1514013308', '5', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('114', '113', 'SiteMap', 'fa fa-map', '1', 'admin/sitemap/index', '_self', '1509086579', '1509086579', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('115', '36', '字段必填设置', 'fa fa-dot-circle-o', '1', 'admin/field/setrequire', '_self', '1509352076', '1510206728', '12', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('116', '101', '钩子管理', 'fa fa-anchor', '1', 'admin/hook/index', '_self', '1509439663', '1509439663', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('117', '101', '行为管理', 'fa fa-plane', '1', 'admin/behavior/index', '_self', '1509440005', '1509591321', '100', '0', '1');
 INSERT INTO `uk_admin_menu` VALUES ('118', '116', '添加钩子', 'fa fa-plus', '1', 'admin/hook/add', '_self', '1509591455', '1509763021', '0', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('119', '116', '编辑钩子', 'fa fa-edit', '1', 'admin/hook/edit', '_self', '1509591550', '1509763021', '1', '0', '0');
@@ -172,8 +167,25 @@ INSERT INTO `uk_admin_menu` VALUES ('136', '132', '域名状态设置', 'fa fa-t
 INSERT INTO `uk_admin_menu` VALUES ('137', '30', 'ajax通过ID获取附件信息', 'fa fa-file-archive-o', '1', 'admin/filemanage/ajaxgetfileinfo', '_self', '1511835064', '1515915377', '5', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('138', '57', '复制模型内容', 'fa fa-copy', '1', 'admin/content/copy', '_self', '1512630859', '1523772682', '7', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('139', '30', 'ajax通过类型获取附件列表', 'fa fa-reorder', '1', 'admin/filemanage/showfilelist', '_self', '1515914039', '1515915509', '100', '0', '0');
-INSERT INTO `uk_admin_menu` VALUES ('140', '57', '导出模型内容', 'fa fa-mail-reply-all', '1', 'admin/content/exportdata', '_self', '1523772657', '1523772682', '2', '0', '0');
-
+INSERT INTO `uk_admin_menu` VALUES ('140', '36', '导出模型内容', 'fa fa-mail-reply-all', '1', 'admin/model/exportdata', '_self', '1523772657', '1523772682', '2', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('141', '57', '关于我们', 'fa fa-sticky-note', '1', 'admin/content/aboutus', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('142', '57', 'WEB知识', 'fa fa-sticky-note', '1', 'admin/content/web', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('143', '142', '前端知识', 'fa fa-sticky-note', '1', 'admin/content/front', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('144', '143', '前端基础', 'fa fa-sticky-note', '1', 'admin/content/frontbase', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('145', '143', '前端框架', 'fa fa-sticky-note', '1', 'admin/content/frontframe', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('146', '145', '主流框架', 'fa fa-sticky-note', '1', 'admin/content/mainframe', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('147', '145', '最新框架', 'fa fa-sticky-note', '1', 'admin/content/newframe', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('148', '142', 'PHP介绍', 'fa fa-sticky-note', '1', 'admin/content/php', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('149', '142', 'UKcms常见问题', 'fa fa-sticky-note', '1', 'admin/content/ukcms', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('150', '57', '传奇影星', 'fa fa-sticky-note', '1', 'admin/content/legend', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('151', '57', '产品演示', 'fa fa-sticky-note', '1', 'admin/content/product', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('152', '57', '留言本', 'fa fa-sticky-note', '1', 'admin/content/guestbook', '_self', '1500017712', '1523772682', '100', '1', '1');
+INSERT INTO `uk_admin_menu` VALUES ('153', '100', '添加独立内容', 'fa fa-plus', '1', 'admin/independent/add', '_self', '1500017712', '1523772682', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('154', '100', '编辑独立内容', 'fa fa-edit', '1', 'admin/independent/edit', '_self', '1500017712', '1523772682', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('155', '100', '删除独立内容', 'fa fa-close', '1', 'admin/independent/delete', '_self', '1500017712', '1523772682', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('156', '100', '独立内容状态设置', 'fa fa-toggle-on', '1', 'admin/independent/setstate', '_self', '1500017712', '1523772682', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('157', '100', '独立模型内容排序', 'fa fa-long-arrow-down', '1', 'admin/independent/changeorder', '_self', '1500017712', '1523772682', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES ('158', '100', '内容评论', 'fa fa-sticky-note-o', '1', 'admin/independent/comment', '_self', '1500017712', '1523772682', '100', '1', '1');
 -- ----------------------------
 -- Table structure for uk_admin_role
 -- ----------------------------

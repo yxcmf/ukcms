@@ -30,22 +30,6 @@
                         <td class="text-primary text-center">{if $vo.ifmain}<i class="fa fa-check-square-o"></i></i>{/if}</td>
                         <td>{$vo.create_time}</td>
                         <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
-                        {if in_array($vo.name,$banFields)}
-                        <td align="center">
-                            {if $vo.ifeditable} 
-                            显示
-                            {else}
-                            隐藏
-                            {/if}                          
-                        </td>
-                        <td align="center">
-                            {if $vo.ifrequire} 
-                            是
-                            {else}
-                            否
-                            {/if}                       
-                        </td>
-                        {else}
                         <td>
                             {if $vo.ifeditable} 
                             <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded visible">显示</button>
@@ -60,7 +44,6 @@
                             <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded require">否</button>
                             {/if}
                         </td>
-                        {/if}
                         <td align="center">
                             {if in_array($vo.type,$stringFieldType)}
                             {if $vo.ifsearch} 

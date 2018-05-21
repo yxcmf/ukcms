@@ -7,7 +7,14 @@ use think\Db;
 /**
  * 后台栏目模型
  */
-class Column extends \app\common\model\Column {
+class Column extends \think\Model {
+
+    use \app\common\traits\TreeArray,
+        \app\common\traits\SortArray;
+
+    // 自动写入时间戳
+    protected $pk = 'id';
+    protected $autoWriteTimestamp = true;
 
     public function getColumn($column = 'id,path,title', $type = 'sort', $ifModelName = true, $key = 'id') {
         if ($ifModelName && strpos($column, 'model_id')) {
@@ -30,8 +37,7 @@ class Column extends \app\common\model\Column {
     }
 
     public function addColumn($fields, $data) {
-        self::allowField($fields)->save($data);
-        return true;
+        return self::allowField($fields)->save($data);
     }
 
     public function editColumn($fields, $data, $info) {

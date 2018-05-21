@@ -8,24 +8,29 @@ use think\facade\Cache;
 /**
  * 栏目控制器
  */
-class Column extends Common {
-
+class Column extends Common
+{
+    protected $contentMenuPid = 57;
+    protected $menuPrvUrl = 'admin/content/';
     protected $indexPath = 'home/view/defaults/column/index/';
     protected $contentPath = 'home/view/defaults/column/content/';
 
-    protected function initialize() {
+    protected function initialize()
+    {
         parent::initialize();
         $this->indexPath = APP_PATH . $this->indexPath;
         $this->contentPath = APP_PATH . $this->contentPath;
     }
 
-    public function index() {
+    public function index()
+    {
         $clist = model('Column')->getColumn('id,path,type,title,name,ext_model_id,model_id,cover_picture,url,status,orders');
         $this->assign('clist', $clist);
         return $this->fetch();
     }
 
-    public function add($id = 0) {
+    public function add()
+    {
         if ($this->request->isPost()) {
             $data = $this->request->post();
             $data['status'] = isset($data['status']) ? intval($data['status']) : 0;
@@ -38,7 +43,7 @@ class Column extends Common {
                     break;
                 //列表
                 case 2:
-                    $data['listorder'] = 'rand' == $data['listorder'] ? '['.$data['listorder'] . ']' : $data['listorder'] . ' ' . $data['listorderway'];
+                    $data['listorder'] = 'rand' == $data['listorder'] ? '[' . $data['listorder'] . ']' : $data['listorder'] . ' ' . $data['listorderway'];
                     if (!empty($data['urls'])) {
                         $data['url'] = implode(',', $data['urls']);
                         unset($data['urls']);
@@ -65,6 +70,10 @@ class Column extends Common {
             } catch (\Exception $ex) {
                 $this->error($ex->getMessage());
             }
+            //更新后台栏目内容管理菜单
+            $this->changmenu($data, 'add');
+            Cache::clear('db_admin_menu_tree');
+
             $message = '';
             //栏目拓展字段添加
             if (in_array($data['type'], [1, 2]) && isset($data['modelField']) && $data['ext_model_id']) {
@@ -91,7 +100,8 @@ class Column extends Common {
         }
     }
 
-    public function edit($id = 0) {
+    public function edit($id = 0)
+    {
         $id = intval($id);
         if ($id < 1) {
             $this->error('参数错误~');
@@ -117,7 +127,7 @@ class Column extends Common {
                     break;
                 //列表
                 case 2:
-                    $data['listorder'] = 'rand' == $data['listorder'] ? '['.$data['listorder'] . ']' : $data['listorder'] . ' ' . $data['listorderway'];
+                    $data['listorder'] = 'rand' == $data['listorder'] ? '[' . $data['listorder'] . ']' : $data['listorder'] . ' ' . $data['listorderway'];
                     if (!empty($data['urls'])) {
                         $data['url'] = implode(',', $data['urls']);
                         unset($data['urls']);
@@ -152,6 +162,10 @@ class Column extends Common {
                 $this->error($ex->getMessage());
             }
             $message = '';
+            //更新后台栏目内容管理菜单
+            $data['oldname'] = $info->name;
+            $this->changmenu($data, 'edit');
+            Cache::clear('db_admin_menu_tree');
             //栏目拓展字段编辑
             if (in_array($data['type'], [1, 2]) && isset($data['modelField']) && $data['ext_model_id']) {
                 $data['modelFieldExt'] = isset($data['modelFieldExt']) ? $data['modelFieldExt'] : [];
@@ -163,19 +177,19 @@ class Column extends Common {
                     try {
                         $ModelField->editModelData($data['ext_model_id'], $data['modelField'], $data['modelFieldExt']);
                     } catch (\Exception $ex) {
-                        $message = '内容：' . $ex->getMessage();
+                        $message = '栏目拓展内容：' . $ex->getMessage();
                     }
                 } else {
                     //新增     
                     try {
                         $ModelField->addModelData($data['ext_model_id'], $data['modelField'], $data['modelFieldExt']);
                     } catch (\Exception $ex) {
-                        $message = '内容：' . $ex->getMessage();
+                        $message = '栏目拓展内容：' . $ex->getMessage();
                     }
                 }
             }
             Cache::clear('db_column');
-            $this->success('栏目编辑成功~' . $message, url('index'));
+            $this->success('栏目信息编辑成功~<br>' . $message, url('index'));
         } else {
             $modelList = model('Model')->where('purpose', 'column')->where('status', 1)->order('orders')->column('id,title');
             $columns = model('Column')->getColumn('id,path,title,orders');
@@ -194,7 +208,8 @@ class Column extends Common {
     }
 
     //ajax获取模型form字段
-    public function extfields($mid = 0, $cname = '') {
+    public function extfields($mid = 0, $cname = '')
+    {
         $mid = intval($mid);
         if ($mid < 1) {
             return '没有指定模型~';
@@ -204,7 +219,8 @@ class Column extends Common {
         return $this->fetch('/inputItem');
     }
 
-    public function addAll() {
+    public function addAll()
+    {
         if ($this->request->isPost()) {
             $data = $this->request->post();
             $data['status'] = isset($data['status']) ? intval($data['status']) : 0;
@@ -266,7 +282,12 @@ class Column extends Common {
                         $this->error($ex->getMessage() . '成功添加了' . $successNum . '个栏目~');
                     }
                     $successNum++;
+                    //更新后台栏目内容管理菜单
+                    $this->changmenu($data, 'add');
                 }
+            }
+            if ($successNum) {
+                Cache::clear('db_admin_menu_tree');
             }
             return $this->success('添加成功' . $successNum . '个', url('index'));
         } else {
@@ -282,15 +303,17 @@ class Column extends Common {
         }
     }
 
-    public function getOptionField($mid) {
-        $flist = model('ModelField')->where('model_id', $mid)->where('ifmain', 1)->where('ifeditable', 1)->where('iffixed', 0)->where('type', 'IN', function($query) {
-                    $query->name('field_type')->where('ifoption', 1)->field('name');
-                })->column('name,title');
+    public function getOptionField($mid)
+    {
+        $flist = model('ModelField')->where('model_id', $mid)->where('ifmain', 1)->where('ifeditable', 1)->where('iffixed', 0)->where('type', 'IN', function ($query) {
+            $query->name('field_type')->where('ifoption', 1)->field('name');
+        })->column('name,title');
         return empty($flist) ? '' : json_encode($flist, true);
     }
 
     //批量编辑
-    public function editAll() {
+    public function editAll()
+    {
         if (!$this->request->isPost()) {
             $this->error('参数错误~');
         }
@@ -353,12 +376,16 @@ class Column extends Common {
             $message = '';
             foreach ($clist as $value) {
                 $data['id'] = $value['id'];
+                $data['oldname'] = $value['name'];
                 try {
                     $Column->editColumn(['type', 'path', 'model_id', 'ext_model_id', 'template_list', 'template_content', 'list_row', 'orders', 'status', 'url', 'listorder', 'meta_title', 'meta_keywords', 'meta_description'], $data, $value);
+                    //更新后台栏目内容管理菜单
+                    $this->changmenu($data, 'edit');
                 } catch (\Exception $ex) {
-                    $message.=$ex->getMessage();
+                    $message .= $ex->getMessage() . '<br>';
                 }
             }
+            Cache::clear('db_admin_menu_tree');
             Cache::clear('db_column');
             if ('' == $message) {
                 $this->success('栏目编辑成功', url('index'));
@@ -378,7 +405,7 @@ class Column extends Common {
                     $this->error('栏目类型必须都相同~');
                 }
                 $type = $vo['type'];
-                $cname.='[' . $vo['title'] . '] ';
+                $cname .= '[' . $vo['title'] . '] ';
             }
             $modelList = model('Model')->where('purpose', 'column')->where('status', 1)->order('orders')->column('id,title');
             $columns = model('Column')->getColumn('id,path,title,orders');
@@ -394,7 +421,8 @@ class Column extends Common {
     }
 
     //批量移动栏目
-    public function move() {
+    public function move()
+    {
         if ($this->request->isPost()) {
             $ids = input('post.ids/a', null, 'intval');
             if (empty($ids)) {
@@ -417,23 +445,27 @@ class Column extends Common {
                 $newpath = '0,';
             }
 
-            $list = $Column->where('id', 'in', $ids)->order('path desc,orders')->column('id,path,title');
+            $list = $Column->where('id', 'in', $ids)->order('path desc,orders')->column('id,path,name,title');
             if (empty($list)) {
                 $this->error('勾选的栏目已被删除~');
             }
             $message = '';
             $iferror = false;
-            
+
             Cache::clear('db_column');
             foreach ($list as $vo) {
                 try {
                     $Column->moveColumn($newpath, $vo);
+                    //更新后台栏目内容管理菜单
+                    $vo['path'] = $newpath;
+                    $this->changmenu($vo, 'edit');
                 } catch (\Exception $ex) {
                     $iferror = true;
-                    $message.=$ex->getMessage() . '<br>';
+                    $message .= $ex->getMessage() . '<br>';
                 }
-                $message.='[' . $vo['title'] . ']移动成功<br>';
+                $message .= '[' . $vo['title'] . ']移动成功<br>';
             }
+            Cache::clear('db_admin_menu_tree');
             if ($iferror) {
                 $this->error($message);
             } else {
@@ -444,7 +476,8 @@ class Column extends Common {
         }
     }
 
-    public function delete($id = 0) {
+    public function delete($id = 0)
+    {
         if ($this->request->isPost()) {
             $ids = input('post.ids/a', null, 'intval');
             if (empty($ids)) {
@@ -460,12 +493,15 @@ class Column extends Common {
             foreach ($list as $vo) {
                 try {
                     $Column->deleteColumn($vo);
+                    //更新后台栏目内容管理菜单
+                    $this->changmenu($vo, 'delete');
                 } catch (\Exception $ex) {
                     $iferror = true;
-                    $message.=$ex->getMessage() . '<br>';
+                    $message .= $ex->getMessage() . '<br>';
                 }
-                $message.='[' . $vo['title'] . ']删除成功<br>';
+                $message .= '[' . $vo['title'] . ']删除成功<br>';
             }
+            Cache::clear('db_admin_menu_tree');
             Cache::clear('db_column');
             if ($iferror) {
                 $this->error($message);
@@ -481,14 +517,18 @@ class Column extends Common {
             $info = $Column->where('id', $id)->field('id,name,type,model_id,ext_model_id,title')->find();
             try {
                 $Column->deleteColumn($info);
+                //更新后台栏目内容管理菜单
+                $this->changmenu(['name' => $info->name], 'delete');
             } catch (\Exception $ex) {
                 return $ex->getMessage();
             }
+            Cache::clear('db_admin_menu_tree');
             return true;
         }
     }
 
-    public function changeOrder($id, $num) {
+    public function changeOrder($id, $num)
+    {
         if (!is_numeric($id)) {
             return '参数错误';
         }
@@ -503,7 +543,8 @@ class Column extends Common {
         }
     }
 
-    public function setState($id, $status) {
+    public function setState($id, $status)
+    {
         $id = intval($id);
         $status = intval($status);
         if (($status != 0 && $status != 1) || $id < 0) {
@@ -517,8 +558,63 @@ class Column extends Common {
         }
     }
 
-//获取模板信息
-    protected function getTempleList($path) {
+    //修改后台菜单内容管理下栏目菜单
+    protected function changmenu($data, $type)
+    {
+        switch ($type) {
+            case 'add':
+                $columnPid = pathToId($data['path']);
+                $menuData['pid'] = $columnPid ? $this->getMenuPid($columnPid) : $this->contentMenuPid;
+                $menuData['title'] = $data['title'];
+                $menuData['icon'] = 'fa fa-sticky-note';
+                $menuData['url_type'] = 1;
+                $menuData['url_value'] = $this->menuPrvUrl . $data['name'];
+                $menuData['url_target'] = '_self';
+                $menuData['orders'] = $data['orders'];
+                $menuData['ifsystem'] = 1;
+                $menuData['ifvisible'] = 1;
+                model('adminMenu')->insert($menuData);
+                break;
+            case 'edit':
+                if (isset($data['oldname'])) {
+                    $urlValue = $this->menuPrvUrl . $data['oldname'];
+                } else {
+                    $urlValue = $this->menuPrvUrl . $data['name'];
+                    unset($data['name']);
+                }
+
+                if (isset($data['path'])) {
+                    $columnPid = pathToId($data['path']);
+                    $menuData['pid'] = $columnPid ? $this->getMenuPid($columnPid) : $this->contentMenuPid;
+                }
+                if (isset($data['title'])) {
+                    $menuData['title'] = $data['title'];
+                }
+                if (isset($data['orders'])) {
+                    $menuData['orders'] = $data['orders'];
+                }
+                if (isset($data['name'])) {
+                    $menuData['url_value'] = $this->menuPrvUrl . $data['name'];
+                }
+                model('adminMenu')->where('url_value', $urlValue)->update($menuData);
+                break;
+            case 'delete':
+                $urlValue = $this->menuPrvUrl . $data['name'];
+                model('adminMenu')->where('url_value', $urlValue)->delete();
+                break;
+        }
+    }
+
+    //通过栏目id获取后台菜单id
+    protected function getMenuPid($columnId)
+    {
+        $columnName = model('Column')->where('id', $columnId)->value('name');
+        return model('adminMenu')->where('url_value', $this->menuPrvUrl . $columnName)->value('id');
+    }
+
+    //获取模板信息
+    protected function getTempleList($path)
+    {
         if (!is_dir($path)) {
             return [];
         }
@@ -528,7 +624,6 @@ class Column extends Common {
         }
         $tempList = [];
         if (!empty($fileList)) {
-            $voArr = [];
             foreach ($fileList as &$vo) {
                 $voArr = explode('.', $vo);
                 if ('html' == $voArr[1]) {

@@ -144,6 +144,8 @@ abstract class Builder
                     case 'DEC':
                         $result[$item] = $item . ' - ' . floatval($val[1]);
                         break;
+                    case 'EXP':
+                        throw new Exception('not support data:[' . $val[0] . ']');
                 }
             } elseif (is_scalar($val)) {
                 // 过滤非标量数据
@@ -1070,7 +1072,7 @@ abstract class Builder
         // 分析并处理数据
         $data = $this->parseData($query, $options['data']);
         if (empty($data)) {
-            return 0;
+            return '';
         }
 
         $fields = array_keys($data);

@@ -61,7 +61,7 @@ class Column extends Common {
                 $extInfo = $ModelField->getModelInfo($columnInfo['ext_model_id'], 'id,title,table,ifsub');
                 $data = model('ModelField')->getDataInfo($extInfo['table'], "cname='" . $columnInfo['name'] . "' and status='1'", '*', '*');
                 //更新点击量
-                Db::name($extInfo['table'])->where('id', $data['id'])->update(['hits' => ['exp', 'hits+1']]);
+                Db::name($extInfo['table'])->where('id', $data['id'])->inc('hits')->update();
                 $this->assign('infoext', $data);
             }
             //列表栏目
@@ -194,7 +194,7 @@ class Column extends Common {
             abort(404, '内容不存在或未审核');
         }
         //更新点击量
-        Db::name($modelTable)->where('id', $id)->update(['hits' => ['exp', 'hits+1']]);
+        Db::name($modelTable)->where('id', $id)->inc('hits')->update();
         //下一篇
         $nextInfo = $ModelField->getDataInfo($modelTable, "status='1' and cname='$name' and create_time>'$data[create_time]'", 'id,cname,title', '', 'create_time');
         if (!empty($nextInfo)) {

@@ -61,7 +61,7 @@ class Index extends Controller {
                 'hostname|数据库地址' => 'require',
                 'database|数据库名' => 'require|alphaDash',
                 'username|数据库用户名' => 'require|alphaDash',
-                'password|数据库密码' => 'require',
+//                'password|数据库密码' => 'require',
                 'hostport|数据库端口' => 'require|number',
                 'prefix|数据库前缀' => 'require|alphaDash',
             ]);

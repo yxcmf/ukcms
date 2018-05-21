@@ -116,7 +116,7 @@ return [
     'http_exception_template' => [
         404 => APP_PATH . 'common' . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . '404.html'
     ],
-    'sysinfo' => 'UKcms 1.1.5',
+    'sysinfo' => 'UKcms 1.1.6',
     // 后台模板框架
     'admin_layout' => APP_PATH . 'admin/view/layout.html',
     // 资源路径

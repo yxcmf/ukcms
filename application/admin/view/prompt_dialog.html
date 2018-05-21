@@ -21,10 +21,10 @@
     </head>
     <body>
         <div class="px-content ">
-            <div class="modal fade modal-alert modal-success in" style="display: block;background-color: #ededec">
+            <div class="modal fade modal-alert modal-{$style.color} in" style="display: block;background-color: #ededec">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-header"><i class="fa fa-check-circle"></i></div>
+                        <div class="modal-header"><i class="fa {$style.icon}"></i></div>
                         <div class="modal-title"><h4>{:strip_tags($msg)}</h4></div>
                         <div class="modal-footer">
                             {volist name="urls" id="vo"}

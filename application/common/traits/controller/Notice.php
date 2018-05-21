@@ -1,19 +1,23 @@
 <?php
+
 namespace app\common\traits\controller;
 
 use think\Container;
 use think\exception\HttpResponseException;
 use think\Response;
 
-trait Notice {
+trait Notice
+{
 
-    protected function dialog($msg = '', $urls = null, array $header = []) {
+    protected function dialog($msg = '', $urls = null, $style = ['color' => 'success', 'icon' => 'fa-check-circle'], array $header = [])
+    {
         if ([] == $urls) {
             $urls[0] = ['title' => '返回', 'class' => 'success', 'url' => $_SERVER["HTTP_REFERER"]];
         }
         $result = [
             'msg' => $msg,
-            'urls' => $urls
+            'urls' => $urls,
+            'style' => $style
         ];
         $type = $this->getResponseType();
         if ('html' == strtolower($type)) {

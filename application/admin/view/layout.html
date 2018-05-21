@@ -1,131 +1,156 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="Cache-Control" content="no-siteapp" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <title>UKcms后台管理系统</title>
-        <meta name="description" content="简洁、灵活、强大的内容管理系统">
-        <meta name="author" content="YX">
-        <script type="text/javascript">
-            window.onload = function () {
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>UKcms后台管理系统</title>
+    <meta name="description" content="简洁、灵活、强大的内容管理系统">
+    <meta name="author" content="YX">
+    <script type="text/javascript">
+        window.onload = function () {
             if (navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion.split(";")[1].replace(/[ ]/g, "").replace("MSIE", "")) < 9) {
-            document.body.innerHTML = "";
-            alert("你的浏览器太古老,网页不支持IE9以下版本~");
+                document.body.innerHTML = "";
+                alert("你的浏览器太古老,网页不支持IE9以下版本~");
             }
-            };
-        </script> 
-        <link href="__STATIC__/admin/assets/static/ionicons.min.css" rel="stylesheet" type="text/css">
-        <link href="__STATIC__/admin/assets/static/font-awesome.min.css" rel="stylesheet">
+        };
+    </script>
+    <link href="__STATIC__/admin/assets/static/ionicons.min.css" rel="stylesheet" type="text/css">
+    <link href="__STATIC__/admin/assets/static/font-awesome.min.css" rel="stylesheet">
 
-        <!-- DEMO ONLY: Function for the proper stylesheet loading according to the demo settings -->
-        <script>function _pxDemo_loadStylesheet(a, b, c){var c = c || decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-theme") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "default"), d = "rtl" === document.getElementsByTagName("html")[0].getAttribute("dir"); document.write(a.replace(/^(.*?)((?:\.min)?\.css)$/, '<link href="$1' + (c.indexOf("dark") !== - 1 && a.indexOf("/css/") !== - 1 && a.indexOf("/themes/") === - 1?"-dark":"") + (!d || 0 !== a.indexOf("__STATIC__/admin/assets/css") && 0 !== a.indexOf("__STATIC__/admin/assets/demo")?"":".rtl") + '$2" rel="stylesheet" type="text/css"' + (b?'class="' + b + '"':"") + ">"))}</script>
+    <!-- DEMO ONLY: Function for the proper stylesheet loading according to the demo settings -->
+    <script>function _pxDemo_loadStylesheet(a, b, c) {
+        var c = c || decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-theme") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "default"),
+            d = "rtl" === document.getElementsByTagName("html")[0].getAttribute("dir");
+        document.write(a.replace(/^(.*?)((?:\.min)?\.css)$/, '<link href="$1' + (c.indexOf("dark") !== -1 && a.indexOf("/css/") !== -1 && a.indexOf("/themes/") === -1 ? "-dark" : "") + (!d || 0 !== a.indexOf("__STATIC__/admin/assets/css") && 0 !== a.indexOf("__STATIC__/admin/assets/demo") ? "" : ".rtl") + '$2" rel="stylesheet" type="text/css"' + (b ? 'class="' + b + '"' : "") + ">"))
+    }</script>
 
-        <!-- DEMO ONLY: Set RTL direction -->
-        <script>"ltr" !== document.getElementsByTagName("html")[0].getAttribute("dir") && "1" === decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-rtl") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "0") && document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");</script>
+    <!-- DEMO ONLY: Set RTL direction -->
+    <script>"ltr" !== document.getElementsByTagName("html")[0].getAttribute("dir") && "1" === decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-rtl") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "0") && document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");</script>
 
-        <!-- DEMO ONLY: Load PixelAdmin core stylesheets -->
-        <script>
-            _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/bootstrap.min.css', 'px-demo-stylesheet-bs');
-            _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/pixeladmin.min.css', 'px-demo-stylesheet-core');
-            _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/widgets.min.css', 'px-demo-stylesheet-widgets');
-        </script>
+    <!-- DEMO ONLY: Load PixelAdmin core stylesheets -->
+    <script>
+        _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/bootstrap.min.css', 'px-demo-stylesheet-bs');
+        _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/pixeladmin.min.css', 'px-demo-stylesheet-core');
+        _pxDemo_loadStylesheet('__STATIC__/admin/assets/css/widgets.min.css', 'px-demo-stylesheet-widgets');
+    </script>
 
-        <!-- DEMO ONLY: Load theme -->
-        <script>
-            function _pxDemo_loadTheme(a){var b = decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-theme") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "default"); _pxDemo_loadStylesheet(a + b + ".min.css", "px-demo-stylesheet-theme", b)}
-            _pxDemo_loadTheme('__STATIC__/admin/assets/css/themes/');
-        </script>
+    <!-- DEMO ONLY: Load theme -->
+    <script>
+        function _pxDemo_loadTheme(a) {
+            var b = decodeURIComponent((new RegExp(";\\s*" + encodeURIComponent("px-demo-theme") + "\\s*=\\s*([^;]+)\\s*;", "g").exec(";" + document.cookie + ";") || [])[1] || "default");
+            _pxDemo_loadStylesheet(a + b + ".min.css", "px-demo-stylesheet-theme", b)
+        }
 
-        <!-- Demo assets -->
-        <script>_pxDemo_loadStylesheet('__STATIC__/admin/assets/demo/demo.css');</script>
-        <!-- / Demo assets -->
-        <!-- holder.js -->
-        <script  type="text/javascript" src="__STATIC__/admin/assets/js/holder.js"></script>
-        <!-- Pace.js -->
-        <script src="__STATIC__/admin/assets/js/pace.min.js"></script>
-        <script id="demo" src="__STATIC__/admin/assets/demo/demo.js" data-bind="__STATIC__"></script>
-        <!-- jQuery -->
-        <script src="__STATIC__/jquery.min.js"></script>
+        _pxDemo_loadTheme('__STATIC__/admin/assets/css/themes/');
+    </script>
 
-        <script src="__STATIC__/admin/assets/js/bootstrap.min.js"></script>
-        <script src="__STATIC__/admin/assets/js/pixeladmin.min.js"></script>
-        <script src="__STATIC__/admin/assets/js/summernote-zh-CN.js" charset="utf-8" ></script>
-        {block name="css"}{/block}
-    </head>
-    <body>
-        <nav class="px-nav px-nav-left">
-            <button type="button" class="px-nav-toggle" data-toggle="px-nav">
-                <span class="px-nav-toggle-arrow"></span>
-                <span class="navbar-toggle-icon"></span>
-                <span class="px-nav-toggle-label font-size-11">隐藏菜单</span>
-            </button>
+    <!-- Demo assets -->
+    <script>_pxDemo_loadStylesheet('__STATIC__/admin/assets/demo/demo.css');</script>
+    <!-- / Demo assets -->
+    <!-- holder.js -->
+    <script type="text/javascript" src="__STATIC__/admin/assets/js/holder.js"></script>
+    <!-- Pace.js -->
+    <script src="__STATIC__/admin/assets/js/pace.min.js"></script>
+    <script id="demo" src="__STATIC__/admin/assets/demo/demo.js" data-bind="__STATIC__"></script>
+    <!-- jQuery -->
+    <script src="__STATIC__/jquery.min.js"></script>
 
-            <ul class="px-nav-content" id="leftmenu">
+    <script src="__STATIC__/admin/assets/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/admin/assets/js/pixeladmin.min.js"></script>
+    <script src="__STATIC__/admin/assets/js/summernote-zh-CN.js" charset="utf-8"></script>
+    {block name="css"}{/block}
+</head>
+<body>
+<nav class="px-nav px-nav-left">
+    <button type="button" class="px-nav-toggle" data-toggle="px-nav">
+        <span class="px-nav-toggle-arrow"></span>
+        <span class="navbar-toggle-icon"></span>
+        <span class="px-nav-toggle-label font-size-11">隐藏菜单</span>
+    </button>
 
-            </ul>
-        </nav>
+    <ul class="px-nav-content" id="leftmenu">
 
-        <nav class="navbar px-navbar">
-            <!-- Header -->
-            <div class="navbar-header">
-                <a class="navbar-brand px-demo-brand" href="{:url('admin/index/index')}"><span class="px-demo-logo bg-primary"><span class="px-demo-logo-1"></span><span class="px-demo-logo-2"></span><span class="px-demo-logo-3"></span><span class="px-demo-logo-4"></span><span class="px-demo-logo-5"></span><span class="px-demo-logo-6"></span><span class="px-demo-logo-7"></span><span class="px-demo-logo-8"></span><span class="px-demo-logo-9"></span></span>UKcms</a>
-            </div>
+    </ul>
+</nav>
 
-            <!-- Navbar togglers -->
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#px-demo-navbar-collapse" aria-expanded="false"><i class="navbar-toggle-icon"></i></button>
+<nav class="navbar px-navbar">
+    <!-- Header -->
+    <div class="navbar-header">
+        <a class="navbar-brand px-demo-brand" href="{:url('admin/index/index')}"><span
+                class="px-demo-logo bg-primary"><span class="px-demo-logo-1"></span><span class="px-demo-logo-2"></span><span
+                class="px-demo-logo-3"></span><span class="px-demo-logo-4"></span><span
+                class="px-demo-logo-5"></span><span class="px-demo-logo-6"></span><span
+                class="px-demo-logo-7"></span><span class="px-demo-logo-8"></span><span
+                class="px-demo-logo-9"></span></span>UKcms</a>
+    </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="px-demo-navbar-collapse">
-                <ul class="nav navbar-nav" id="topmenu">
+    <!-- Navbar togglers -->
+    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#px-demo-navbar-collapse"
+            aria-expanded="false"><i class="navbar-toggle-icon"></i></button>
 
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="px-demo-navbar-collapse">
+        <ul class="nav navbar-nav" id="topmenu">
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">
+                    {if $Think.session.user_info.head_path}<img src="__UPLOAD__/{$Think.session.user_info.head_path}"
+                                                                alt="" class="px-navbar-image">{else}<i
+                        class="fa fa-user-circle"></i>{/if}
+                    <span class="hidden-md">{$Think.session.user_info.realname}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{:url('admin/index/userInfo')}"><i class="dropdown-icon fa fa-user-o"></i>&nbsp;&nbsp;个人设置</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="{:url('admin/open/loginout')}"><i class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;退出</a>
+                    </li>
                 </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            {if $Think.session.user_info.head_path}<img src="__UPLOAD__/{$Think.session.user_info.head_path}" alt="" class="px-navbar-image">{else}<i class="fa fa-user-circle"></i>{/if}
-                            <span class="hidden-md">{$Think.session.user_info.realname}</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{:url('admin/index/userInfo')}"><i class="dropdown-icon fa fa-user-o"></i>&nbsp;&nbsp;个人设置</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{:url('admin/open/loginout')}"><i class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;退出</a></li>
-                        </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">
+                    <i class="fa fa-trash-o"></i>&nbsp;<span class="hidden-md">清空缓存</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="clear-data" data-bind="data" href="#"><i class="fa fa-database"></i>&nbsp;数据缓存</a>
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-trash-o"></i>&nbsp;<span class="hidden-md">清空缓存</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li> <a class="clear-data" data-bind="data" href="#"><i class="fa fa-database"></i>&nbsp;数据缓存</a></li>
-                            <li> <a class="clear-data" data-bind="temple" href="#"><i class="fa fa-file-code-o"></i>&nbsp;模板缓存</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="{$rootUrl}index.php" target="_blank"><i class="fa fa-laptop"></i>&nbsp;<span class="hidden-md">前台</span></a>
-                    </li>
+                    <li><a class="clear-data" data-bind="temple" href="#"><i
+                            class="fa fa-file-code-o"></i>&nbsp;模板缓存</a></li>
                 </ul>
-            </div><!-- /.navbar-collapse -->
-        </nav>
-        <div class="px-content">
-            <ol class="breadcrumb page-breadcrumb">
-                {volist name="NowMenuPath" id="data"}
-                <li><a href="{$data.furl}" {eq name="data.id" value="$NowMenuId"}class="active"{/eq}><!--i class="{$data.icon}"></i-->{$data.title}</a></li>
-                {/volist}
-            </ol>
-            {block name="content"}{/block}
-        </div>
-        <footer class="px-footer px-footer-bottom">
-            <span class="text-muted"><a href="http://www.ukcms.com" target="_blank">{:config('sysinfo')}</a> </span>
-        </footer>
+            </li>
+            <li>
+                <a href="{$rootUrl}index.php" target="_blank"><i class="fa fa-laptop"></i>&nbsp;<span class="hidden-md">前台</span></a>
+            </li>
+        </ul>
+    </div><!-- /.navbar-collapse -->
+</nav>
+<div class="px-content">
+    <ol class="breadcrumb page-breadcrumb">
+        {volist name="NowMenuPath" id="data"}
+        <li><a href="{$data.furl}" {eq name="data.id" value="$NowMenuId" }class="active" {/eq}>
+            <!--i class="{$data.icon}"></i--> {$data.title}</a></li>
+        {/volist}
+    </ol>
+    {block name="content"}{/block}
+</div>
+<footer class="px-footer px-footer-bottom">
+    <span class="text-muted"><a href="http://www.ukcms.com" target="_blank">{:config('sysinfo')}</a> </span>
+</footer>
 
 <script type="text/javascript">
-    window.menu = {$MenuJson | raw};
+    window.menu = {$MenuJson|raw};
     window.NowMenuId = {$NowMenuId};
     window.RootId = {$RootId};
+
     //递归输出左侧菜单
     function printLmenu(lever) {
         var leftmenu = '';
@@ -142,13 +167,21 @@
         }
         return leftmenu;
     }
-    function activeDom(dom) {
-        if (dom.hasClass('hidden')) {
+
+    function activeDom(dom,startId) {
+        if(dom.length>0){
+            if (!dom.hasClass('hidden')){
+                dom.addClass('active');
+            }
+            if(startId!=dom.attr('id') && dom.hasClass('px-nav-dropdown')){
+                dom.addClass('px-open');
+            }
             activeDom(dom.parent('ul').parent('li'));
-        } else {
-            dom.addClass('active');
+        }else{
+            return;
         }
     }
+
     $(function () {
         bootbox.setLocale("zh_CN");
         //顶部菜单
@@ -173,7 +206,7 @@
             leftdom.html(leftmenu);
             if (NowMenuId) {
                 var nowdom = $('#' + NowMenuId);
-                activeDom(nowdom);
+                activeDom(nowdom,NowMenuId);
             }
             leftdom.find('.px-nav-dropdown').each(function () {
                 //清除下级空元素
@@ -182,6 +215,19 @@
                     $(this).removeClass('px-nav-dropdown');
                     targ.remove();
                 }
+                //a跳转事件恢复
+                $(this).children('a').children('span.px-nav-label').click(function (event) {
+                    var jumpurl = $(this).parent().attr('href');
+                    if ('#' != jumpurl) {
+                        //阻止父节点点击展开事件
+                        event.stopPropagation();
+                        if ('_self' == $(this).parent().attr('target')) {
+                            window.location.href = jumpurl;
+                        } else {
+                            window.open(jumpurl);
+                        }
+                    }
+                });
             });
         }
 
@@ -222,7 +268,6 @@
         });
     });
 </script>
-
-        {block name="javascript"}{/block}
-    </body>
+{block name="javascript"}{/block}
+</body>
 </html>

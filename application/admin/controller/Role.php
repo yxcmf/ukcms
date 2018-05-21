@@ -19,11 +19,7 @@ class Role extends Common {
             if (empty($data['ids'])) {
                 $this->error('至少需要勾选一个菜单权限');
             }
-            $data['menu_ids'] = '';
-            foreach ($data['ids'] as $vo) {
-                $data['menu_ids'].=intval($vo) . ',';
-            }
-            $data['menu_ids'] = substr($data['menu_ids'], 0, -1);
+            $data['menu_ids'] = implode(',', $data['ids']);
             $data['status'] = isset($data['status']) ? intval($data['status']) : 0;
             $result = $this->validate($data, 'AdminRole');
             if (true !== $result) {
@@ -65,12 +61,7 @@ class Role extends Common {
             if ($path . $data['id'] . ',' == $data['path']) {
                 $this->error('不可以作为自身的下级角色');
             }
-            $data['menu_ids'] = '';
-            foreach ($data['ids'] as $vo) {
-                $data['menu_ids'].=intval($vo) . ',';
-            }
-            $data['menu_ids'] = substr($data['menu_ids'], 0, -1);
-
+            $data['menu_ids'] = implode(',', $data['ids']);
             $data['status'] = isset($data['status']) ? intval($data['status']) : 0;
             $result = $this->validate($data, 'AdminRole');
             if (true !== $result) {

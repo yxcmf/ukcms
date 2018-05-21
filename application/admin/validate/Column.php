@@ -12,7 +12,7 @@ class Column extends Validate {
         'model_id|内容模型' => 'require|number',
         'ext_model_id|拓展模型' => 'number',
         'title|栏目标题' => 'require|chsAlphaNum',
-        'name|栏目英文标识' => 'require|alpha|unique:column|notIn:index,search,sitemap',
+        'name|栏目英文标识' => 'require|alpha|unique:column|notIn:index,search,sitemap,add,edit,delete,move,setstate,copy,changeorder',
 //        'meta_title|栏目网页标题' => 'chsAlphaNum',
 //        'meta_keywords|栏目网页关键词' => '',
 //        'meta_description|栏目网页描述' => '',

@@ -5,20 +5,23 @@ namespace app\admin\model;
 use think\facade\Url;
 use think\Db;
 
-class AdminMenu extends \think\Model {
+class AdminMenu extends \think\Model
+{
 
     protected $pk = 'id';
     protected $autoWriteTimestamp = true;
     public static $groupid = 0;
 
-    public static function setGroupid($groupid) {
+    public static function setGroupid($groupid)
+    {
         self::$groupid = $groupid;
     }
 
     /**
      * 获取当前用户角色菜单权限id
      */
-    public static function getRoleMenuIds($ifarr = true) {
+    public static function getRoleMenuIds($ifarr = true)
+    {
         if (self::$groupid == 0) {
             throw new \Exception('未设置分组~');
         }
@@ -36,7 +39,8 @@ class AdminMenu extends \think\Model {
     /**
      * 获取当前操作菜单id
      */
-    public static function getNowMenuId() {
+    public static function getNowMenuId()
+    {
         $model = request()->module();
         $controller = request()->controller();
         $action = request()->action();
@@ -50,7 +54,8 @@ class AdminMenu extends \think\Model {
     /**
      * ajax操作判断当前操作是否有权限
      */
-    public static function ajaxCheckAccess() {
+    public static function ajaxCheckAccess()
+    {
         $nowid = self::getNowMenuId();
         $menuIdArray = self::getRoleMenuIds();
         if (is_array($menuIdArray)) {
@@ -64,7 +69,8 @@ class AdminMenu extends \think\Model {
     /**
      * 非ajax操作获取后台菜单信息
      */
-    public static function getMenuInfo() {
+    public static function getMenuInfo()
+    {
         $nowid = self::getNowMenuId();
         $menuIdArray = self::getRoleMenuIds();
         $where = "";
@@ -81,19 +87,21 @@ class AdminMenu extends \think\Model {
         return [$tree, $rootid, $nowid, $path];
     }
 
-    public function getFirstUrl() {
+    public function getFirstUrl()
+    {
         $menuIdString = self::getRoleMenuIds(false);
         $where = "ifvisible='1'";
         if (true !== $menuIdString) {
-            $where.=" and id in ($menuIdString)";
+            $where .= " and id in ($menuIdString)";
         }
         return self::buildTree($where, 'id,pid,title,url_value,url_type,url_target,ifvisible', true);
     }
 
     /**
-     * 创建树形多维数组和基于主键的数组引用  
+     * 创建树形多维数组和基于主键的数组引用
      */
-    public static function buildTree($where, $fields, $firsturl = false) {
+    public static function buildTree($where, $fields, $firsturl = false)
+    {
         $cacheKey = 'db_admin_menu_tree_' . $where . $fields . session('user_info.groupid');
         $treeAndRefer = cache($cacheKey);
         //缓存后台菜单信息
@@ -118,11 +126,11 @@ class AdminMenu extends \think\Model {
                 $parentId = $data['pid'];
                 if (0 == $parentId) {
 //                    $tree[$data['id']] = & $list[$key];
-                    $tree[] = & $list[$key];
+                    $tree[] = &$list[$key];
                 } else {
                     if (isset($refer[$parentId])) {
-                        $parent = & $refer[$parentId];
-                        $parent['cnode'][] = & $list[$key];
+                        $parent = &$refer[$parentId];
+                        $parent['cnode'][] = &$list[$key];
                     }
                 }
             }
@@ -130,7 +138,7 @@ class AdminMenu extends \think\Model {
             foreach ($tree as $key => $vo) {
                 $ctree = $vo;
                 while (!empty($ctree['cnode'])) {
-                    if (!$ctree['cnode'][0]['ifvisible']) {
+                    if (!$ctree['cnode'][0]['ifvisible'] || empty($ctree['cnode'][0]['url_value'])) {
                         array_shift($ctree['cnode']);
                     } else {
                         $ctree = $ctree['cnode'][0];
@@ -160,7 +168,8 @@ class AdminMenu extends \think\Model {
     /**
      * 获取当前节点根节点和路径信息
      */
-    public static function getNowInfo($rootid, $refer) {
+    public static function getNowInfo($rootid, $refer)
+    {
         if ($rootid) {
             $path = []; //面包屑数组
             $path[] = $refer[$rootid];
@@ -176,10 +185,11 @@ class AdminMenu extends \think\Model {
             }
             return [$rootid, $path];
         } else
-            return[0, []];
+            return [0, []];
     }
 
-    public function delNode($id) {
+    public function delNode($id)
+    {
         if ($id > 0) {
             if (self::where('id', $id)->value('ifsystem')) {
                 throw new \Exception('ID:' . $id . '是系统节点不可删除');
@@ -202,7 +212,8 @@ class AdminMenu extends \think\Model {
         }
     }
 
-    public function hideNode($id) {
+    public function hideNode($id)
+    {
         if ($id > 0) {
             $idlist = self::where('pid', $id)->column('id');
             if (!empty($idlist)) {

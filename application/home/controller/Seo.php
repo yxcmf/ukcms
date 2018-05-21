@@ -14,7 +14,7 @@ class Seo extends Controller {
         $limitNum = 1000;
         //单页栏目
         $pageColumn = '';
-        $Sitemap->AddItem($rootUrl . url('home/index/index'), 0, 'always', time() - rand(3600, 172800));
+        $Sitemap->AddItem($rootUrl . url('index/index'), 0, 'always', time() - rand(3600, 172800));
         $columList = model('Column')->getColumn('sort', 'id,path,name,url,type,update_time');
         if (!empty($columList)) {
             foreach ($columList as $vo) {

@@ -62,20 +62,22 @@
                         <td>{$vo.name}</td>
                         <td>{if $vo.type==1}频道{elseif $vo.type==2}列表{else}链接{/if}</td>
                         <td>{if isset($vo.mtitle)}{$vo.mtitle}{else}{$vo.url}{/if}</td>
-                        <td>{if $vo.type==2}
-                            <a href="{:url('admin/content/'.$vo['table']).'?cid='.$vo.id}"><i  class="fa fa-eye visible btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="内容列表"></i></a> 
-                            <a href="{:url('admin/content/add',['mid'=>$vo.model_id,'cname'=>$vo.name])}"><i  class="fa fa-plus btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="添加内容"></i></a> 
-                            <a href="{:url('admin/content/importdata',['mid'=>$vo.model_id,'cname'=>$vo.name])}"><i  class="fa fa-plus-square btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="导入内容"></i></a>{/if}
+                        <td>
+                            {if $vo.type==2}
+                            <a href="{:url('admin/content/'.$vo.name)}"><i  class="fa fa-eye visible btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="内容列表"></i></a>
+                            <a href="{:url('admin/content/add',['cname'=>$vo.name])}"><i  class="fa fa-plus btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="添加内容"></i></a>
+                            <a href="{:url('admin/model/importdata',['mid'=>$vo.model_id,'cname'=>$vo.name])}"><i  class="fa fa-plus-square btn btn-sm" data-toggle="tooltip" data-placement="top"  data-original-title="导入内容"></i></a>
+                            {/if}
                         </td>
                         <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
                         <td>
-                            {if $vo.status} 
+                            {if $vo.status}
                             <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">显示</button>
                             {else}
                             <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">隐藏</button>
                             {/if}
                         </td>
-                        <td><a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
+                        <td><a href="{:url('edit',['id'=>$vo.id])}"><i class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> <i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i></td>
                     </tr>
                     {/volist}
                 </table>
