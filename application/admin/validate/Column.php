@@ -4,7 +4,8 @@ namespace app\admin\validate;
 
 use think\Validate;
 
-class Column extends Validate {
+class Column extends Validate
+{
 
     //定义验证规则
     public $rule = [
@@ -26,7 +27,7 @@ class Column extends Validate {
     ];
     //定义验证场景
     protected $scene = [
-        'link' => ['path', 'title', 'cover_picture', 'url|自定义链接地址' => 'require|regex:^[a-zA-Z\/\:\&\=\?\d]*$', 'orders', 'status'],
+        'link' => ['path', 'title', 'name', 'cover_picture', 'url|自定义链接地址' => 'require|regex:^[a-zA-Z\/\:\&\=\?\d]*$', 'orders', 'status'],
 //        'page' => ['path', 'model_id', 'title', 'name', 'meta_title', 'meta_keywords', 'meta_description', 'cover_picture', 'template_list', 'orders', 'status']
         'list' => ['path', 'ext_model_id', 'model_id', 'title', 'name', 'cover_picture', 'template_list', 'template_content', 'list_row', 'orders', 'status', 'urls|列表筛选条件' => 'regex:^[a-z\d,]+$', 'orders', 'status'],
         'page' => ['path', 'ext_model_id', 'title', 'name', 'cover_picture', 'template_list', 'orders', 'status'],

@@ -234,7 +234,6 @@ class Column extends Common
                     $infolist = explode("\r\n", $data['modelinfo']);
                     $fields = ['type', 'path', 'model_id', 'ext_model_id', 'title', 'name', 'meta_title', 'meta_keywords', 'meta_description', 'cover_picture', 'template_list', 'orders', 'status'];
                     $scene = 'page';
-                    $cfield = 'name';
                     break;
                 //列表
                 case 2:
@@ -249,17 +248,15 @@ class Column extends Common
                     }
                     $fields = ['type', 'path', 'model_id', 'ext_model_id', 'title', 'name', 'meta_title', 'meta_keywords', 'meta_description', 'cover_picture', 'template_list', 'template_content', 'list_row', 'orders', 'status', 'url', 'listorder'];
                     $scene = 'list';
-                    $cfield = 'name';
                     break;
                 //链接
                 case 3:
                     if (empty($data['linkinfo'])) {
-                        $this->error('栏目名称和地址不能为空');
+                        $this->error('栏目名称、标识和地址不能为空');
                     }
                     $infolist = explode("\r\n", $data['linkinfo']);
-                    $fields = ['type', 'path', 'title', 'cover_picture', 'url', 'orders', 'status'];
+                    $fields = ['type', 'path', 'title', 'name', 'cover_picture', 'url', 'orders', 'status'];
                     $scene = 'link';
-                    $cfield = 'url';
                     break;
                 default:
                     return $this->error('栏目类型错误~');
@@ -271,10 +268,13 @@ class Column extends Common
                 if ($vo) {
                     $colinfo = explode("|", $vo);
                     $data['title'] = $colinfo[0];
-                    $data[$cfield] = $colinfo[1];
+                    $data['name'] = $colinfo[1];
+                    if (isset($colinfo[2])) {
+                        $data['url'] = $colinfo[2];
+                    }
                     $vresult = $this->validate($data, 'Column.' . $scene);
                     if (true !== $vresult) {
-                        $this->error($vresult . '成功添加了' . $successNum . '个栏目~');
+                        $this->error($vresult . '<br>成功添加了' . $successNum . '个栏目~');
                     }
                     try {
                         $Column->allowField($fields)->isUpdate(false)->save($data);

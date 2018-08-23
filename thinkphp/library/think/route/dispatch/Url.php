@@ -45,13 +45,14 @@ class Url extends Dispatch
             $url = $bind . ('.' != substr($bind, -1) ? $depr : '') . ltrim($url, $depr);
         }
 
-        list($path, $var) = $this->parseUrlPath($url);
+        list($path, $var) = $this->rule->parseUrlPath($url);
         if (empty($path)) {
             return [null, null, null];
         }
 
         // 解析模块
         $module = $this->rule->getConfig('app_multi_module') ? array_shift($path) : null;
+
         if ($this->param['auto_search']) {
             $controller = $this->autoFindController($module, $path);
         } else {
@@ -74,13 +75,14 @@ class Url extends Dispatch
         }
 
         $panDomain = $this->request->panDomain();
+
         if ($panDomain && $key = array_search('*', $var)) {
             // 泛域名赋值
             $var[$key] = $panDomain;
         }
 
         // 设置当前请求的参数
-        $this->request->route($var);
+        $this->request->setRouteVars($var);
 
         // 封装路由
         $route = [$module, $controller, $action];
@@ -112,7 +114,9 @@ class Url extends Dispatch
             $name2 = strtolower(Loader::parseName($controller, 1) . '/' . $action);
         }
 
-        if ($this->rule->getRouter()->getName($name) || $this->rule->getRouter()->getName($name2)) {
+        $host = $this->request->host(true);
+
+        if ($this->rule->getRouter()->getName($name, $host) || $this->rule->getRouter()->getName($name2, $host)) {
             return true;
         }
 
@@ -156,34 +160,4 @@ class Url extends Dispatch
         return $controller;
     }
 
-    /**
-     * 解析URL的pathinfo参数和变量
-     * @access private
-     * @param  string    $url URL地址
-     * @return array
-     */
-    private function parseUrlPath($url)
-    {
-        // 分隔符替换 确保路由定义使用统一的分隔符
-        $url = str_replace('|', '/', $url);
-        $url = trim($url, '/');
-        $var = [];
-
-        if (false !== strpos($url, '?')) {
-            // [模块/控制器/操作?]参数1=值1&参数2=值2...
-            $info = parse_url($url);
-            $path = explode('/', $info['path']);
-            parse_str($info['query'], $var);
-        } elseif (strpos($url, '/')) {
-            // [模块/控制器/操作]
-            $path = explode('/', $url);
-        } elseif (false !== strpos($url, '=')) {
-            // 参数1=值1&参数2=值2...
-            parse_str($url, $var);
-        } else {
-            $path = [$url];
-        }
-
-        return [$path, $var];
-    }
 }

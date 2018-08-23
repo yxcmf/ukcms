@@ -4,11 +4,19 @@ namespace app\admin\controller;
 
 use think\facade\Cache;
 
-class Link extends Common {
+class Link extends Common
+{
 
-    public function index() {
+    public function index()
+    {
         $getParam = ['gname' => $this->request->get('gname'), 'keyword' => $this->request->get('keyword')];
-
+        $result = $this->validate($getParam, [
+            'gname|分组' => 'alpha',
+            'keyword|链接标题关键词' => 'chsAlphaNum',
+        ]);
+        if (true !== $result) {
+            $this->error($result);
+        }
         $where = '';
         if (!empty($getParam['gname'])) {
             $where = "group_name='$getParam[gname]'";
@@ -35,7 +43,8 @@ class Link extends Common {
         return $this->fetch();
     }
 
-    public function add() {
+    public function add()
+    {
         if ($this->request->isPost()) {
             $data = $this->request->post();
             $result = $this->validate($data, 'Link');
@@ -59,7 +68,8 @@ class Link extends Common {
         }
     }
 
-    public function edit($id = 0) {
+    public function edit($id = 0)
+    {
         if ($this->request->isPost()) {
             $data = $this->request->post();
             $result = $this->validate($data, 'Link');
@@ -91,7 +101,8 @@ class Link extends Common {
         }
     }
 
-    public function delete($id = 0) {
+    public function delete($id = 0)
+    {
         if ($this->request->isPost()) {
             $ids = input('post.ids/a', null, 'intval');
             if (empty($ids)) {
@@ -140,7 +151,8 @@ class Link extends Common {
         }
     }
 
-    public function changeOrder($id, $num) {
+    public function changeOrder($id, $num)
+    {
         if (!is_numeric($num) || !is_numeric($id)) {
             return '参数错误';
         }

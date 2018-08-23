@@ -751,7 +751,7 @@ INSERT INTO `uk_model` VALUES ('6', '内容评论', 'comment', '1', 'independenc
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_model_field`;
 CREATE TABLE `uk_model_field` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '字段名称',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT UNIQUE COMMENT '字段名称',
   `model_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '所属文档模型id',
   `name` varchar(32) NOT NULL,
   `title` varchar(32) NOT NULL DEFAULT '' COMMENT '字段标题',
@@ -770,7 +770,7 @@ CREATE TABLE `uk_model_field` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `orders` int(5) NOT NULL DEFAULT '100' COMMENT '排序',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`name`,`model_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=106 DEFAULT CHARSET=utf8 COMMENT='模型字段表';
 
 -- ----------------------------

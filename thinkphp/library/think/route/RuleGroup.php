@@ -124,6 +124,14 @@ class RuleGroup extends Rule
             return false;
         }
 
+        // 检查前置行为
+        if (isset($this->option['before'])) {
+            if (false === $this->checkBefore($this->option['before'])) {
+                return false;
+            }
+            unset($this->option['before']);
+        }
+
         // 解析分组路由
         if ($this instanceof Resource) {
             $this->buildResourceRule($this->resource, $this->option);
@@ -312,33 +320,50 @@ class RuleGroup extends Rule
             }
         }
 
-        try {
-            if (!empty($regex) && preg_match('/^(?:' . implode('|', $regex) . ')/u', $url, $match)) {
-                $var = [];
-                foreach ($match as $key => $val) {
-                    if (is_string($key) && '' !== $val) {
-                        list($name, $pos) = explode('_THINK_', $key);
-
-                        $var[$name] = $val;
-                    }
-                }
-
-                if (!isset($pos)) {
-                    foreach ($regex as $key => $item) {
-                        if (0 === strpos(str_replace(['\/', '\-', '\\' . $depr], ['/', '-', $depr], $item), $match[0])) {
-                            $pos = $key;
-                            break;
-                        }
-                    }
-                }
-
-                return $items[$pos]->checkRule($request, $url, $var);
-            }
-
+        if (empty($regex)) {
             return false;
+        }
+
+        try {
+            $result = preg_match('/^(?:' . implode('|', $regex) . ')/u', $url, $match);
         } catch (\Exception $e) {
             throw new Exception('route pattern error');
         }
+
+        if ($result) {
+            $var = [];
+            foreach ($match as $key => $val) {
+                if (is_string($key) && '' !== $val) {
+                    list($name, $pos) = explode('_THINK_', $key);
+
+                    $var[$name] = $val;
+                }
+            }
+
+            if (!isset($pos)) {
+                foreach ($regex as $key => $item) {
+                    if (0 === strpos(str_replace(['\/', '\-', '\\' . $depr], ['/', '-', $depr], $item), $match[0])) {
+                        $pos = $key;
+                        break;
+                    }
+                }
+            }
+
+            $rule  = $items[$pos]->getRule();
+            $array = $this->router->getRule($rule);
+
+            foreach ($array as $item) {
+                if (in_array($item->getMethod(), ['*', strtolower($request->method())])) {
+                    $result = $item->checkRule($request, $url, $var);
+
+                    if (false !== $result) {
+                        return $result;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -414,6 +439,11 @@ class RuleGroup extends Rule
 
         $method = strtolower($method);
 
+        if ('/' === $rule || '' === $rule) {
+            // 首页自动完整匹配
+            $rule .= '$';
+        }
+
         // 创建路由规则实例
         $ruleItem = new RuleItem($this->router, $this, $name, $rule, $route, $method, $option, $pattern);
 
@@ -479,6 +509,39 @@ class RuleGroup extends Rule
         }
 
         return $this->option('prefix', $prefix);
+    }
+
+    /**
+     * 设置资源允许
+     * @access public
+     * @param  array     $only
+     * @return $this
+     */
+    public function only($only)
+    {
+        return $this->option('only', $only);
+    }
+
+    /**
+     * 设置资源排除
+     * @access public
+     * @param  array     $except
+     * @return $this
+     */
+    public function except($except)
+    {
+        return $this->option('except', $except);
+    }
+
+    /**
+     * 设置资源路由的变量
+     * @access public
+     * @param  array     $vars
+     * @return $this
+     */
+    public function vars($vars)
+    {
+        return $this->option('var', $vars);
     }
 
     /**

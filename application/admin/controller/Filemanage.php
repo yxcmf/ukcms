@@ -9,18 +9,21 @@ use think\Image;
  * 附件控制器
  * @package app\admin\controller
  */
-class Filemanage extends Common {
+class Filemanage extends Common
+{
 
     private $uploadUrl = '';
     private $uploadPath = '';
 
-    protected function initialize() {
+    protected function initialize()
+    {
         parent::initialize();
         $this->uploadUrl = config('public_url') . 'uploads/';
         $this->uploadPath = config('upload_path');
     }
 
-    public function index() {
+    public function index()
+    {
         //搜索数据验证
         $getParam = ['fileexit' => $this->request->get('fileexit'), 'timestart' => $this->request->get('timestart'), 'timeend' => $this->request->get('timeend')];
         $result = $this->validate($getParam, [
@@ -33,18 +36,18 @@ class Filemanage extends Common {
         }
         $where = '';
         if (!empty($getParam['fileexit'])) {
-            $where.="ext='$getParam[fileexit]'";
+            $where .= "ext='$getParam[fileexit]'";
         }
         if (!empty($getParam['timestart'])) {
             $timestart = strtotime($getParam['timestart']);
-            $where.='' == $where ? "create_time>='$timestart'" : " and create_time>='$timestart'";
+            $where .= '' == $where ? "create_time>='$timestart'" : " and create_time>='$timestart'";
         }
         if (!empty($getParam['timestart'])) {
             $timeend = strtotime($getParam['timeend']);
-            $where.='' == $where ? "create_time<='$timeend'" : " and create_time<='$timeend'";
+            $where .= '' == $where ? "create_time<='$timeend'" : " and create_time<='$timeend'";
         }
         if (1 != session('user_info.groupid')) {
-            $where.='' == $where ? "uid='" . session('user_info.groupid') . "'" : " and uid='" . session('user_info.groupid') . "'";
+            $where .= '' == $where ? "uid='" . session('user_info.groupid') . "'" : " and uid='" . session('user_info.groupid') . "'";
         }
         // 查询
         $imgExt = config('upload_image_ext');
@@ -71,7 +74,8 @@ class Filemanage extends Common {
         return $this->fetch();
     }
 
-    public function upload($dir = '', $from = '', $module = '', $thumb = 0, $thumbsize = '', $thumbtype = '', $watermark = 1, $sizelimit = -1, $extlimit = '') {
+    public function upload($dir = '', $from = '', $module = '', $thumb = 0, $thumbsize = '', $thumbtype = '', $watermark = 1, $sizelimit = -1, $extlimit = '')
+    {
         // 临时取消执行时间限制
         @set_time_limit(0);
         if ($from == 'ueditor') {
@@ -90,7 +94,8 @@ class Filemanage extends Common {
      * @param string $module 来自哪个模块
      * @return string|\think\response\Json
      */
-    private function saveFile($dir = '', $from = '', $module = '', $thumb = 0, $thumbsize = '', $thumbtype = '', $watermark = 1, $sizelimit = -1, $extlimit = '') {
+    private function saveFile($dir = '', $from = '', $module = '', $thumb = 0, $thumbsize = '', $thumbtype = '', $watermark = 1, $sizelimit = -1, $extlimit = '')
+    {
         if (!function_exists("finfo_open")) {
             switch ($from) {
                 case 'ueditor':
@@ -119,17 +124,16 @@ class Filemanage extends Common {
             $ext_limit = '';
             foreach ($extArrPara as $vo) {
                 if (in_array($vo, $extArr) && $vo) {
-                    $ext_limit.=$vo . ',';
+                    $ext_limit .= $vo . ',';
                 }
             }
             if ($ext_limit) {
                 $ext_limit = substr($ext_limit, 0, -1);
             }
         }
-        $ext_limit = $ext_limit != '' ? parse_attr($ext_limit) : '';
-        foreach (['php', 'html', 'htm', 'js'] as $vo) {
-            unset($ext_limit[$vo]);
-        }
+        $ext_limit = $ext_limit != '' ? parse_attr($ext_limit) : [];
+        $ext_limit = array_diff($ext_limit, ['php', 'html', 'htm', 'js']);
+
         // 获取附件数据
         switch ($from) {
             case 'ueditor':
@@ -193,7 +197,7 @@ class Filemanage extends Common {
         $file_name = $file->getInfo('name');
         $file_ext = strtolower(substr($file_name, strrpos($file_name, '.') + 1));
         $error_msg = '';
-        if ($ext_limit == '') {
+        if ([] == $ext_limit) {
             $error_msg = '获取文件后缀限制信息失败！';
         }
         try {
@@ -294,7 +298,8 @@ class Filemanage extends Common {
      * @param string $dir 保存目录，即目标文件所在的目录名
      * @param string $save_name 缩略图名
      */
-    private function create_thumb($file = '', $dir = '', $save_name = '', $thumb_size = '', $thumb_type = '') {
+    private function create_thumb($file = '', $dir = '', $save_name = '', $thumb_size = '', $thumb_type = '')
+    {
         // 获取要生成的缩略图最大宽度和高度
         $upload_image_thumb = '' == $thumb_size ? config('upload_image_thumb') : $thumb_size;
         $upload_image_thumb_type = '' == $thumb_type ? config('upload_image_thumb_type') : $thumb_type;
@@ -324,7 +329,8 @@ class Filemanage extends Common {
      * 添加水印
      * @param string $file 要添加水印的文件路径
      */
-    private function create_water($file = '', $path = '') {
+    private function create_water($file = '', $path = '')
+    {
         $thumb_water_pic = realpath($this->uploadPath . '/' . $path);
         if (file_exists($thumb_water_pic)) {
             // 读取图片
@@ -336,7 +342,8 @@ class Filemanage extends Common {
         }
     }
 
-    public function setState($id, $status) {
+    public function setState($id, $status)
+    {
         $id = intval($id);
         $status = intval($status);
         if ($status != 0 && $status != 1)
@@ -348,7 +355,8 @@ class Filemanage extends Common {
         }
     }
 
-    public function delete($id = '') {
+    public function delete($id = '')
+    {
         if ($this->request->isPost()) {
             $ids = input('post.ids/a', null, 'intval');
             if (empty($ids)) {
@@ -380,7 +388,8 @@ class Filemanage extends Common {
      * 处理ueditor上传
      * @return string|\think\response\Json
      */
-    private function ueditor() {
+    private function ueditor()
+    {
         $action = $this->request->get('action');
         switch ($action) {
             /* 获取配置信息 */
@@ -392,7 +401,7 @@ class Filemanage extends Common {
 
             /* 上传图片 */
             case 'uploadimage':
-            /* 上传涂鸦 */
+                /* 上传涂鸦 */
             case 'uploadscrawl':
                 return $this->saveFile('images', 'ueditor');
                 break;
@@ -444,7 +453,8 @@ class Filemanage extends Common {
      * @param $config
      * @return \think\response\Json
      */
-    public function showFileList($type = '') {
+    public function showFileList($type = '')
+    {
         /* 获取参数 */
         $size = input('get.size/d', 0);
         $start = input('get.start/d', 0);
@@ -500,7 +510,8 @@ class Filemanage extends Common {
      * ajax获取文件信息
      * @param string $ids html代码
      */
-    public function ajaxGetFileInfo() {
+    public function ajaxGetFileInfo()
+    {
         $fileInfo = model('attachment')->getFileInfo($this->request->post('ids'), 'id,name,path,size');
         return json($fileInfo);
     }
@@ -508,9 +519,10 @@ class Filemanage extends Common {
     /**
      * html代码远程图片本地化
      * @param string $content html代码
-     *  @param string $type 文件类型
+     * @param string $type 文件类型
      */
-    public function getUrlFile() {
+    public function getUrlFile()
+    {
         $content = $this->request->post('content');
         $type = $this->request->post('type');
         $urls = [];

@@ -117,7 +117,7 @@ class Log implements LoggerInterface
             return;
         }
 
-        if (is_string($msg)) {
+        if (is_string($msg) && !empty($context)) {
             $replace = [];
             foreach ($context as $key => $val) {
                 $replace['{' . $key . '}'] = $val;
@@ -126,11 +126,11 @@ class Log implements LoggerInterface
             $msg = strtr($msg, $replace);
         }
 
-        $this->log[$type][] = $msg;
-
         if (PHP_SAPI == 'cli') {
             // 命令行日志实时写入
-            $this->save();
+            $this->write($msg, $type, true);
+        } else {
+            $this->log[$type][] = $msg;
         }
 
         return $this;
@@ -196,7 +196,7 @@ class Log implements LoggerInterface
      */
     public function save()
     {
-        if (empty($this->log) || !$this->allowWrite || !$this->driver) {
+        if (empty($this->log) || !$this->allowWrite) {
             return true;
         }
 
@@ -221,7 +221,8 @@ class Log implements LoggerInterface
             }
         }
 
-        $result = $this->driver->save($log);
+        $result = $this->driver->save($log, true);
+
         if ($result) {
             $this->log = [];
         }
@@ -240,11 +241,11 @@ class Log implements LoggerInterface
     public function write($msg, $type = 'info', $force = false)
     {
         // 封装日志信息
-        $log = $this->log;
+        if (empty($this->config['level'])) {
+            $force = true;
+        }
 
-        if (true === $force || empty($this->config['level'])) {
-            $log[$type][] = $msg;
-        } elseif (in_array($type, $this->config['level'])) {
+        if (true === $force || in_array($type, $this->config['level'])) {
             $log[$type][] = $msg;
         } else {
             return false;
@@ -254,13 +255,7 @@ class Log implements LoggerInterface
         $this->app['hook']->listen('log_write', $log);
 
         // 写入日志
-        $result = $this->driver->save($log);
-
-        if ($result) {
-            $this->log = [];
-        }
-
-        return $result;
+        return $this->driver->save($log, false);
     }
 
     /**
@@ -382,5 +377,13 @@ class Log implements LoggerInterface
     public function sql($message, array $context = [])
     {
         $this->log(__FUNCTION__, $message, $context);
+    }
+
+    public function __debugInfo()
+    {
+        $data = get_object_vars($this);
+        unset($data['app']);
+
+        return $data;
     }
 }

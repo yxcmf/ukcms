@@ -20,7 +20,7 @@ use think\route\Dispatch;
  */
 class App extends Container
 {
-    const VERSION = '5.1.14';
+    const VERSION = '5.1.23';
 
     /**
      * 当前模块路径
@@ -118,6 +118,12 @@ class App extends Container
      */
     protected $bindModule;
 
+    /**
+     * 初始化
+     * @var bool
+     */
+    protected $initialized = false;
+
     public function __construct($appPath = '')
     {
         $this->appPath = $appPath ? realpath($appPath) . DIRECTORY_SEPARATOR : $this->getAppPath();
@@ -154,53 +160,25 @@ class App extends Container
     }
 
     /**
-     * 注册核心容器实例
-     * @access public
-     * @return void
-     */
-    public function registerCoreContainer()
-    {
-        // 注册核心类到容器
-        $this->bindTo([
-            'app'                   => App::class,
-            'build'                 => Build::class,
-            'cache'                 => Cache::class,
-            'config'                => Config::class,
-            'cookie'                => Cookie::class,
-            'debug'                 => Debug::class,
-            'env'                   => Env::class,
-            'hook'                  => Hook::class,
-            'lang'                  => Lang::class,
-            'log'                   => Log::class,
-            'middleware'            => Middleware::class,
-            'request'               => Request::class,
-            'response'              => Response::class,
-            'route'                 => Route::class,
-            'session'               => Session::class,
-            'url'                   => Url::class,
-            'validate'              => Validate::class,
-            'view'                  => View::class,
-            'rule_name'             => route\RuleName::class,
-            // 接口依赖注入
-            'think\LoggerInterface' => Log::class,
-        ]);
-    }
-
-    /**
      * 初始化应用
      * @access public
      * @return void
      */
     public function initialize()
     {
-        $this->beginTime = microtime(true);
-        $this->beginMem  = memory_get_usage();
+        if ($this->initialized) {
+            return;
+        }
+
+        $this->initialized = true;
+        $this->beginTime   = microtime(true);
+        $this->beginMem    = memory_get_usage();
 
         static::setInstance($this);
 
-        $this->registerCoreContainer();
-
         $this->instance('app', $this);
+
+        $this->configExt = $this->env->get('config_ext', '.php');
 
         // 加载惯例配置文件
         $this->config->set(include $this->thinkPath . 'convention.php');
@@ -227,8 +205,6 @@ class App extends Container
 
         // 注册应用命名空间
         Loader::addNamespace($this->namespace, $this->appPath);
-
-        $this->configExt = $this->env->get('config_ext', '.php');
 
         // 初始化应用
         $this->init();
@@ -278,8 +254,8 @@ class App extends Container
         // 读取语言包
         $this->loadLangPack();
 
-        // 监听app_init
-        $this->hook->listen('app_init');
+        // 路由初始化
+        $this->routeInit();
     }
 
     /**
@@ -310,7 +286,7 @@ class App extends Container
 
             // 加载公共文件
             if (is_file($path . 'common.php')) {
-                include $path . 'common.php';
+                include_once $path . 'common.php';
             }
 
             if ('' == $module) {
@@ -336,7 +312,7 @@ class App extends Container
 
             // 自动读取配置文件
             if (is_dir($path . 'config')) {
-                $dir = $path . 'config';
+                $dir = $path . 'config' . DIRECTORY_SEPARATOR;
             } elseif (is_dir($this->configPath . $module)) {
                 $dir = $this->configPath . $module;
             }
@@ -345,8 +321,7 @@ class App extends Container
 
             foreach ($files as $file) {
                 if ('.' . pathinfo($file, PATHINFO_EXTENSION) === $this->configExt) {
-                    $filename = $dir . DIRECTORY_SEPARATOR . $file;
-                    $this->config->load($filename, pathinfo($file, PATHINFO_FILENAME));
+                    $this->config->load($dir . $file, pathinfo($file, PATHINFO_FILENAME));
                 }
             }
         }
@@ -357,7 +332,6 @@ class App extends Container
             // 对容器中的对象实例进行配置更新
             $this->containerConfigUpdate($module);
         }
-
     }
 
     protected function containerConfigUpdate($module)
@@ -370,6 +344,8 @@ class App extends Container
         }
 
         Db::init($config['database']);
+        $this->middleware->setConfig($config['middleware']);
+        $this->route->setConfig($config['app']);
         $this->request->init($config['app']);
         $this->cookie->init($config['cookie']);
         $this->view->init($config['template']);
@@ -382,7 +358,7 @@ class App extends Container
         $this->lang->load($this->appPath . $module . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $this->request->langset() . '.php');
 
         // 模块请求缓存检查
-        $this->request->cache(
+        $this->checkRequestCache(
             $config['app']['request_cache'],
             $config['app']['request_cache_expire'],
             $config['app']['request_cache_except']
@@ -400,6 +376,9 @@ class App extends Container
         try {
             // 初始化应用
             $this->initialize();
+
+            // 监听app_init
+            $this->hook->listen('app_init');
 
             if ($this->bindModule) {
                 // 模块/控制器绑定
@@ -436,7 +415,7 @@ class App extends Container
             $this->hook->listen('app_begin');
 
             // 请求缓存检查
-            $this->request->cache(
+            $this->checkRequestCache(
                 $this->config('request_cache'),
                 $this->config('request_cache_expire'),
                 $this->config('request_cache_except')
@@ -449,28 +428,7 @@ class App extends Container
         }
 
         $this->middleware->add(function (Request $request, $next) use ($dispatch, $data) {
-            if (is_null($data)) {
-                try {
-                    // 执行调度
-                    $data = $dispatch->run();
-                } catch (HttpResponseException $exception) {
-                    $data = $exception->getResponse();
-                }
-            }
-
-            // 输出数据到客户端
-            if ($data instanceof Response) {
-                $response = $data;
-            } elseif (!is_null($data)) {
-                // 默认自动识别响应输出类型
-                $isAjax = $request->isAjax();
-                $type   = $isAjax ? $this->config('app.default_ajax_return') : $this->config('app.default_return_type');
-
-                $response = Response::create($data, $type);
-            } else {
-                $response = Response::create();
-            }
-            return $response;
+            return is_null($data) ? $dispatch->run() : $data;
         });
 
         $response = $this->middleware->dispatch($this->request);
@@ -503,13 +461,41 @@ class App extends Container
             $this->lang->detect();
         }
 
-        $this->request->langset($this->lang->range());
+        $this->request->setLangset($this->lang->range());
 
         // 加载系统语言包
         $this->lang->load([
             $this->thinkPath . 'lang' . DIRECTORY_SEPARATOR . $this->request->langset() . '.php',
             $this->appPath . 'lang' . DIRECTORY_SEPARATOR . $this->request->langset() . '.php',
         ]);
+    }
+
+    /**
+     * 设置当前地址的请求缓存
+     * @access public
+     * @param  string $key 缓存标识，支持变量规则 ，例如 item/:name/:id
+     * @param  mixed  $expire 缓存有效期
+     * @param  array  $except 缓存排除
+     * @param  string $tag    缓存标签
+     * @return void
+     */
+    public function checkRequestCache($key, $expire = null, $except = [], $tag = null)
+    {
+        $cache = $this->request->cache($key, $expire, $except, $tag);
+
+        if ($cache) {
+            list($key, $expire, $tag) = $cache;
+            if (strtotime($this->request->server('HTTP_IF_MODIFIED_SINCE')) + $expire > $this->request->server('REQUEST_TIME')) {
+                // 读取缓存
+                $response = Response::create()->code(304);
+                throw new HttpResponseException($response);
+            } elseif ($this->cache->has($key)) {
+                list($content, $header) = $this->cache->get($key);
+
+                $response = Response::create($content)->header($header);
+                throw new HttpResponseException($response);
+            }
+        }
     }
 
     /**
@@ -548,24 +534,12 @@ class App extends Container
     }
 
     /**
-     * URL路由检测（根据PATH_INFO)
+     * 路由初始化 导入路由定义规则
      * @access public
-     * @return Dispatch
+     * @return void
      */
-    public function routeCheck()
+    public function routeInit()
     {
-        // 检测路由缓存
-        if (!$this->appDebug && $this->config->get('route_check_cache')) {
-            $routeKey = $this->getRouteCacheKey();
-
-            if ($this->cache->has($routeKey)) {
-                return $this->cache->get($routeKey);
-            }
-        }
-
-        // 获取应用调度信息
-        $path = $this->request->path();
-
         // 路由检测
         $files = scandir($this->routePath);
         foreach ($files as $file) {
@@ -579,10 +553,11 @@ class App extends Container
             }
         }
 
-        if ($this->config('route.route_annotation')) {
+        if ($this->route->config('route_annotation')) {
             // 自动生成路由定义
             if ($this->appDebug) {
-                $this->build->buildRoute($this->config('route.controller_suffix'));
+                $suffix = $this->route->config('controller_suffix') || $this->route->config('class_suffix');
+                $this->build->buildRoute($suffix);
             }
 
             $filename = $this->runtimePath . 'build_route.php';
@@ -591,6 +566,27 @@ class App extends Container
                 include $filename;
             }
         }
+    }
+
+    /**
+     * URL路由检测（根据PATH_INFO)
+     * @access public
+     * @return Dispatch
+     */
+    public function routeCheck()
+    {
+        // 检测路由缓存
+        if (!$this->appDebug && $this->config->get('route_check_cache')) {
+            $routeKey = $this->getRouteCacheKey();
+            $option   = $this->config->get('route_cache_option') ?: $this->cache->getConfig();
+
+            if ($this->cache->connect($option)->has($routeKey)) {
+                return $this->cache->connect($option)->get($routeKey);
+            }
+        }
+
+        // 获取应用调度信息
+        $path = $this->request->path();
 
         // 是否强制路由模式
         $must = !is_null($this->routeMust) ? $this->routeMust : $this->route->config('url_route_must');
@@ -601,6 +597,7 @@ class App extends Container
         if (!empty($routeKey)) {
             try {
                 $this->cache
+                    ->connect($option)
                     ->tag('route_cache')
                     ->set($routeKey, $dispatch);
             } catch (\Exception $e) {

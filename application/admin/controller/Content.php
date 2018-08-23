@@ -317,7 +317,7 @@ class Content extends Common
         }
         $columnListModelId = Db::name('column')->where('name', $cname)->value('model_id');
         if ($columnListModelId != $mid) {
-            return $this->error('当前栏目模型与移动栏目模型不一致~');
+            return $this->error('当前栏目模型与移动到的栏目模型不一致~');
         }
         $tableName = Db::name('model')->where('id', $mid)->where('status', 1)->value('table');
         if (!$tableName) {
@@ -343,6 +343,10 @@ class Content extends Common
         $num = $num > 0 ? $num : 1;
         if (empty($ids) || empty($cname)) {
             return $this->error('没勾选内容或没选择栏目~');
+        }
+        $columnListModelId = Db::name('column')->where('name', $cname)->value('model_id');
+        if ($columnListModelId != $mid) {
+            return $this->error('当前栏目模型与复制到的栏目模型不一致~');
         }
         try {
             model('ModelField')->copyData($mid, $ids, $num, $cname);

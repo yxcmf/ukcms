@@ -111,6 +111,7 @@ class App extends Common {
         }
         //修改应用安装状态
         Db::name('app')->where('name', $app)->update(['status' => 1, 'installstate' => 1]);
+        \think\facade\Cache::clear();
         $this->success($app . '应用安装成功~');
     }
 
