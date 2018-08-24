@@ -1,0 +1,128 @@
+{extend name="$admin_layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 18px}
+    .pagination{margin: 0; float:right}
+</style>
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">会员等级列表</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('add')}"><i class="fa fa-users"></i> 新增等级</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th width="60">ID</th><th>等级名称</th><th width="160">创建时间</th><th width="80">状态</th><th width="100">操作</th>
+                </tr>
+
+                {volist name="list" id="vo"}
+                <tr id="{$vo.id}">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.create_time}</td>
+                    <td>
+                        {if $vo.status} 
+                        <button  data-id="0" type="button" class="btn btn-sm btn-primary btn-rounded status">启用</button>
+                        {else}
+                        <button  data-id="1"  type="button" class="btn btn-sm btn-default btn-rounded status">禁用</button>
+                        {/if}
+                    </td>
+                    <td>
+                        <a href="{:url('edit',['id'=>$vo.id])}"><i  class="fa fa-edit btn  btn-sm btn-primary" data-toggle="tooltip" data-placement="top"  data-original-title="编辑"></i></a> 
+                        {if 1!=$vo.id}<i  class="fa fa-times btn  btn-sm btn-warning del" data-toggle="tooltip" data-placement="top"  data-original-title="删除"></i>{/if}
+                    </td>
+                </tr>
+                {/volist}
+
+                {if !empty($page)}
+                <tr>
+                    <td colspan="5">
+                        {$page|raw}
+                    </td>
+                </tr>
+                {/if}
+            </table>
+        </div>
+
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.status').click(function () {
+            var nowdom = $(this);
+            var id = nowdom.parent().parent().attr('id');
+            var status = nowdom.attr('data-id');
+            $.ajax({
+                url: "{:url('setstate')}",
+                type: "GET",
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'text',
+                success: function (data) {
+                    if (data === 'true') {
+                        if (status == 1) {
+                            nowdom.addClass('btn-primary');
+                            nowdom.attr('data-id', '0');
+                            nowdom.html('启用');
+                        }
+                        if (status == 0) {
+                            nowdom.removeClass('btn-primary');
+                            nowdom.attr('data-id', '1');
+                            nowdom.html('禁用');
+                        }
+                    } else {
+                        toastr['warning'](data, '', {
+                            closeButton: true
+                        });
+                    }
+                }
+            });
+        });
+
+        $('.del').click(function () {
+            var nowdom = $(this).parent().parent();
+            bootbox.confirm({
+                message: '确认删除吗？删除后该分组下会员全部划到ID为1的分组下',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        var id = nowdom.attr('id');
+                        $.ajax({
+                            url: "{:url('delete')}",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                if (data === 'true') {
+                                    nowdom.remove();
+                                    toastr['success']('会员删除成功~', '', {
+                                        closeButton: true
+                                    });
+                                } else {
+                                    toastr['warning'](data, '', {
+                                        closeButton: true
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

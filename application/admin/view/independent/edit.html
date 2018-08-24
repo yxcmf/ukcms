@@ -1,0 +1,15 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">编辑【{$modelName}】ID:{$id}的内容</div>
+    </div>
+    <form class="panel-body" method="post" action="{:url('edit',['mid'=>$mid])}">
+
+        {include file="inputItem"  /}
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}

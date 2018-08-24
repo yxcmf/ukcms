@@ -1,0 +1,18 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">栏目【{$columnTitle}】的自定义链接</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        <fieldset class="form-group linkcolumn">
+            <label>链接地址</label>
+            <input type="text" class="form-control" name="url" placeholder="自定义栏目跳转地址" value="{$columnUrl}">
+            <small class="text-muted clearfix">如果是内部链接，填写：模块/控制器/操作。如果是http链接，则直接填写http开头的url地址</small>
+        </fieldset>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}

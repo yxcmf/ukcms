@@ -1,0 +1,14 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">栏目【{$columnTitle}】的拓展信息</div>
+    </div>
+    <form class="panel-body" method="post" action="">
+        {include file="inputItem"  /}
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="确认编辑">
+        </div>
+    </form>
+</div>
+{/block}

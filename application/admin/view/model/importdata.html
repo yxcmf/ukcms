@@ -1,0 +1,165 @@
+{extend name="layout"/}
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">[{$modelInfo.title}]模型导入数据</span>
+        <div class="panel-heading-controls"> 
+            <a class="btn btn-xs btn-primary" href="{:url('importexample',['mid'=>$mid])}"><i class="fa fa-cloud-download"></i> 下载标准格式</a>
+        </div>
+    </div>
+
+    <form action="" enctype="multipart/form-data" method="post" class="panel-body">
+        <div class="form-group">
+            {if isset($columnList)}
+            <fieldset class="form-group">
+                <label>所属栏目</label>
+                <select id="cname"  name="cname" class="form-control  select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                    <option></option>
+                    {volist name="columnList" id="vo" }
+                    {if $vo.type==2 && $vo.model_id==$mid}
+                    <option {if ''!=$cname && $cname==$vo.name}selected{/if} value="{$vo.name}">{:str_repeat('┝┈┈', $vo['deep']-1)}{$vo.title}</option>
+                    {/if}
+                    {/volist}
+                </select>
+                <small class="text-muted">只能选择绑定此模型的列表栏目,不选择则平均分配到栏目下</small>
+            </fieldset>
+            {/if}
+            <fieldset class="form-group">
+                <label class="custom-file px-file">
+                    <input type="file" name="excel" class="custom-file-input">
+                    <span class="custom-file-control form-control">选择要导入的数据文件...</span>
+                    <div class="px-file-buttons">
+                        <button type="button" class="btn px-file-clear">清空</button>
+                        <button type="button" class="btn btn-primary px-file-browse">浏览文件</button>
+                    </div>
+                    <small class="text-muted">支持格式：xlsx,xls,csv.第一行为字段名称,数据从第二行开始</small>
+                </label>
+            </fieldset>
+            <fieldset class="form-group">
+                <labe>发布时间区间</label>
+                    <input type="text" class="form-control" id="creattime" name="creattime" placeholder="请输入时间区间" value="">
+                    <small class="text-muted" >发布时间随机在区间内生成</small>
+            </fieldset>
+            
+            {if $canTranslate}
+            <hr>
+            <fieldset class="form-group">
+                <label for="switcher-iftranslate" class="switcher switcher-primary">
+                    <input type="checkbox" id="switcher-iftranslate" name="iftranslate">
+                    <div class="switcher-indicator">
+                        <div class="switcher-yes">是</div>
+                        <div class="switcher-no">否</div>
+                    </div>翻译文本字段内容
+                </label>
+                <small class="text-muted">百度翻译接口当月翻译字符数≤2百万，当月免费。翻译接口需要间隔3s调用一次，若翻译内容较长会需要大量时间，请将php超时限制取消或增长</small>
+            </fieldset> 
+            <fieldset class="form-group">
+                <label>当前语言</label>
+                <select id="froml"  name="froml" class="form-control  select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                    <option></option>
+                    <option value="zh">中文</option>
+                    <option value="en" selected>英语</option>
+                    <option value="yue">粤语</option>
+                    <option value="wyw">文言文</option>
+                    <option value="jp">日语</option>
+                    <option value="kor">韩语</option>
+                    <option value="fra">法语</option>
+                    <option value="spa">西班牙语</option>
+                    <option value="th">泰语</option>
+                    <option value="ara">阿拉伯语</option>
+                    <option value="ru">俄语</option>
+                    <option value="pt">葡萄牙语</option>
+                    <option value="de">德语</option>
+                    <option value="it">意大利语</option>
+                    <option value="el">希腊语</option>
+                    <option value="nl">荷兰语</option>
+                    <option value="pl">波兰语</option>
+                    <option value="bul">保加利亚语</option>
+                    <option value="est">爱沙尼亚语</option>
+                    <option value="dan">丹麦语</option>
+                    <option value="fin">芬兰语</option>
+                    <option value="cs">捷克语</option>
+                    <option value="rom">罗马尼亚语</option>
+                    <option value="slo">斯洛文尼亚语</option>
+                    <option value="swe">瑞典语</option>
+                    <option value="hu">匈牙利语</option>
+                    <option value="cht">繁体中文</option>
+                    <option value="vie">越南语</option>
+                </select>
+            </fieldset>
+            <fieldset class="form-group">
+                <label>翻译语言</label>
+                <select id="tol"  name="tol" class="form-control  select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                    <option></option>
+                    <option value="zh" selected>中文</option>
+                    <option value="en">英语</option>
+                    <option value="yue">粤语</option>
+                    <option value="wyw">文言文</option>
+                    <option value="jp">日语</option>
+                    <option value="kor">韩语</option>
+                    <option value="fra">法语</option>
+                    <option value="spa">西班牙语</option>
+                    <option value="th">泰语</option>
+                    <option value="ara">阿拉伯语</option>
+                    <option value="ru">俄语</option>
+                    <option value="pt">葡萄牙语</option>
+                    <option value="de">德语</option>
+                    <option value="it">意大利语</option>
+                    <option value="el">希腊语</option>
+                    <option value="nl">荷兰语</option>
+                    <option value="pl">波兰语</option>
+                    <option value="bul">保加利亚语</option>
+                    <option value="est">爱沙尼亚语</option>
+                    <option value="dan">丹麦语</option>
+                    <option value="fin">芬兰语</option>
+                    <option value="cs">捷克语</option>
+                    <option value="rom">罗马尼亚语</option>
+                    <option value="slo">斯洛文尼亚语</option>
+                    <option value="swe">瑞典语</option>
+                    <option value="hu">匈牙利语</option>
+                    <option value="cht">繁体中文</option>
+                    <option value="vie">越南语</option>
+                </select>
+            </fieldset>
+            {/if}
+        </div>
+        <div class="panel-footer text-right">
+            <input type="submit" class="btn btn-primary" value="导入数据">
+        </div>
+    </form>
+
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        $('.custom-file').pxFile();
+        $('#cname').select2({
+            placeholder: '选择栏目'
+        });
+        $('#froml').select2({
+            placeholder: '选择当前语言'
+        });
+        $('#tol').select2({
+            placeholder: '选择翻译语言'
+        });
+        $('#creattime').daterangepicker({
+            timePicker: true, //是否显示小时和分钟  
+            timePickerIncrement: 1, //时间的增量，单位为分钟  
+            timePicker12Hour: false, //是否使用12小时制来显示时间  
+            locale: {
+                format: 'YYYY/MM/DD HH:mm:ss',
+                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                applyLabel: '确定',
+                cancelLabel: '取消',
+                firstDay: 1
+            }
+        }, function (start, end, label) {
+        }).on('cancel.daterangepicker', function () {
+            //$(this).val('');
+        });
+    });
+</script>
+{/block}

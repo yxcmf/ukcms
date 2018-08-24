@@ -1,0 +1,22 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .custom-control{margin-left: 25px}
+    .pagination{margin: 0; float:right}
+    #moveColumn,#num{display:none}
+</style>
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">栏目【{$columnTitle}】</span>
+        <div class="panel-heading-controls"></div>
+    </div>
+    <div class="panel-body">
+        <div class="alert">
+            <i class="fa fa-info"></i> 此频道栏目没有绑定模型,无需内容管理
+        </div>
+    </div>
+</div>
+{/block}
