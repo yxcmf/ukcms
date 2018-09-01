@@ -151,7 +151,8 @@ class Query
             // 调用扩展查询方法
             array_unshift($args, $this);
 
-            return Container::getInstance()->invoke(self::$extend[strtolower($method)], $args);
+            return Container::getInstance()
+                ->invoke(self::$extend[strtolower($method)], $args);
         } elseif (strtolower(substr($method, 0, 5)) == 'getby') {
             // 根据某个字段获取记录
             $field = Loader::parseName(substr($method, 5));
@@ -304,14 +305,14 @@ class Query
      * @param  string      $sql    sql指令
      * @param  array       $bind   参数绑定
      * @param  boolean     $master 是否在主服务器读操作
-     * @param  bool|string $class  指定返回的数据集对象
+     * @param  bool        $pdo    是否返回PDO对象
      * @return mixed
      * @throws BindParamException
      * @throws PDOException
      */
-    public function query($sql, $bind = [], $master = false, $class = false)
+    public function query($sql, $bind = [], $master = false, $pdo = false)
     {
-        return $this->connection->query($sql, $bind, $master, $class);
+        return $this->connection->query($sql, $bind, $master, $pdo);
     }
 
     /**
@@ -641,7 +642,10 @@ class Query
         if (!empty($this->options['group'])) {
             // 支持GROUP
             $options = $this->getOptions();
-            $subSql  = $this->options($options)->field('count(' . $field . ') AS think_count')->bind($this->bind)->buildSql();
+            $subSql  = $this->options($options)
+                ->field('count(' . $field . ') AS think_count')
+                ->bind($this->bind)
+                ->buildSql();
 
             $query = $this->newQuery()->table([$subSql => '_group_count_']);
 
@@ -1186,19 +1190,6 @@ class Query
         return $this;
     }
 
-    /**
-     * 设置是否返回数据集对象
-     * @access public
-     * @param  bool  $collection  是否返回数据集对象
-     * @return $this
-     */
-    public function collection($collection = true)
-    {
-        $this->options['collection'] = $collection;
-
-        return $this;
-    }
-    
     /**
      * 指定AND查询条件
      * @access public
@@ -2080,6 +2071,19 @@ class Query
     }
 
     /**
+     * 设置是否返回数据集对象（支持设置数据集对象类名）
+     * @access public
+     * @param  bool|string  $collection  是否返回数据集对象
+     * @return $this
+     */
+    public function fetchCollection($collection = true)
+    {
+        $this->options['collection'] = $collection;
+
+        return $this;
+    }
+
+    /**
      * 设置从主服务器读取数据
      * @access public
      * @return $this
@@ -2283,7 +2287,8 @@ class Query
                 $field($this, isset($data[$key]) ? $data[$key] : null, $data, $prefix);
             } elseif ($this->model) {
                 // 检测搜索器
-                $method = 'search' . Loader::parseName($field, 1) . 'Attr';
+                $fieldName = is_numeric($key) ? $field : $key;
+                $method    = 'search' . Loader::parseName($fieldName, 1) . 'Attr';
 
                 if (method_exists($this->model, $method)) {
                     $this->model->$method($this, isset($data[$field]) ? $data[$field] : null, $data, $prefix);
@@ -2986,8 +2991,12 @@ class Query
      */
     protected function resultSetToModelCollection(array $resultSet)
     {
+        if (!empty($this->options['collection']) && is_string($this->options['collection'])) {
+            $collection = $this->options['collection'];
+        }
+
         if (empty($resultSet)) {
-            return $this->model->toCollection([]);
+            return $this->model->toCollection([], isset($collection) ? $collection : null);
         }
 
         // 检查动态获取器
@@ -3020,7 +3029,7 @@ class Query
         }
 
         // 模型数据集转换
-        return $result->toCollection($resultSet);
+        return $result->toCollection($resultSet, isset($collection) ? $collection : null);
     }
 
     /**
@@ -3113,8 +3122,6 @@ class Query
             return !empty($this->model) ? $this->model->newInstance([], $this->getModelUpdateCondition($this->options)) : [];
         } elseif (!empty($this->options['fail'])) {
             $this->throwNotFound($this->options);
-        } else {
-            return;
         }
     }
 
