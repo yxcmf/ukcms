@@ -26,5 +26,5 @@ return [
     // 最大日志文件数量
     'max_files'   => 0,
     // 是否关闭日志写入
-    'close'       => false,
+    'close'       => true,
 ];
