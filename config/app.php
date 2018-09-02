@@ -123,7 +123,7 @@ return [
     // 全局请求缓存排除规则
     'request_cache_except'   => [],
     // 是否开启路由缓存
-    'route_check_cache'      => false,
+    'route_check_cache'      => true,
     // 路由缓存的Key自定义设置（闭包），默认为当前URL和请求类型的md5
     'route_check_cache_key'  => '',
     // 路由缓存类型及参数
