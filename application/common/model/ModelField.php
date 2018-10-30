@@ -538,10 +538,20 @@ class ModelField extends \think\Model
                     }
                     break;
                 case 'images':
-                    $newdata[$key] = empty($value) ? [] : model('attachment')->getFileInfo($value, 'id,path,thumb', true);
+                    if (empty($value)) {
+                        $newdata[$key] = [];
+                    } else {//处理一张图片不是二维数组情况
+                        $valueArr = model('attachment')->getFileInfo($value, 'id,path,thumb', true);
+                        $newdata[$key] = isset($valueArr['id']) ? [$valueArr['id'] => $valueArr->toArray()] : $valueArr;
+                    }
                     break;
                 case 'files':
-                    $newdata[$key] = empty($value) ? [] : model('attachment')->getFileInfo($value, 'id,name,path,size', true);
+                    if (empty($value)) {
+                        $newdata[$key] = [];
+                    } else {//处理一个文件不是二维数组情况
+                        $valueArr = model('attachment')->getFileInfo($value, 'id,name,path,size', true);
+                        $newdata[$key] = isset($valueArr['id']) ? [$valueArr['id'] => $valueArr->toArray()] : $valueArr;
+                    }
                     break;
                 case 'tags':
                     $newdata[$key] = explode(',', $value);
