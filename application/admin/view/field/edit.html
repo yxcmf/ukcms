@@ -55,7 +55,11 @@
                         <select id="type" name="type" class="form-control select2-example select2-hidden-accessible" style="width: 100%" data-allow-clear="true" tabindex="-1" aria-hidden="true">
                             <option></option>
                             {volist name="fieldType" id="vo"}
-                            <option {if $info.type==$vo.name}selected{/if} value="{$vo.name}" data-define="{$vo.default_define}" data-ifoption="{$vo.ifoption}" data-ifstring="{$vo.ifstring}">{$vo.title}</option>
+                            <option {if $info.type==$vo.name}selected{/if} value="{$vo.name}"
+                                    data-define="{$vo.default_define}"
+                                    data-ifoption="{$vo.ifoption}"
+                                    data-ifstring="{$vo.ifstring}"
+                                    data-ifnumber="{if 'number'==$vo.name}1{else}0{/if}">{$vo.title}</option>
                             {/volist}
                         </select>
                     </fieldset>
@@ -186,6 +190,12 @@
                                     <input name="jsonrule[string][order]" value="{if isset($info['jsonrule']['string'])}{$info['jsonrule']['string']['order']}{/if}" class="form-control" type="text" placeholder="order条件">
                                 </fieldset>
                             </div>
+                            <div id="autoNumber"  {if 'number'!=$fieldType[$info['type']]['name']}style="display:none"{/if}>
+                                 <fieldset class="form-group">
+                                     <label>计算公式</label>
+                                     <input name="jsonrule[number][formula]" class="form-control" type="text" placeholder="例：字段1+字段2-字段3*字段4/字段5(公式中的字段为同模型的数字类型)" value="{if isset($info['jsonrule']['number'])}{$info['jsonrule']['number']['formula']}{/if}">
+                                 </fieldset>
+                             </div>
                         </div>
                     </div>
                     <div class="panel-footer text-right">
@@ -272,6 +282,7 @@
             $('#define').val($(this).find("option:selected").attr("data-define"));
             var ifoption = $(this).find("option:selected").attr("data-ifoption");
             var ifstring = $(this).find("option:selected").attr("data-ifstring");
+            var ifnumber = $(this).find("option:selected").attr("data-ifnumber");
             //图片字段设置显隐
             if ('image' == $(this).val() || 'images' == $(this).val()) {
                 $('#imgset').show();
@@ -298,7 +309,12 @@
             } else {
                 $('#autoString').hide();
             }
-            
+            //数字字段关联显隐
+            if (ifnumber == '1') {
+                $('#autoNumber').show();
+            } else {
+                $('#autoNumber').hide();
+            }
             //搜索隐显
             if (ifstring == '1') {
                 $('#ifsearch').show();

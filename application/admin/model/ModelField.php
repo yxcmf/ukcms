@@ -63,6 +63,9 @@ EOF;
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
                 }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
+                }
                 if (!empty($data['jsonrule']['choose']['table']) && !empty($data['jsonrule']['choose']['key']) && !empty($data['jsonrule']['choose']['value'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
@@ -77,6 +80,9 @@ EOF;
                 }
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
+                }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
                 }
                 if (!empty($data['jsonrule']['string']['table']) && !empty($data['jsonrule']['string']['key'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
@@ -93,6 +99,9 @@ EOF;
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
                 }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
+                }
                 if (isset($data['jsonrule']['thumb']['ifon'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
@@ -108,7 +117,28 @@ EOF;
                 if (isset($data['jsonrule']['thumb'])) {
                     unset($data['jsonrule']['thumb']);
                 }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
+                }
                 if (isset($data['jsonrule']['file']['type'])) {
+                    $data['jsonrule'] = json_encode($data['jsonrule'], true);
+                }
+            }
+            //数字公式设置
+            if ('number' == $data['type']) {
+                if (isset($data['jsonrule']['choose'])) {
+                    unset($data['jsonrule']['choose']);
+                }
+                if (isset($data['jsonrule']['string'])) {
+                    unset($data['jsonrule']['string']);
+                }
+                if (isset($data['jsonrule']['thumb'])) {
+                    unset($data['jsonrule']['thumb']);
+                }
+                if (isset($data['jsonrule']['file'])) {
+                    unset($data['jsonrule']['file']);
+                }
+                if (isset($data['jsonrule']['number']['formula'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
             }
@@ -170,6 +200,9 @@ EOF;
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
                 }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
+                }
                 if (!empty($data['jsonrule']['choose']['table']) && !empty($data['jsonrule']['choose']['key']) && !empty($data['jsonrule']['choose']['value'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
@@ -184,6 +217,9 @@ EOF;
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
                 }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
+                }
                 if (!empty($data['jsonrule']['string']['table']) && !empty($data['jsonrule']['string']['key'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
@@ -197,6 +233,9 @@ EOF;
                 }
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
+                }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
                 }
                 if (isset($data['jsonrule']['thumb']['ifon'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
@@ -213,7 +252,28 @@ EOF;
                 if (isset($data['jsonrule']['thumb'])) {
                     unset($data['jsonrule']['thumb']);
                 }
+                if (isset($data['jsonrule']['number'])) {
+                    unset($data['jsonrule']['number']);
+                }
                 if (isset($data['jsonrule']['file']['type'])) {
+                    $data['jsonrule'] = json_encode($data['jsonrule'], true);
+                }
+            }
+            //数字公式设置
+            if ('number' == $data['type']) {
+                if (isset($data['jsonrule']['choose'])) {
+                    unset($data['jsonrule']['choose']);
+                }
+                if (isset($data['jsonrule']['string'])) {
+                    unset($data['jsonrule']['string']);
+                }
+                if (isset($data['jsonrule']['thumb'])) {
+                    unset($data['jsonrule']['thumb']);
+                }
+                if (isset($data['jsonrule']['file'])) {
+                    unset($data['jsonrule']['file']);
+                }
+                if (isset($data['jsonrule']['number']['formula'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
             }
