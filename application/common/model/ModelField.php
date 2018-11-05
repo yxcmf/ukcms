@@ -303,12 +303,12 @@ class ModelField extends \think\Model
     //处理数字字段关联计算
     protected function dealNumberFieldRule($modeId, &$data, &$dataExt)
     {
-        $fieldinfo = self::where('model_id', $modeId)->where('status', 1)->where('type', 'number')->where('jsonrule', '<>', '')->column('name,jsonrule,ifmain');
+        $fieldinfo = self::where('model_id', $modeId)->where('status', 1)->where('type', 'number')->where('jsonrule', '<>', '')->column('name,jsonrule,ifmain,value');
         if (empty($fieldinfo)) return;
         $dataMerge = array_merge($data, $dataExt);
         foreach ($fieldinfo as $key => $vo) {
-            $vo['jsonrule']=str_replace('\/','/',$vo['jsonrule']);
-            $vo['jsonrule'] = json_decode($vo['jsonrule'],true)['number']['formula'];
+            $vo['jsonrule'] = str_replace('\/', '/', $vo['jsonrule']);
+            $vo['jsonrule'] = json_decode($vo['jsonrule'], true)['number']['formula'];
             //字段规则为空或值不为空时不做处理
             if (empty($vo['jsonrule']) || !empty($dataMerge[$key])) continue;
 
@@ -316,10 +316,15 @@ class ModelField extends \think\Model
             $fieldArr = explode(',', $jsonrule);
             foreach ($fieldArr as $v) {
                 if (empty($v) || !preg_match("/^[a-zA-Z\s]+$/", $v) || !isset($dataMerge[$v])) continue 2;
-                $vo['jsonrule'] = preg_replace('/'.$v.'/', $dataMerge[$v], $vo['jsonrule'], 1);
+                $vo['jsonrule'] = preg_replace('/' . $v . '/', $dataMerge[$v], $vo['jsonrule'], 1);
             }
             $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
-            assert('${$dataKey}[$key]=' . $vo["jsonrule"]);
+            try {
+                assert('${$dataKey}[$key]=' . $vo["jsonrule"]);
+            } catch (\Exception $ex) {
+                ${$dataKey}[$key] = empty($vo['value']) ? 0 : $vo['value'];
+            }
+
         }
     }
 
