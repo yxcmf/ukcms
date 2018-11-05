@@ -165,8 +165,8 @@ class ModelField extends \think\Model
         }
         $data['uid'] = session('user_info.uid') ?: 0;
 
-        $dataAll = $this->dealModelPostData($modeId, $data, $dataExt);
-        list($data, $dataExt) = $dataAll;
+        list($data, $dataExt) = $this->dealModelPostData($modeId, $data, $dataExt);
+        $this->dealNumberFieldRule($modeId, $data, $dataExt);
         if (!isset($data['create_time'])) {
             $data['create_time'] = request()->time();
         }
@@ -299,6 +299,29 @@ class ModelField extends \think\Model
             }
         }
         return [$data, $dataExt];
+    }
+
+    //处理数字字段关联计算
+    protected function dealNumberFieldRule($modeId, &$data, &$dataExt)
+    {
+        $fieldinfo = self::where('model_id', $modeId)->where('status', 1)->where('type', 'number')->where('jsonrule', '<>', '')->column('name,jsonrule,ifmain');
+        if (empty($fieldinfo)) return;
+        $dataMerge = array_merge($data, $dataExt);
+        foreach ($fieldinfo as $key => $vo) {
+            $vo['jsonrule']=str_replace('\/','/',$vo['jsonrule']);
+            $vo['jsonrule'] = json_decode($vo['jsonrule'],true)['number']['formula'];
+            //字段规则为空或值不为空时不做处理
+            if (empty($vo['jsonrule']) || !empty($dataMerge[$key])) continue;
+
+            $jsonrule = str_replace(['+', '-', '*', '/', '%'], ',', $vo['jsonrule']);
+            $fieldArr = explode(',', $jsonrule);
+            foreach ($fieldArr as $v) {
+                if (empty($v) || !preg_match("/^[a-zA-Z\s]+$/", $v) || !isset($dataMerge[$v])) continue 2;
+                $vo['jsonrule'] = preg_replace('/'.$v.'/', $dataMerge[$v], $vo['jsonrule'], 1);
+            }
+            $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
+            assert('${$dataKey}[$key]=' . $vo['jsonrule']);
+        }
     }
 
     //删除模型内容
