@@ -199,9 +199,8 @@ class ModelField extends \think\Model
         $id = intval($data['id']);
         unset($data['id']);
 
-        $dataAll = $this->dealModelPostData($modeId, $data, $dataExt, $ignoreField);
-
-        list($data, $dataExt) = $dataAll;
+        list($data, $dataExt) = $this->dealModelPostData($modeId, $data, $dataExt, $ignoreField);
+        $this->dealNumberFieldRule($modeId, $data, $dataExt);
         if (!isset($data['update_time'])) {
             $data['update_time'] = request()->time();
         }
@@ -320,7 +319,7 @@ class ModelField extends \think\Model
                 $vo['jsonrule'] = preg_replace('/'.$v.'/', $dataMerge[$v], $vo['jsonrule'], 1);
             }
             $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
-            assert('${$dataKey}[$key]=' . $vo['jsonrule']);
+            assert('${$dataKey}[$key]=' . $vo["jsonrule"]);
         }
     }
 
