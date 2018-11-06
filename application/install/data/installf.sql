@@ -732,6 +732,7 @@ CREATE TABLE `uk_model` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `ifsub` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否允许投稿',
+  `rules` varchar(1000) DEFAULT '' COMMENT '模型规则',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='内容模型表';
@@ -739,12 +740,12 @@ CREATE TABLE `uk_model` (
 -- ----------------------------
 -- Records of uk_model
 -- ----------------------------
-INSERT INTO `uk_model` VALUES ('1', '图集', 'photo', '2', 'column', '100', '1500017712', '1500017712', '0', '1');
-INSERT INTO `uk_model` VALUES ('2', '文章', 'article', '2', 'column', '100', '1500017779', '1500017779', '0', '1');
-INSERT INTO `uk_model` VALUES ('3', '产品', 'product', '2', 'column', '100', '1500017841', '1500017841', '0', '1');
-INSERT INTO `uk_model` VALUES ('4', '单页', 'page', '1', 'column', '100', '1500018204', '1500023940', '0', '1');
-INSERT INTO `uk_model` VALUES ('5', '留言本', 'guestbook', '1', 'column', '100', '1500018312', '1500018312', '1', '1');
-INSERT INTO `uk_model` VALUES ('6', '内容评论', 'comment', '1', 'independence', '100', '1501223252', '1501223252', '1', '1');
+INSERT INTO `uk_model` VALUES ('1', '图集', 'photo', '2', 'column', '100', '1500017712', '1500017712', '0', '', '1');
+INSERT INTO `uk_model` VALUES ('2', '文章', 'article', '2', 'column', '100', '1500017779', '1500017779', '0', '', '1');
+INSERT INTO `uk_model` VALUES ('3', '产品', 'product', '2', 'column', '100', '1500017841', '1500017841', '0', '', '1');
+INSERT INTO `uk_model` VALUES ('4', '单页', 'page', '1', 'column', '100', '1500018204', '1500023940', '0', '', '1');
+INSERT INTO `uk_model` VALUES ('5', '留言本', 'guestbook', '1', 'column', '100', '1500018312', '1500018312', '1', '', '1');
+INSERT INTO `uk_model` VALUES ('6', '内容评论', 'comment', '1', 'independence', '100', '1501223252', '1501223252', '1', '', '1');
 
 -- ----------------------------
 -- Table structure for uk_model_field
