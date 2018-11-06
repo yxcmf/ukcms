@@ -8,4 +8,4 @@
 后台地址:admin.php
 
 数据库升级：
-ALTER TABLE `uk_model` ADD COLUMN `rules` varchar(1000) DEFAULT '' COMMENT '模型规则' AFTER `ifsub`;
+ALTER TABLE `uk_model` ADD COLUMN `rules` varchar(2000) DEFAULT '' COMMENT '模型规则' AFTER `ifsub`;

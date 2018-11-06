@@ -31,7 +31,7 @@
                         <th width="70">类型</th>
                         <th width="80">用途</th>
                         <th width="160">创建时间</th>
-                        <th width="80">数据管理</th>
+                        <th width="110">数据管理</th>
                         <th width="60">投稿</th>
                         <th width="60">状态</th>
                         <th width="120">操作</th>
@@ -47,6 +47,7 @@
                         <td>
                             <a class="btn btn-xs btn-primary" href="{:url('importdata',['mid'=>$vo.id])}" data-toggle="tooltip" data-placement="top" data-original-title="导入模型数据"><i class="fa fa-plus-square"></i></a>
                             <a class="btn btn-xs btn-primary" href="{:url('exportdata',['mid'=>$vo.id])}" data-toggle="tooltip" data-placement="top" data-original-title="导出模型数据"><i class="fa fa-share"></i></a>
+                            <a class="btn btn-xs btn-primary" href="{:url('chartdata',['mid'=>$vo.id])}" data-toggle="tooltip" data-placement="top" data-original-title="模型数据图表"><i class="fa fa-bar-chart"></i></a>
                         </td>
                         <td>
                             {if $vo.ifsub}

@@ -307,12 +307,13 @@ class ModelField extends \think\Model
         if (empty($fieldinfo)) return;
         $dataMerge = array_merge($data, $dataExt);
         foreach ($fieldinfo as $key => $vo) {
-            $vo['jsonrule'] = str_replace('\/', '/', $vo['jsonrule']);
             $vo['jsonrule'] = json_decode($vo['jsonrule'], true)['number']['formula'];
+            $vo['jsonrule'] = str_replace('\/', '/', $vo['jsonrule']);
             //字段规则为空或值不为空时不做处理
             if (empty($vo['jsonrule']) || !empty($dataMerge[$key])) continue;
 
             $jsonrule = str_replace(['+', '-', '*', '/', '%'], ',', $vo['jsonrule']);
+            $jsonrule = str_replace(['(', ')'], '', $jsonrule);
             $fieldArr = explode(',', $jsonrule);
             foreach ($fieldArr as $v) {
                 if (empty($v) || $v == $key || !preg_match("/^[a-zA-Z\s]+$/", $v) || !isset($dataMerge[$v])) continue 2;

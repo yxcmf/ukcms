@@ -532,7 +532,7 @@ CREATE TABLE `uk_model` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `ifsub` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否允许投稿',
-  `rules` varchar(1000) DEFAULT '' COMMENT '模型规则',
+  `rules` varchar(2000) DEFAULT '' COMMENT '模型规则',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='内容模型表';
