@@ -138,7 +138,7 @@ EOF;
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
                 }
-                if (isset($data['jsonrule']['number']['formula'])) {
+                if (!empty($data['jsonrule']['number']['formula'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
             }
@@ -273,7 +273,7 @@ EOF;
                 if (isset($data['jsonrule']['file'])) {
                     unset($data['jsonrule']['file']);
                 }
-                if (isset($data['jsonrule']['number']['formula'])) {
+                if (!empty($data['jsonrule']['number']['formula'])) {
                     $data['jsonrule'] = json_encode($data['jsonrule'], true);
                 }
             }

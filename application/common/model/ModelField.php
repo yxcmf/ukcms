@@ -315,7 +315,7 @@ class ModelField extends \think\Model
             $jsonrule = str_replace(['+', '-', '*', '/', '%'], ',', $vo['jsonrule']);
             $fieldArr = explode(',', $jsonrule);
             foreach ($fieldArr as $v) {
-                if (empty($v) || !preg_match("/^[a-zA-Z\s]+$/", $v) || !isset($dataMerge[$v])) continue 2;
+                if (empty($v) || $v == $key || !preg_match("/^[a-zA-Z\s]+$/", $v) || !isset($dataMerge[$v])) continue 2;
                 $vo['jsonrule'] = preg_replace('/' . $v . '/', $dataMerge[$v], $vo['jsonrule'], 1);
             }
             $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
