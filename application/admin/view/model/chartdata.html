@@ -1,0 +1,62 @@
+{extend name="layout"/}
+{block name="css"}
+
+{/block}
+
+{block name="content"}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">'{$modelInfo.title}'模型数据图表</span>
+        <div class="panel-heading-controls">
+            <a class="btn btn-xs btn-primary" href="{:url('setchart',['mid'=>$mid])}"><i class="fa fa-cog"></i> 图表设置</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            {volist name="chatData" id="vo" key="k"}
+            <div class="col-md-6">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="panel-title">{$vo.title}</div>
+                    </div>
+                    <div class="panel-body">
+                        <canvas id="chart{$k}" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function () {
+        var colors = pxDemo.getRandomColors(15);
+
+        {volist name="chatData" id="vo" key="k1"}
+        var data = {
+            labels: {$vo.labels|raw},
+            datasets: [
+                {volist name="vo.datasets" id="v" key="k2"}
+                {
+                    label: '{$v.label}',
+                    data: {$v.data},
+                    borderWidth: 1,
+                    backgroundColor: pxUtil.hexToRgba(colors[{$k2}], 0.3),
+                    borderColor: colors[{$k2}],
+                    fill: false
+                },
+               {/volist}
+            ],
+        };
+
+        new Chart(document.getElementById('chart{$k1}').getContext("2d"), {
+            type: '{$vo.type}',
+            data: data,
+        });
+        {/volist}
+    });
+</script>
+{/block}

@@ -558,4 +558,111 @@ class Model extends Common
         }
     }
 
+    //模型数据图表
+    public function chartdata($mid = 0)
+    {
+        $modelId = intval($mid);
+        if (!$modelId) {
+            $this->error('mid参数错误~');
+        }
+        $modelInfo = Db::name('model')->where('id', $modelId)->field('table,title,chartrules')->find();
+        if (empty($modelInfo)) {
+            $this->error('模型不存在~');
+        }
+        if (!empty($modelInfo['chartrules'])) {
+            //获取单选字段所有选项
+            $chooseData = Db::name('model_field')->where('model_id', $modelId)->where('iffixed', 0)->whereIn('type', ['select', 'radio'])->order('orders')->column('name,title,options');
+            foreach ($chooseData as $key => $value) {
+                $chooseData[$key]['options'] = parse_attr($value['options']);
+            }
+            $chatData = [];//最终图表数据
+            $ruleArry = json_decode($modelInfo['chartrules'], true);
+            foreach ($ruleArry as $key => $vo) {
+                //图表标题
+                $chatData[$key]['title'] = $vo['title'];
+                //图表类型
+                $chatData[$key]['type'] = $vo['type'];
+                //x轴显示值
+                $chatData[$key]['labels'] = json_encode(array_values($chooseData[$vo['x']]['options']),JSON_UNESCAPED_UNICODE);
+                $labelKeys = array_keys($chooseData[$vo['x']]['options']);
+                //查询时间范围
+                if (!empty($vo['timefield']) && !empty($vo['timelimit'])) {
+                    $vo['timelimit'] = str_replace('\/', '/', $vo['timelimit']);
+                    $timeArr = explode('-', $vo['timelimit']);
+                    $starTime = strtotime(trim($timeArr[0]));
+                    $endTime = strtotime(trim($timeArr[1]));
+                    $where = $vo['timefield'] . '>' . $starTime . ' and ' . $vo['timefield'] . '<' . $endTime;
+                } else {
+                    $where = '';
+                }
+
+                if (empty($vo['item'])) {//一组数据
+                    $data = Db::name($modelInfo['table'])->where($where)->column($vo['x'] . ',' . $vo['y']);
+                    $chatData[$key]['datasets'][0]['label'] = $chooseData[$vo['x']]['title'];
+                    $chatData[$key]['datasets'][0]['data'] = json_encode($this->sortByKeys($labelKeys, $data),JSON_NUMERIC_CHECK );
+                } elseif ($vo['item'] != $vo['x']) {//多组数据
+                    foreach (array_keys($chooseData[$vo['item']]['options']) as $k => $v) {
+                        $data = Db::name($modelInfo['table'])->where($where)->where($vo['item'], $v)->column($vo['x'] . ',' . $vo['y']);
+                        $chatData[$key]['datasets'][$k]['label'] = $chooseData[$vo['item']]['options'][$v];
+                        $chatData[$key]['datasets'][$k]['data'] = json_encode($this->sortByKeys($labelKeys, $data),JSON_NUMERIC_CHECK );
+                    }
+                } else {
+                    continue;
+                }
+            }
+        }
+//        print_r($chatData);
+        $this->assign([
+            'chatData' => $chatData,
+            'modelInfo' => $modelInfo,
+            'mid' => $modelId,
+        ]);
+        return $this->fetch();
+    }
+
+    protected function sortByKeys($keys = [], $arr = [])
+    {
+        $orderedArr = [];
+        if (!empty($keys) && !empty($arr)) {
+            foreach ($keys as $k) {
+                $orderedArr[] = $arr[$k];
+            }
+        }
+        return $orderedArr;
+    }
+
+    //设置模型数据图表数据来源字段
+    public function setchart($mid = 0)
+    {
+        $modelId = intval($mid);
+        if (!$modelId) {
+            $this->error('mid参数错误~');
+        }
+        $modelInfo = Db::name('model')->where('id', $modelId)->field('table,title,chartrules')->find();
+        if ($this->request->isPost()) {
+            if (!empty($_POST['chart'])) {
+                $data = [];
+                foreach ($_POST['chart'] as $vo) {
+                    if (!empty($vo['title']) && !empty($vo['y']) && !empty($vo['x']) && !empty($vo['type']))
+                        $data[] = $vo;
+                }
+            }
+            Db::name('model')->where('id', $modelId)->update(['chartrules' => empty($data) ? '' : json_encode($data, true)]);
+            $this->success('修改成功~', url('setchart', ['mid' => $mid]));
+        } else {
+            $chooseFields = Db::name('model_field')->where('model_id', $modelId)->where('iffixed', 0)->whereIn('type', ['select', 'radio'])->order('orders')->column('name,title');
+            $numFields = Db::name('model_field')->where('model_id', $modelId)->where('iffixed', 0)->where('type', 'number')->order('orders')->column('name,title');
+            $timeFields = Db::name('model_field')->where('model_id', $modelId)->where('type', 'datetime')->order('orders')->column('name,title');
+            $modelInfo['chartrules'] = json_decode($modelInfo['chartrules'], true);
+            $this->assign([
+                'chooseFields' => $chooseFields,
+                'numFields' => $numFields,
+                'timeFields' => $timeFields,
+                'modelInfo' => $modelInfo,
+                'mid' => $modelId,
+            ]);
+            return $this->fetch();
+        }
+    }
+
 }

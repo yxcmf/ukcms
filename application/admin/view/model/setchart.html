@@ -1,0 +1,244 @@
+{extend name="layout"/}
+{block name="css"}
+<style>
+    .sortablejs ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .sortablejs li {
+        margin-bottom: 8px;
+        list-style: none;
+    }
+
+    .sortablejs-inline li {
+        display: inline-block;
+    }
+
+    .panel-title {
+        cursor: pointer;
+    }
+</style>
+{/block}
+
+{block name="content"}
+{if empty($numFields)}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <i class="fa fa-warning"></i> 模型没有数值字段
+</div>
+{/if}
+{if empty($chooseFields)}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <i class="fa fa-warning"></i> 模型没有单选字段
+</div>
+{/if}
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title">'{$modelInfo.title}'模型图表设置</span>
+        <div class="panel-heading-controls">
+            <a class="btn btn-xs btn-primary" href="{:url('chartdata',['mid'=>$mid])}"><i class="fa fa-reply"></i> 返回图表</a>
+        </div>
+    </div>
+    <div class="panel-body sortablejs">
+        <form method="post" action="" id="chartrule">
+            <ul id="sortablejs">
+                {volist name="modelInfo.chartrules" id="item" }
+                <li>
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <span class="panel-title"><i class="fa fa-unsorted m-r-1"></i>拖动排序</span>
+                            <div class="panel-heading-controls">
+                                <div class="btn btn-xs removerule"><i class="fa fa-minus"></i> 删除</div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-4 form-group">
+                                    <label style="clear:both; display: block">图表名称*</label>
+                                    <input type="text" class="form-control" name="chart[][title]" placeholder="请输入自定义图表名称"
+                                           value="{$item.title}">
+                                </div>
+                                <div class="col-sm-6 col-md-4 form-group">
+                                    <label>Y轴数值字段*</label>
+                                    <select name="chart[][y]" class="form-control">
+                                        {volist name="numFields" id="vo" }
+                                        <option {if $item.y==$key}selected{/if} value="{$key}">{$vo}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-4 form-group">
+                                    <label>X轴单选字段*</label>
+                                    <select name="chart[][x]" class="form-control">
+                                        {volist name="chooseFields" id="vo" }
+                                        <option {if $item.x==$key}selected{/if} value="{$key}">{$vo}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-4 form-group">
+                                    <label>数据项单选字段</label>
+                                    <select name="chart[][item]" class="form-control">
+                                        <option value="">=不设置=</option>
+                                        {volist name="chooseFields" id="vo" }
+                                        <option {if $item.item==$key}selected{/if} value="{$key}">{$vo}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-4 form-group">
+                                    <label>图表类型*</label>
+                                    <select name="chart[][type]" class="form-control">
+                                        <option {if $item.type=='line'}selected{/if} value="line">线性图</option>
+                                        <option {if $item.type=='bar'}selected{/if} value="bar">柱状图</option>
+                                        <option {if $item.type=='radar'}selected{/if} value="radar">雷达图</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-4 form-group">
+                                    <label>时间字段范围</label>
+                                    <select name="chart[][timefield]" class="form-control">
+                                        {volist name="timeFields" id="vo" }
+                                        <option {if $item.timefield==$key}selected{/if} value="{$key}">{$vo}</option>
+                                        {/volist}
+                                    </select>
+                                    <input type="text" class="form-control timelimit" name="chart[][timelimit]"
+                                           placeholder="选择时间范围,留空则不限时间" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+            <button type="button" class="btn  btn-block" id="addrule"><i class="fa fa-plus"></i> 添加图表</button>
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-primary">保存设置</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="temple" style="display:none">
+    <li>
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title"><i class="fa fa-unsorted m-r-1"></i>拖动排序</span>
+                <div class="panel-heading-controls">
+                    <div class="btn btn-xs removerule"><i class="fa fa-minus"></i> 删除</div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 form-group">
+                        <label style="clear:both; display: block">图表名称*</label>
+                        <input type="text" class="form-control" name="chart[][title]" placeholder="请输入自定义图表名称"
+                               value="">
+                    </div>
+                    <div class="col-sm-6 col-md-4 form-group">
+                        <label>Y轴数值字段*</label>
+                        <select name="chart[][y]" class="form-control">
+                            {volist name="numFields" id="vo" }
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="col-sm-6 col-md-4 form-group">
+                        <label>X轴单选字段*</label>
+                        <select name="chart[][x]" class="form-control">
+                            {volist name="chooseFields" id="vo" }
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="col-sm-6 col-md-4 form-group">
+                        <label>数据项单选字段</label>
+                        <select name="chart[][item]" class="form-control">
+                            <option value="">=不设置=</option>
+                            {volist name="chooseFields" id="vo" }
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="col-sm-6 col-md-4 form-group">
+                        <label>图表类型*</label>
+                        <select name="chart[][type]" class="form-control">
+                            <option value="line">线性图</option>
+                            <option value="bar">柱状图</option>
+                            <option value="radar">雷达图</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6 col-md-4 form-group">
+                        <label>时间字段范围</label>
+                        <select name="chart[][timefield]" class="form-control">
+                            {volist name="timeFields" id="vo" }
+                              <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                        <input type="text" class="form-control timelimit" name="chart[][timelimit]"
+                               placeholder="选择时间范围,留空则不限时间" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    function eventinit(dom) {
+        dom.find('.timelimit').daterangepicker({
+            timePicker: true, //是否显示小时和分钟
+            timePickerIncrement: 1, //时间的增量，单位为分钟
+            timePicker12Hour: false, //是否使用12小时制来显示时间
+            locale: {
+                format: 'YYYY/MM/DD HH:mm:ss',
+                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                applyLabel: '确定',
+                cancelLabel: '取消',
+                firstDay: 1
+            }
+        }, function (start, end, label) {
+        }).on('cancel.daterangepicker', function () {
+            $(this).val('');
+        }).val('');
+
+        dom.find('.removerule').click(function () {
+            var deldom = $(this).parents('li');
+            bootbox.confirm({
+                message: '确认删除吗？删除后不可恢复',
+                className: 'bootbox-sm',
+                callback: function (result) {
+                    if (result) {
+                        deldom.remove();
+                    }
+                }
+            });
+        });
+    }
+
+    $(function () {
+        $('#sortablejs').sortable({
+            animation: 150,
+            handle: '.panel-title',
+        });
+        eventinit($('#sortablejs'));
+        $('#addrule').click(function () {
+            var domnum = $('#sortablejs').children('li').length;
+            var temple = $('#temple').html();
+            // temple = temple.replace(/chart\[\]/g, "chart[" + domnum + "]");
+            $('#sortablejs').append(temple);
+            eventinit($('#sortablejs').find('li').eq(domnum))
+        });
+        $("#chartrule").submit(function () {
+            $(this).find("li").each(function () {
+                var liindex=$(this).index();
+                $(this).find("input,select").each(function () {
+                    var iname = $(this).attr('name');
+                    $(this).attr('name', iname.replace("[]","[" + liindex + "]"));
+                });
+            });
+        });
+    });
+</script>
+{/block}
