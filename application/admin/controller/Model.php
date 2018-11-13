@@ -650,9 +650,26 @@ class Model extends Common
             Db::name('model')->where('id', $modelId)->update(['chartrules' => empty($data) ? '' : json_encode($data, true)]);
             $this->success('修改成功~', url('setchart', ['mid' => $mid]));
         } else {
-            $chooseFields = Db::name('model_field')->where('model_id', $modelId)->where('iffixed', 0)->whereIn('type', ['select', 'radio'])->order('orders')->column('name,title');
-            $numFields = Db::name('model_field')->where('model_id', $modelId)->where('iffixed', 0)->where('type', 'number')->order('orders')->column('name,title');
-            $timeFields = Db::name('model_field')->where('model_id', $modelId)->where('type', 'datetime')->order('orders')->column('name,title');
+            $chooseFields = Db::name('model_field')
+                ->where('model_id', $modelId)
+                ->where('iffixed', 0)
+                ->where('ifmain', 1)
+                ->whereIn('type', ['select', 'radio'])
+                ->order('orders')
+                ->column('name,title');
+            $numFields = Db::name('model_field')
+                ->where('model_id', $modelId)
+                ->where('iffixed', 0)
+                ->where('ifmain', 1)
+                ->where('type', 'number')
+                ->order('orders')
+                ->column('name,title');
+            $timeFields = Db::name('model_field')
+                ->where('model_id', $modelId)
+                ->where('ifmain', 1)
+                ->where('type', 'datetime')
+                ->order('orders')
+                ->column('name,title');
             $modelInfo['chartrules'] = json_decode($modelInfo['chartrules'], true);
             $this->assign([
                 'chooseFields' => $chooseFields,

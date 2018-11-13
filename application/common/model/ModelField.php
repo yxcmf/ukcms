@@ -321,6 +321,7 @@ class ModelField extends \think\Model
             }
             $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
             try {
+                //php7.2不兼容
                 assert('${$dataKey}[$key]=' . $vo["jsonrule"]);
             } catch (\Exception $ex) {
                 ${$dataKey}[$key] = empty($vo['value']) ? 0 : $vo['value'];
