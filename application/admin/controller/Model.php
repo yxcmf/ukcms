@@ -571,10 +571,12 @@ class Model extends Common
         }
         if (!empty($modelInfo['chartrules'])) {
             //获取单选字段所有选项
-            $chooseData = Db::name('model_field')->where('model_id', $modelId)->where('iffixed', 0)->whereIn('type', ['select', 'radio'])->order('orders')->column('name,title,options');
+            $chooseData = Db::name('model_field')->where('model_id', $modelId)->where('ifmain', 1)->where('iffixed', 0)->whereIn('type', ['select', 'radio'])->order('orders')->column('name,title,options');
             foreach ($chooseData as $key => $value) {
                 $chooseData[$key]['options'] = parse_attr($value['options']);
             }
+            $numberData = Db::name('model_field')->where('model_id', $modelId)->where('ifmain', 1)->where('type', 'number')->order('orders')->column('name,title');
+
             $chatData = [];//最终图表数据
             $ruleArry = json_decode($modelInfo['chartrules'], true);
             foreach ($ruleArry as $key => $vo) {
@@ -583,7 +585,7 @@ class Model extends Common
                 //图表类型
                 $chatData[$key]['type'] = $vo['type'];
                 //x轴显示值
-                $chatData[$key]['labels'] = json_encode(array_values($chooseData[$vo['x']]['options']),JSON_UNESCAPED_UNICODE);
+                $chatData[$key]['labels'] = json_encode(array_values($chooseData[$vo['x']]['options']), JSON_UNESCAPED_UNICODE);
                 $labelKeys = array_keys($chooseData[$vo['x']]['options']);
                 //查询时间范围
                 if (!empty($vo['timefield']) && !empty($vo['timelimit'])) {
@@ -595,16 +597,30 @@ class Model extends Common
                 } else {
                     $where = '';
                 }
-
+                //统计数据标题
+                $chatData[$key]['stat']['title']['all'] = $numberData[$vo['y']];
                 if (empty($vo['item'])) {//一组数据
                     $data = Db::name($modelInfo['table'])->where($where)->column($vo['x'] . ',' . $vo['y']);
+                    $chatData[$key]['stat']['max'] = max($data);
+                    $chatData[$key]['stat']['min'] = min($data);
                     $chatData[$key]['datasets'][0]['label'] = $chooseData[$vo['x']]['title'];
-                    $chatData[$key]['datasets'][0]['data'] = json_encode($this->sortByKeys($labelKeys, $data),JSON_NUMERIC_CHECK );
+                    $chatData[$key]['datasets'][0]['data'] = json_encode($this->sortByKeys($labelKeys, $data), JSON_NUMERIC_CHECK);
                 } elseif ($vo['item'] != $vo['x']) {//多组数据
                     foreach (array_keys($chooseData[$vo['item']]['options']) as $k => $v) {
                         $data = Db::name($modelInfo['table'])->where($where)->where($vo['item'], $v)->column($vo['x'] . ',' . $vo['y']);
                         $chatData[$key]['datasets'][$k]['label'] = $chooseData[$vo['item']]['options'][$v];
-                        $chatData[$key]['datasets'][$k]['data'] = json_encode($this->sortByKeys($labelKeys, $data),JSON_NUMERIC_CHECK );
+                        $chatData[$key]['datasets'][$k]['data'] = json_encode($this->sortByKeys($labelKeys, $data), JSON_NUMERIC_CHECK);
+
+                        $nowMax = max($data);
+                        $nowMin = min($data);
+                        if (!isset($chatData[$key]['stat']['max']) || (isset($chatData[$key]['stat']['max']) && $nowMax > $chatData[$key]['stat']['max'])) {
+                            $chatData[$key]['stat']['max'] = $nowMax;
+                            $chatData[$key]['stat']['title']['max'] = $chooseData[$vo['item']]['options'][$v];
+                        }
+                        if (!isset($chatData[$key]['stat']['min']) || (isset($chatData[$key]['stat']['min']) && $nowMin < $chatData[$key]['stat']['min'])) {
+                            $chatData[$key]['stat']['min'] = $nowMin;
+                            $chatData[$key]['stat']['title']['min'] = $chooseData[$vo['item']]['options'][$v];
+                        }
                     }
                 } else {
                     continue;

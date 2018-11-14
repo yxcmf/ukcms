@@ -20,6 +20,16 @@
                         <div class="panel-title">{$vo.title}</div>
                     </div>
                     <div class="panel-body">
+                        <div class="m-b-4">
+                            <button type="button" class="btn btn-outline btn-3d">
+                                <span class="btn-label right text-warning">{$vo.stat.max}</span>
+                                {$vo.stat.title.all}最大值{if isset($vo.stat.title.max)}是{$vo.stat.title.min}的{/if}
+                            </button>
+                            <button type="button" class="btn btn-outline btn-3d">
+                                <span class="btn-label right text-warning">{$vo.stat.min}</span>
+                                {$vo.stat.title.all}最小值{if isset($vo.stat.title.min)}是{$vo.stat.title.min}的{/if}
+                            </button>
+                        </div>
                         <canvas id="chart{$k}" height="250"></canvas>
                     </div>
                 </div>
