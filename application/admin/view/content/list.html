@@ -43,7 +43,7 @@
                         </th>
                         <th>ID</th>
                         {volist name="$fieldArr" id="vo"}
-                        <th>{$vo.title}</th>
+                        <th>{:htmlspecialchars_decode($vo[$v.name])}</th>
                         {/volist}
                        {if !empty($places)}<th width="70"><div id="locat" class="btn btn-sm btn-default" data-state="0">推荐位</div></th>{/if}<th>发布人</th><th width="60">点击量</th><th width="160">更新时间</th><th width="50">排序</th><th width="60">状态</th><th width="100">操作</th>
                     </tr>

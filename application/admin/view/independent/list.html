@@ -60,7 +60,7 @@
                         </td>
                         <td>{$vo.id}</td>
                          {volist name="$fieldArr" id="v"}
-                               <td>{$vo[$v.name]}</td>
+                               <td>{:htmlspecialchars_decode($vo[$v.name])}</td>
                          {/volist}
                         <td>{:date('Y-m-d H:i:s',$vo.update_time)}</td>
                         <td><table class="editable-table" width="100%" height="100%"><tr><td>{$vo.orders}</td></tr></table></td>
