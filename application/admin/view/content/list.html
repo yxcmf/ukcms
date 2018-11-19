@@ -43,7 +43,7 @@
                         </th>
                         <th>ID</th>
                         {volist name="$fieldArr" id="vo"}
-                        <th>{:htmlspecialchars_decode($vo[$v.name])}</th>
+                        <th>{$vo.title}</th>
                         {/volist}
                        {if !empty($places)}<th width="70"><div id="locat" class="btn btn-sm btn-default" data-state="0">推荐位</div></th>{/if}<th>发布人</th><th width="60">点击量</th><th width="160">更新时间</th><th width="50">排序</th><th width="60">状态</th><th width="100">操作</th>
                     </tr>
@@ -59,7 +59,7 @@
                         {volist name="fieldArr" id="v"}
                         {if $i==1}
                         <td><a href="{if $columnList[$vo['cname']]['type']==2}{:appUrl('index',$vo['cname'].'/'.$vo['id'])}{else}{:appUrl('index',$vo['cname'])}{/if}"
-                               target="_blank" >{$vo[$v.name]}</a></td>
+                               target="_blank" >{:htmlspecialchars_decode($vo[$v.name])}</a></td>
                         {else}
                         <td>{$vo[$v.name]}</td>
                         {/if}

@@ -33,7 +33,7 @@ CREATE TABLE `uk_admin_menu` (
   `ifsystem` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否为系统菜单',
   `ifvisible` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=140 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
+) ENGINE=MyISAM AUTO_INCREMENT=142 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
 
 -- ----------------------------
 -- Records of uk_admin_menu
@@ -173,6 +173,8 @@ INSERT INTO `uk_admin_menu` VALUES ('136', '100', '编辑独立内容', 'fa fa-e
 INSERT INTO `uk_admin_menu` VALUES ('137', '100', '删除独立内容', 'fa fa-close', '1', 'admin/independent/delete', '_self', '1500017712', '1523772682', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('138', '100', '独立内容状态设置', 'fa fa-toggle-on', '1', 'admin/independent/setstate', '_self', '1500017712', '1523772682', '100', '0', '0');
 INSERT INTO `uk_admin_menu` VALUES ('139', '100', '独立模型内容排序', 'fa fa-long-arrow-down', '1', 'admin/independent/changeorder', '_self', '1500017712', '1523772682', '100', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES	('140', '36', '模型数据图表', 'fa fa-bar-chart-o', '1', 'admin/model/chartdata', '_self', '1541556681', '1541556732', '17', '0', '0');
+INSERT INTO `uk_admin_menu` VALUES	('141', '36', '模型图表设置', 'fa fa-wrench', '1', 'admin/model/setchart', '_self', '1541556681', '1541556732', '18', '0', '0');
 -- ----------------------------
 -- Table structure for uk_admin_role
 -- ----------------------------
@@ -532,7 +534,7 @@ CREATE TABLE `uk_model` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `ifsub` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否允许投稿',
-  `rules` varchar(2000) DEFAULT '' COMMENT '模型规则',
+  `chartrules` varchar(2000) DEFAULT '' COMMENT '模型图表规则',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='内容模型表';
