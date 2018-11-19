@@ -4,6 +4,7 @@ namespace app\common\model;
 
 use think\Db;
 use think\Validate;
+use evals\EvalMath;
 
 /**
  * 通用字段模型
@@ -321,8 +322,8 @@ class ModelField extends \think\Model
             }
             $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
             try {
-                //php7.2不兼容
-                assert('${$dataKey}[$key]=' . $vo["jsonrule"]);
+                $EvalMath = new EvalMath;
+                ${$dataKey}[$key] = $EvalMath->evaluate($vo["jsonrule"]);
             } catch (\Exception $ex) {
                 ${$dataKey}[$key] = empty($vo['value']) ? 0 : $vo['value'];
             }
