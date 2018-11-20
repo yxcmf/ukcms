@@ -166,8 +166,8 @@ class ModelField extends \think\Model
         }
         $data['uid'] = session('user_info.uid') ?: 0;
 
-        list($data, $dataExt) = $this->dealModelPostData($modeId, $data, $dataExt);
         $this->dealNumberFieldRule($modeId, $data, $dataExt);
+        list($data, $dataExt) = $this->dealModelPostData($modeId, $data, $dataExt);
         if (!isset($data['create_time'])) {
             $data['create_time'] = request()->time();
         }
@@ -200,8 +200,8 @@ class ModelField extends \think\Model
         $id = intval($data['id']);
         unset($data['id']);
 
-        list($data, $dataExt) = $this->dealModelPostData($modeId, $data, $dataExt, $ignoreField);
         $this->dealNumberFieldRule($modeId, $data, $dataExt);
+        list($data, $dataExt) = $this->dealModelPostData($modeId, $data, $dataExt, $ignoreField);
         if (!isset($data['update_time'])) {
             $data['update_time'] = request()->time();
         }
@@ -313,12 +313,18 @@ class ModelField extends \think\Model
             //字段规则为空或值不为空时不做处理
             if (empty($vo['jsonrule']) || !empty($dataMerge[$key])) continue;
 
-            $jsonrule = str_replace(['+', '-', '*', '/', '%'], ',', $vo['jsonrule']);
+            $jsonrule = str_replace(['+', '-', '*', '/', '%', '^'], ',', $vo['jsonrule']);
             $jsonrule = str_replace(['(', ')'], '', $jsonrule);
             $fieldArr = explode(',', $jsonrule);
             foreach ($fieldArr as $v) {
                 if (empty($v) || $v == $key || !preg_match("/^[a-zA-Z0-9\s]+$/", $v) || !isset($dataMerge[$v])) continue 2;
-                $vo['jsonrule'] = preg_replace('/' . $v . '/', $dataMerge[$v], $vo['jsonrule'], 1);
+                if(is_numeric($dataMerge[$v])){
+                    $vo['jsonrule'] = preg_replace('/' . $v . '/', $dataMerge[$v], $vo['jsonrule'], 1);
+                }elseif(is_array($dataMerge[$v])){
+                    $vo['jsonrule'] = preg_replace('/' . $v . '/', count($dataMerge[$v]), $vo['jsonrule'], 1);
+                }else{
+                    continue 2;
+                }
             }
             $dataKey = $vo['ifmain'] ? 'data' : 'dataExt';
             try {
