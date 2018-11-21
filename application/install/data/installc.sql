@@ -33,7 +33,7 @@ CREATE TABLE `uk_admin_menu` (
   `ifsystem` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否为系统菜单',
   `ifvisible` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=142 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8 COMMENT='后台菜单表';
 
 -- ----------------------------
 -- Records of uk_admin_menu
@@ -190,7 +190,7 @@ CREATE TABLE `uk_admin_role` (
   `orders` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '是否能登陆',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 -- ----------------------------
 -- Records of uk_admin_role
@@ -218,7 +218,7 @@ CREATE TABLE `uk_admin_user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `usename` (`username`),
   KEY `groupid` (`groupid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='管理员信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='管理员信息表';
 
 -- ----------------------------
 -- Records of uk_admin_user
@@ -234,7 +234,7 @@ CREATE TABLE `uk_app` (
   `status` tinyint(2) NOT NULL DEFAULT '0',
   `installstate` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='应用管理表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='应用管理表';
 
 -- ----------------------------
 -- Records of uk_app
@@ -264,7 +264,7 @@ CREATE TABLE `uk_attachment` (
   `orders` int(5) NOT NULL DEFAULT '100' COMMENT '排序',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='附件表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='附件表';
 
 -- ----------------------------
 -- Records of uk_attachment
@@ -286,7 +286,7 @@ CREATE TABLE `uk_behavior` (
   `status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='行为表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为表';
 
 -- ----------------------------
 -- Records of uk_behavior
@@ -319,7 +319,7 @@ CREATE TABLE `uk_column` (
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态:1显示0隐藏',
   PRIMARY KEY (`id`),
   FULLTEXT KEY `path` (`path`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='前台栏目表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台栏目表';
 
 -- ----------------------------
 -- Records of uk_column
@@ -343,7 +343,7 @@ CREATE TABLE `uk_config` (
   `orders` int(4) NOT NULL DEFAULT '100' COMMENT '排序',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '状态：0禁用，1启用',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='配置表';
 
 -- ----------------------------
 -- Records of uk_config
@@ -385,7 +385,7 @@ CREATE TABLE `uk_domain` (
   `update_time` int(11) NOT NULL,
   `status` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='域名信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='域名信息表';
 
 -- ----------------------------
 -- Records of uk_domain
@@ -405,7 +405,7 @@ CREATE TABLE `uk_field_type` (
   `vrule` varchar(256) NOT NULL DEFAULT '' COMMENT '验证规则',
   PRIMARY KEY (`name`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='字段类型表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字段类型表';
 
 -- ----------------------------
 -- Records of uk_field_type
@@ -443,7 +443,7 @@ CREATE TABLE `uk_hook` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='钩子表 ';
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='钩子表 ';
 
 -- ----------------------------
 -- Records of uk_hook
@@ -472,7 +472,7 @@ CREATE TABLE `uk_hook_behavior` (
   `orders` int(8) NOT NULL DEFAULT '0',
   `status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='钩子行为关系表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='钩子行为关系表';
 
 -- ----------------------------
 -- Records of uk_hook_behavior
@@ -496,7 +496,7 @@ CREATE TABLE `uk_link` (
   `orders` int(5) NOT NULL DEFAULT '100' COMMENT '排序',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='广告位表 ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告位表 ';
 
 -- ----------------------------
 -- Records of uk_link
@@ -514,7 +514,7 @@ CREATE TABLE `uk_link_group` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='广告位分组表 ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告位分组表 ';
 
 -- ----------------------------
 -- Records of uk_link_group
@@ -537,7 +537,7 @@ CREATE TABLE `uk_model` (
   `chartrules` varchar(2000) DEFAULT '' COMMENT '模型图表规则',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='内容模型表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容模型表';
 
 -- ----------------------------
 -- Records of uk_model
@@ -568,7 +568,7 @@ CREATE TABLE `uk_model_field` (
   `orders` int(5) NOT NULL DEFAULT '100' COMMENT '排序',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`name`,`model_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='模型字段表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模型字段表';
 
 -- ----------------------------
 -- Records of uk_model_field
@@ -587,7 +587,7 @@ CREATE TABLE `uk_place` (
   `orders` int(5) NOT NULL DEFAULT '100' COMMENT '排序',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='推荐位表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='推荐位表';
 
 -- ----------------------------
 -- Records of uk_place
@@ -606,4 +606,4 @@ CREATE TABLE `uk_tag` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `title` (`title`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='标签表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='标签表';
