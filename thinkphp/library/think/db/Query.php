@@ -326,7 +326,7 @@ class Query
      */
     public function execute($sql, $bind = [])
     {
-        return $this->connection->execute($sql, $bind);
+        return $this->connection->execute($sql, $bind, $this);
     }
 
     /**
@@ -628,9 +628,6 @@ class Query
             $result = (float) $result;
         }
 
-        // 查询完成后清空聚合字段信息
-        $this->removeOption('field');
-
         return $result;
     }
 
@@ -656,9 +653,9 @@ class Query
                 $query->fetchSql(true);
             }
 
-            $count = $query->aggregate('COUNT', '*');
+            $count = $query->aggregate('COUNT', '*', true);
         } else {
-            $count = $this->aggregate('COUNT', $field);
+            $count = $this->aggregate('COUNT', $field, true);
         }
 
         return is_string($count) ? $count : (int) $count;
@@ -1008,11 +1005,13 @@ class Query
         if ($tableName) {
             // 添加统一的前缀
             $prefix = $prefix ?: $tableName;
-            foreach ($field as $key => $val) {
-                if (is_numeric($key)) {
-                    $val = $prefix . '.' . $val . ($alias ? ' AS ' . $alias . $val : '');
+            foreach ($field as $key => &$val) {
+                if (is_numeric($key) && $alias) {
+                    $field[$prefix . '.' . $val] = $alias . $val;
+                    unset($field[$key]);
+                } elseif (is_numeric($key)) {
+                    $val = $prefix . '.' . $val;
                 }
-                $field[$key] = $val;
             }
         }
 
@@ -1462,7 +1461,11 @@ class Query
     protected function bindParams(&$sql, array $bind = [])
     {
         foreach ($bind as $key => $value) {
-            $name = $this->bind($value);
+            if (is_array($value)) {
+                $name = $this->bind($value[0], $value[1], isset($value[2]) ? $value[2] : null);
+            } else {
+                $name = $this->bind($value);
+            }
 
             if (is_numeric($key)) {
                 $sql = substr_replace($sql, ':' . $name, strpos($sql, '?'), 1);
@@ -1509,7 +1512,7 @@ class Query
             return $this;
         }
 
-        if (is_string($field) && !empty($this->options['via']) && !strpos($field, '.')) {
+        if (is_string($field) && !empty($this->options['via']) && false === strpos($field, '.')) {
             $field = $this->options['via'] . '.' . $field;
         }
 
@@ -2447,14 +2450,15 @@ class Query
      * @access public
      * @param  mixed   $value 绑定变量值
      * @param  integer $type  绑定类型
+     * @param  string  $name  绑定名称
      * @return $this|string
      */
-    public function bind($value, $type = PDO::PARAM_STR)
+    public function bind($value, $type = PDO::PARAM_STR, $name = null)
     {
         if (is_array($value)) {
             $this->bind = array_merge($this->bind, $value);
         } else {
-            $name = 'ThinkBind_' . (count($this->bind) + 1);
+            $name = $name ?: 'ThinkBind_' . (count($this->bind) + 1) . '_';
 
             $this->bind[$name] = [$value, $type];
             return $name;
@@ -3543,6 +3547,10 @@ class Query
      */
     protected function parseView(&$options)
     {
+        if (!isset($options['map'])) {
+            return;
+        }
+
         foreach (['AND', 'OR'] as $logic) {
             if (isset($options['where'][$logic])) {
                 foreach ($options['where'][$logic] as $key => $val) {
@@ -3562,7 +3570,7 @@ class Query
                 $options['order'] = explode(',', $options['order']);
             }
             foreach ($options['order'] as $key => $val) {
-                if (is_numeric($key)) {
+                if (is_numeric($key) && is_string($val)) {
                     if (strpos($val, ' ')) {
                         list($field, $sort) = explode(' ', $val);
                         if (array_key_exists($field, $options['map'])) {
@@ -3654,7 +3662,7 @@ class Query
             $options['field'] = '*';
         }
 
-        foreach (['data', 'order'] as $name) {
+        foreach (['data', 'order', 'join', 'union'] as $name) {
             if (!isset($options[$name])) {
                 $options[$name] = [];
             }
@@ -3674,7 +3682,7 @@ class Query
             $options['master'] = true;
         }
 
-        foreach (['join', 'union', 'group', 'having', 'limit', 'force', 'comment'] as $name) {
+        foreach (['group', 'having', 'limit', 'force', 'comment'] as $name) {
             if (!isset($options[$name])) {
                 $options[$name] = '';
             }

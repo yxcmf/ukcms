@@ -299,9 +299,9 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             call_user_func_array([$this, 'base'], [ & $query]);
         }
 
-        $globalScope = is_array($useBaseQuery) && $useBaseQuery ?: $this->globalScope;
+        $globalScope = is_array($useBaseQuery) && $useBaseQuery ? $useBaseQuery : $this->globalScope;
 
-        if ($globalScope) {
+        if ($globalScope && false !== $useBaseQuery) {
             $query->scope($globalScope);
         }
 
@@ -392,11 +392,12 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * 设置数据是否存在
      * @access public
      * @param  bool $exists
-     * @return void
+     * @return $this
      */
     public function exists($exists)
     {
         $this->exists = $exists;
+        return $this;
     }
 
     /**

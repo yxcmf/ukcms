@@ -199,7 +199,6 @@ class View
             $content = call_user_func_array($this->filter, [$content]);
         }
 
-        define('__MESSAGE__', true);
         return isEngine() ? $content . base64_decode('Q29weXJpZ2h0IMKpMjAxNy0yMDE4IHd3dy51a2Ntcy5jb20gQWxsIHJpZ2h0cyByZXNlcnZlZC4=') : $content;
     }
 

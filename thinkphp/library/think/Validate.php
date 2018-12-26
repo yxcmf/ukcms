@@ -331,10 +331,10 @@ class Validate
      * 移除某个字段的验证规则
      * @access public
      * @param  string|array  $field  字段名
-     * @param  mixed         $rule   验证规则 true 移除所有规则
+     * @param  mixed         $rule   验证规则 null 移除所有规则
      * @return $this
      */
-    public function remove($field, $rule = true)
+    public function remove($field, $rule = null)
     {
         if (is_array($field)) {
             foreach ($field as $key => $rule) {
@@ -419,7 +419,7 @@ class Validate
                 continue;
             }
 
-            // 获取数据 支持二维数组
+            // 获取数据 支持多维数组
             $value = $this->getDataValue($data, $key);
 
             // 字段验证
@@ -516,7 +516,9 @@ class Validate
             $rules = array_merge($rules, $this->append[$field]);
         }
 
-        $i = 0;
+        $i      = 0;
+        $result = true;
+
         foreach ($rules as $key => $rule) {
             if ($rule instanceof \Closure) {
                 $result = call_user_func_array($rule, [$value, $data]);
@@ -527,17 +529,18 @@ class Validate
 
                 if (isset($this->append[$field]) && in_array($info, $this->append[$field])) {
 
-                } elseif (isset($this->remove[$field]) && in_array($info, $this->remove[$field])) {
+                } elseif (array_key_exists($field, $this->remove) && (null === $this->remove[$field] || in_array($info, $this->remove[$field]))) {
                     // 规则已经移除
                     $i++;
                     continue;
                 }
 
-                if ('must' == $info || 0 === strpos($info, 'require') || (!is_null($value) && '' !== $value)) {
-                    // 验证类型
-                    $callback = isset(self::$type[$type]) ? self::$type[$type] : [$this, $type];
+                // 验证类型
+                if (isset(self::$type[$type])) {
+                    $result = call_user_func_array(self::$type[$type], [$value, $rule, $data, $field, $title]);
+                } elseif ('must' == $info || 0 === strpos($info, 'require') || (!is_null($value) && '' !== $value)) {
                     // 验证数据
-                    $result = call_user_func_array($callback, [$value, $rule, $data, $field, $title]);
+                    $result = call_user_func_array([$this, $type], [$value, $rule, $data, $field, $title]);
                 } else {
                     $result = true;
                 }
@@ -548,7 +551,7 @@ class Validate
                 if (!empty($msg[$i])) {
                     $message = $msg[$i];
                     if (is_string($message) && strpos($message, '{%') === 0) {
-                        $message = Lang::get(substr($message, 2, -1));
+                        $message = facade\Lang::get(substr($message, 2, -1));
                     }
                 } else {
                     $message = $this->getRuleMsg($field, $title, $info, $rule);
@@ -999,10 +1002,14 @@ class Validate
             // 支持多个字段验证
             $fields = explode('^', $key);
             foreach ($fields as $key) {
-                $map[] = [$key, '=', $data[$key]];
+                if (isset($data[$key])) {
+                    $map[] = [$key, '=', $data[$key]];
+                }
             }
-        } else {
+        } elseif (isset($data[$field])) {
             $map[] = [$key, '=', $data[$field]];
+        } else {
+            $map = [];
         }
 
         $pk = !empty($rule[3]) ? $rule[3] : $db->getPk();
@@ -1404,7 +1411,7 @@ class Validate
      * 获取数据值
      * @access protected
      * @param  array     $data  数据
-     * @param  string    $key  数据标识 支持二维
+     * @param  string    $key  数据标识 支持多维
      * @return mixed
      */
     protected function getDataValue($data, $key)
@@ -1412,9 +1419,14 @@ class Validate
         if (is_numeric($key)) {
             $value = $key;
         } elseif (strpos($key, '.')) {
-            // 支持二维数组验证
-            list($name1, $name2) = explode('.', $key);
-            $value               = isset($data[$name1][$name2]) ? $data[$name1][$name2] : null;
+            // 支持多维数组验证
+            foreach (explode('.', $key) as $key) {
+                if (!isset($data[$key])) {
+                    $value = null;
+                    break;
+                }
+                $value = $data = $data[$key];
+            }
         } else {
             $value = isset($data[$key]) ? $data[$key] : null;
         }
