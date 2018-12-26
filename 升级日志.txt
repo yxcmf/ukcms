@@ -1,11 +1,8 @@
-﻿1.1.8 升级日志:
-1、BugFix:修正后台文件上传安全漏洞
-2、BugFix:修正后台一个sql注入漏洞
-3、升级:thinkphp5升级至github最新版
-4、升级:新增app配置项
-5、调整:默认开启路由缓存
+﻿1.1.9 升级日志:
+1、BugFix:修正tp安全漏洞
+2、新增:后台新增数值字段关联计算功能
 
 后台地址:admin.php
 
 数据库升级：
-ALTER TABLE `uk_model` ADD COLUMN `rules` varchar(2000) DEFAULT '' COMMENT '模型规则' AFTER `ifsub`;
+无
