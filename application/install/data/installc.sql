@@ -317,8 +317,7 @@ CREATE TABLE `uk_column` (
   `listorder` varchar(30) NOT NULL DEFAULT 'orders desc,id desc' COMMENT '列表栏目信息排序',
   `orders` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态:1显示0隐藏',
-  PRIMARY KEY (`id`),
-  FULLTEXT KEY `path` (`path`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='前台栏目表';
 
 -- ----------------------------
