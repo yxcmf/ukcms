@@ -636,8 +636,7 @@ CREATE TABLE `uk_hook` (
   `orders` int(5) NOT NULL DEFAULT '0',
   `status` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `title` (`title`)
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='钩子表 ';
 
 -- ----------------------------
