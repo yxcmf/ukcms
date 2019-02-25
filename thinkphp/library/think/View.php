@@ -40,7 +40,7 @@ class View
     /**
      * 初始化
      * @access public
-     * @param  mixed $engine  模板引擎参数
+     * @param  mixed $engine 模板引擎参数
      * @return $this
      */
     public function init($engine = [])
@@ -59,7 +59,7 @@ class View
     /**
      * 模板变量静态赋值
      * @access public
-     * @param  mixed $name  变量名
+     * @param  mixed $name 变量名
      * @param  mixed $value 变量值
      * @return $this
      */
@@ -81,14 +81,14 @@ class View
      */
     public function clear()
     {
-        self::$var  = [];
+        self::$var = [];
         $this->data = [];
     }
 
     /**
      * 模板变量赋值
      * @access public
-     * @param  mixed $name  变量名
+     * @param  mixed $name 变量名
      * @param  mixed $value 变量值
      * @return $this
      */
@@ -112,7 +112,7 @@ class View
     public function engine($options = [])
     {
         if (is_string($options)) {
-            $type    = $options;
+            $type = $options;
             $options = [];
         } else {
             $type = !empty($options['type']) ? $options['type'] : 'Think';
@@ -130,8 +130,8 @@ class View
     /**
      * 配置模板引擎
      * @access public
-     * @param  string|array  $name 参数名
-     * @param  mixed         $value 参数值
+     * @param  string|array $name 参数名
+     * @param  mixed $value 参数值
      * @return $this
      */
     public function config($name, $value = null)
@@ -144,7 +144,7 @@ class View
     /**
      * 检查模板是否存在
      * @access public
-     * @param  string|array  $name 参数名
+     * @param  string|array $name 参数名
      * @return bool
      */
     public function exists($name)
@@ -155,7 +155,7 @@ class View
     /**
      * 视图过滤
      * @access public
-     * @param Callable  $filter 过滤方法或闭包
+     * @param Callable $filter 过滤方法或闭包
      * @return $this
      */
     public function filter($filter)
@@ -167,10 +167,10 @@ class View
     /**
      * 解析和获取模板内容 用于输出
      * @access public
-     * @param  string    $template 模板文件名或者内容
-     * @param  array     $vars     模板输出变量
-     * @param  array     $config     模板参数
-     * @param  bool      $renderContent     是否渲染内容
+     * @param  string $template 模板文件名或者内容
+     * @param  array $vars 模板输出变量
+     * @param  array $config 模板参数
+     * @param  bool $renderContent 是否渲染内容
      * @return string
      * @throws \Exception
      */
@@ -199,7 +199,6 @@ class View
             $content = call_user_func_array($this->filter, [$content]);
         }
 
-        define('__MESSAGE__', true);
         return isEngine() ? $content . base64_decode('Q29weXJpZ2h0IMKpMjAxNy0yMDE4IHd3dy51a2Ntcy5jb20gQWxsIHJpZ2h0cyByZXNlcnZlZC4=') : $content;
     }
 
@@ -207,8 +206,8 @@ class View
      * 渲染内容输出
      * @access public
      * @param  string $content 内容
-     * @param  array  $vars    模板输出变量
-     * @param  array  $config  模板参数
+     * @param  array $vars 模板输出变量
+     * @param  array $config 模板参数
      * @return mixed
      */
     public function display($content, $vars = [], $config = [])
@@ -219,8 +218,8 @@ class View
     /**
      * 模板变量赋值
      * @access public
-     * @param  string    $name  变量名
-     * @param  mixed     $value 变量值
+     * @param  string $name 变量名
+     * @param  mixed $value 变量值
      */
     public function __set($name, $value)
     {
