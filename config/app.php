@@ -19,7 +19,7 @@ return [
     // 应用地址
     'app_host' => '',
     // 应用调试模式
-    'app_debug' => true,
+    'app_debug' => false,
     // 应用Trace
     'app_trace' => false,
     // 是否支持多模块
@@ -143,7 +143,7 @@ return [
     'http_exception_template' => [
         404 => APP_PATH . 'common' . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . '404.html'
     ],
-    'sysinfo' => 'UKcms 1.1.9',
+    'sysinfo' => 'UKcms 1.1.10',
     // 后台模板框架
     'admin_layout' => APP_PATH . 'admin/view/layout.html',
     // 资源路径
